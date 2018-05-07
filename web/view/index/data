@@ -1,0 +1,23 @@
+[
+  {
+  "id": "1",
+  "time": "2018-05-05",
+  "sub-basin1": 3,
+  "sub-basin2": 3,
+  "sub-basin3": 3
+  },
+  {
+  "id": "2",
+  "time": "2018-05-06",
+  "sub-basin1": 3,
+  "sub-basin2": 3,
+  "sub-basin3": 3
+  },
+  {
+    "id": "3",
+    "time": "2018-05-07",
+    "sub-basin1": 3,
+    "sub-basin2": 4,
+    "sub-basin3": 5
+  }
+]

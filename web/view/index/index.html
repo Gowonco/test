@@ -2,9 +2,587 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>首页</title>
+    <link rel="stylesheet" href="../common/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../common/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../common/bootstrap-datepicker/css/bootstrap-datepicker3.css">
+    <link rel="stylesheet" href="../common/icheck-1.0.2/skins/minimal/blue.css">
+    <link rel="stylesheet" href="../common/bootstrap-table/bootstrap-table.css">
+    <link rel="stylesheet" href="../common/bootstrap3-editable/css/bootstrap-editable.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="../common/js/jquery-3.3.1.js"></script>
+    <script src="../common/js/jquery.validate.js"></script>
+    <script src="../common/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="js/index.js"></script>
+    <script src="../common/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="../common/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <script src="../common/icheck-1.0.2/icheck.js"></script>
+    <script src="../common/bootstrap-table/bootstrap-table.js"></script>
+    <script src="../common/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../common/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script src="../common/bootstrap-table/extensions/editable/bootstrap-table-editable.js"></script>
 </head>
 <body>
-           <h1>洪泽湖洪水预报调度系统</h1>
+<div id="index-header">
+    <iframe align="center" width="100%" height="70px" src="header.html" frameborder="no" border="0" marginwidth="0"
+            marginheight="0" scrolling="no"></iframe>
+</div>
+
+<div id="index-container">
+
+    <!--主菜单-->
+    <div id="menu">
+        <div id="menu-item">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <div id="time" class="navbar-header">
+                        <i class="navbar-brand">2018-05-04 星期五</i>
+                    </div>
+                    <div>
+                        <ul class="nav navbar-nav pull-right">
+                            <li class="active"><a href="#">主面板</a></li>
+                            <li><a href="#">模型设置</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    资料查询
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">工情资料</a></li>
+                                    <li><a href="#">调度资料</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    结果查询
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">历史记录</a></li>
+                                    <li><a href="#">模型评价</a></li>
+                                    <li><a href="#">洪水汇总</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    系统设置
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">用户管理</a></li>
+                                    <li><a href="#">系统设置</a></li>
+                                    <li><a href="#">数据源设置</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!--左侧功能选择-->
+    <div id="left" class="col-lg-2 left-background">
+        <div id="basin-select" class="dropdown">
+            <div class="grid-form center-block basin-select-style">
+                <select class="ser">
+                    <option value="0">请选择流域</option>
+                    <option value="1" selected="selected">洪泽湖</option>
+                </select>
+            </div>
+            <div class="clearfix"></div>
+            <!--<button type="button" class="btn dropdown-toggle" id="dropdownMenu1"-->
+                    <!--data-toggle="dropdown">-->
+                <!--<span class="caret"></span>-->
+            <!--</button>-->
+            <!--<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">-->
+                <!--<li role="presentation">-->
+                    <!--<a role="menuitem" tabindex="-1" href="#">洪泽湖</a>-->
+                <!--</li>-->
+            <!--</ul>-->
+        </div>
+
+        <div id="time-select">
+            <div id="init-time" class="center-block datetime-style">
+                <label for="init-time-value" class="time-label"><h5>初始化时间</h5></label>
+                <div id="init-date" class="input-group date" data-provide="datepicker">
+                    <input id="init-time-value" type="text" class="form-control">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="st-start-time" class="center-block datetime-style">
+                <label for="st-start-time-value" class="time-label"><h5>实测开始时间</h5></label>
+                <div id="st-start-date" class="input-group date" data-provide="datepicker">
+                    <input id="st-start-time-value" type="text" class="form-control">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="f-start-time" class="center-block datetime-style">
+                <label for="f-start-time-value" class="time-label"><h5>预报开始时间</h5></label>
+                <div id="f-start-date" class="input-group date" data-provide="datepicker">
+                    <input id="f-start-time-value" type="text" class="form-control">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="f-end-time" class="datetime-style center-block">
+                <label for="f-end-time-value" class="time-label"><h5>预报结束时间</h5></label>
+                <div id="f-end-date" class="input-group date" data-provide="datepicker">
+                    <input id="f-end-time-value" type="text" class="form-control">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="function-button-group"></div>
+        <button id="data-import" type="button" class="btn btn-default button-style center-block" data-toggle="modal" data-target="#myModal">动态数据导入</button>
+        <!--动态数据导入模态框-->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog model-style">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">动态数据导入</h4>
+                    </div>
+                    <div class="modal-body model-style">
+
+                        <div id="data-source" class="dropdown">
+                            <div class="grid-form">
+                                <label for="data-source-select">数据来源</label>
+                                <select class="ds-select" id="data-source-select">
+                                    <option value="0">请选择</option>
+                                    <option value="1" selected="selected">江苏省水文局</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="pre-process" class="grid-form">
+                            <label>预处理方案</label>
+                            <label class="pre-radio">
+                                <input type="radio" name="optionsRadios" id="pre-process-radios1" value="1" checked>
+                                插值处理
+                            </label>
+                            <label class="">
+                                <input type="radio" name="optionsRadios" id="pre-process-radios2" value="2">
+                                其他
+                            </label>
+                        </div>
+
+                        <div id="evaporate" class="grid-form">
+                            <div class="evaporate-label"><label for="evaporate-value">流域蒸发值</label></div>
+                            <div class="input-group spinner">
+                                <input id="evaporate-value" type="text" class="form-control" value="5">
+                                <div class="input-group-btn-vertical">
+                                    <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                                    <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--未来雨量-->
+                        <div id="future-rainfall" class="grid-form">
+                            <label class="future-rainfall-label">未来雨量</label>
+                            <label class="pre-radio">
+                                <input type="radio" name="rainRadios" id="future-rainfall-radios1" value="1">
+                                考虑
+                            </label>
+                            <label class="">
+                                <input type="radio" name="rainRadios" id="future-rainfall-radios2" value="2" checked>
+                                不考虑
+                            </label>
+                            <div id="future-rainfall-content" class=" grid-form future-rainfall-content">
+                            <label>加报雨量&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <label>是否加报&nbsp;&nbsp;<input type="checkbox" id="add-rainfall-checkbox"></label>
+                            <div class="future-rainfall-input-group">
+                                <div class="input-group future-rainfall-input">
+                                    <span class="input-group-addon">未来24小时</span>
+                                    <input id="next24h" type="text" class="form-control" value="3">
+                                </div>
+                                <div class="input-group future-rainfall-input">
+                                    <span class="input-group-addon">未来48小时</span>
+                                    <input id="next48h" type="text" class="form-control" value="3">
+                                </div>
+                                <div class="input-group future-rainfall-input">
+                                    <span class="input-group-addon">未来72小时</span>
+                                    <input id="next72h" type="text" class="form-control" value="3">
+                                </div>
+                                <div class="input-group future-rainfall-input">
+                                    <span class="input-group-addon">三天之后</span>
+                                    <input id="next3d" type="text" class="form-control" value="3">
+                                </div>
+
+                                <button id="load-data-one-key" type="button" class="btn btn-info key-assignment">一键赋值</button>
+                            </div>
+                            <div class="rainfall-table-div">
+                                <table  id="future-rainfall-table" data-toggle="table">
+                                    <!--
+                                    <thead class="">
+                                    <tr>
+                                        <th data-field="id">序号</th>
+                                        <th data-field="time">时间</th>
+                                        <th data-field="sub_basin1">子流域1</th>
+                                        <th data-field="sub_basin2">子流域2</th>
+                                        <th data-field="sub_basin3">子流域3</th>
+                                    </tr>
+                                    </thead>
+                                    -->
+                                </table>
+                            </div>
+                            </div>
+                        </div>
+                        <!--未来放水-->
+                        <div id="future-release-water" class="grid-form">
+                            <label class="future-rainfall-label">未来放水</label>
+                            <div class="water-table-div">
+                                <table  id="future-water-table" data-toggle="table">
+                                    <thead>
+                                    <tr>
+                                        <th data-field="id">序号</th>
+                                        <th data-field="time">时间</th>
+                                        <th data-field="reservoir1">水库1</th>
+                                        <th data-field="reservoir2">水库2</th>
+                                        <th data-field="reservoir3">水库3</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">数据载入</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+
+        <button type="button" class="btn btn-primary button-style center-block" data-toggle="modal" data-target="#myModal1">水雨情查询</button>
+        <div>
+
+        <button type="button" class="btn btn-info button-style center-block">一键预报</button>
+        <div id="progress-bar">
+            <div class="progress progress-striped center-block progress-style">
+                <div class="progress-bar progress-bar-success" role="progressbar"
+                     aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                     style="width: 50%;">
+                    <span class="sr-only">50% 完成（成功）</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="result-steps">
+            <div class="result-text"><h5>预报结果</h5></div>
+            <div>
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseOne">
+                            <h4 class="panel-title">
+                                    新安江模型
+                            </h4></a>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">分块雨量计算</li>
+                                    <li class="list-group-item">土壤含水量计算</li>
+                                    <li class="list-group-item">水库汇流选择</li>
+                                    <li class="list-group-item">断面流量计算</li>
+                                    <li class="list-group-item">入湖预报特征值</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseTwo">
+                            <h4 class="panel-title">
+                                    经验模型
+                            </h4></a>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">面平均雨量计算</li>
+                                    <li class="list-group-item">初始土壤湿度</li>
+                                    <li class="list-group-item">产流计算</li>
+                                    <li class="list-group-item">水库汇流选择</li>
+                                    <li class="list-group-item">汇流计算</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--中间图表显示-->
+    <div id="center" class="col-lg-8">
+        <div id="map-show">
+            <img src="../../view/common/images/map.png" class="map-style">
+        </div>
+
+        <div id="data-show">
+            <div class="panel-group" id="data-list">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" data-parent="#data-list"
+                           href="#collapse-lake">
+                        <h4 class="panel-title">
+                                洪泽湖
+                        </h4></a>
+                    </div>
+                    <div id="collapse-lake" class="panel-collapse collapse">
+                        <div class="panel-body">
+
+                            <table class="table table-hover">
+                                <!--<caption>悬停表格布局</caption>-->
+                                <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>面平均雨量</th>
+                                    <th>预报流量</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Tanmay</td>
+                                    <td>Bangalore</td>
+                                    <td>560001</td>
+                                </tr>
+                                <tr>
+                                    <td>Sachin</td>
+                                    <td>Mumbai</td>
+                                    <td>400003</td>
+                                </tr>
+                                <tr>
+                                    <td>Uma</td>
+                                    <td>Pune</td>
+                                    <td>411027</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <!--<ul class="list-group">-->
+                                <!--<li class="list-group-item">洪泽湖</li>-->
+
+                            <!--</ul>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" data-parent="#data-list"
+                           href="#collapse-lutaizi">
+                        <h4 class="panel-title">
+                                鲁台子
+                        </h4></a>
+                    </div>
+                    <div id="collapse-lutaizi" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                                <!--<caption>悬停表格布局</caption>-->
+                                <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>面平均雨量</th>
+                                    <th>预报流量</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Tanmay</td>
+                                    <td>Bangalore</td>
+                                    <td>560001</td>
+                                </tr>
+                                <tr>
+                                    <td>Sachin</td>
+                                    <td>Mumbai</td>
+                                    <td>400003</td>
+                                </tr>
+                                <tr>
+                                    <td>Uma</td>
+                                    <td>Pune</td>
+                                    <td>411027</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" data-parent="#data-list"
+                           href="#collapse-bengbu">
+                        <h4 class="panel-title">
+                                蚌埠
+                        </h4></a>
+                    </div>
+                    <div id="collapse-bengbu" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                                <!--<caption>悬停表格布局</caption>-->
+                                <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>面平均雨量</th>
+                                    <th>预报流量</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Tanmay</td>
+                                    <td>Bangalore</td>
+                                    <td>560001</td>
+                                </tr>
+                                <tr>
+                                    <td>Sachin</td>
+                                    <td>Mumbai</td>
+                                    <td>400003</td>
+                                </tr>
+                                <tr>
+                                    <td>Uma</td>
+                                    <td>Pune</td>
+                                    <td>411027</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" data-parent="#data-list"
+                           href="#collapse-huainan">
+                        <h4 class="panel-title">
+                                淮南/明光
+                        </h4></a>
+                    </div>
+                    <div id="collapse-huainan" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                                <!--<caption>悬停表格布局</caption>-->
+                                <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>面平均雨量</th>
+                                    <th>预报流量</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Tanmay</td>
+                                    <td>Bangalore</td>
+                                    <td>560001</td>
+                                </tr>
+                                <tr>
+                                    <td>Sachin</td>
+                                    <td>Mumbai</td>
+                                    <td>400003</td>
+                                </tr>
+                                <tr>
+                                    <td>Uma</td>
+                                    <td>Pune</td>
+                                    <td>411027</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" data-parent="#data-list"
+                           href="#collapse-huaibei">
+                        <h4 class="panel-title">
+                                淮北
+                        </h4></a>
+                    </div>
+                    <div id="collapse-huaibei" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                                <!--<caption>悬停表格布局</caption>-->
+                                <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>面平均雨量</th>
+                                    <th>预报流量</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Tanmay</td>
+                                    <td>Bangalore</td>
+                                    <td>560001</td>
+                                </tr>
+                                <tr>
+                                    <td>Sachin</td>
+                                    <td>Mumbai</td>
+                                    <td>400003</td>
+                                </tr>
+                                <tr>
+                                    <td>Uma</td>
+                                    <td>Pune</td>
+                                    <td>411027</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--右侧调度显示-->
+    <div id="right" class="col-lg-2">
+        <div id="dispatch-button">
+            <button type="button" class="btn btn-info dispatch-btn">开始调度</button>
+            <div class="input-group water-level pull-right">
+                <span class="input-group-addon">期望水位值</span>
+                <input type="text" class="form-control" placeholder="0">
+            </div>
+        </div>
+        <div id="dispatch-graph">
+            <div id="design-standard">
+                <h5>设计标准</h5>
+                <img src="../../view/common/images/echart.png" class="graph-style" />
+            </div>
+            <div id="current-dispatch">
+                <h5>现状调度</h5>
+                <img src="../../view/common/images/echart.png"  class="graph-style"/>
+            </div>
+            <div id="manual-intervention">
+                <h5>人工干预</h5>
+                <img src="../../view/common/images/echart.png" class="graph-style"/>
+            </div>
+        </div>
+        <div id="export-button">
+            <button type="button" class="btn btn-success pull-right">导出</button>
+        </div>
+    </div>
+</div>
+
+<div id="index-footer">
+    <iframe align="center" width="100%" height="50px" src="footer.html" frameborder="no" border="0" marginwidth="0"
+            marginheight="0" scrolling="no"></iframe>
+</div>
+
 </body>
 </html>

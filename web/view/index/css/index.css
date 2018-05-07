@@ -1,0 +1,267 @@
+body{
+    height: 100%;
+    width: 100%;
+}
+body a:hover{
+    text-decoration: none;
+}
+
+body a:focus {
+    text-decoration: none;
+}
+
+.header {
+    color: #ffffff;
+    width: 100%;
+    height: 52px;
+    background:url("../../common/images/login.jpg") no-repeat center fixed;
+    padding-left: 35px;
+    padding-top: 17px;
+    font-size: 25px;
+    letter-spacing: 3px;
+}
+
+.footer {
+    background-color: #cccccc;
+    width: 100%;
+    height: 37px;
+    font-size: 13px;
+    padding-top: 15px;
+    padding-left: 15px;
+    position: absolute;
+    bottom: 0;
+}
+
+.left-background {
+    /*background-color: #d9edf7;*/
+    background-color: rgba(234,252,255,0.78);
+    /*background-color: #D3F6FF;*/
+    margin-top: -20px;
+    min-height: 800px;
+}
+
+ul.dropdown-menu {
+    padding: 0;
+    min-width: 100px;
+}
+
+ul.dropdown-menu {
+    animation: flipInY 1s ease;
+    -moz-animation: flipInY 1s ease;
+    -webkit-animation: flipInY 1s ease;
+    -webkit-backface-visibility: visible !important;
+    -ms-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+    -moz-backface-visibility: visible !important;
+    data-wow-delay: ".1s";
+}
+
+.dropdown-menu > li > a {
+    padding: 8px 15px;
+    font-size: 1em;
+}
+.basin-select-style {
+    width: 80%;
+    margin-top: 15px;
+}
+
+.time-label {
+    margin-bottom: 2px;
+}
+
+.button-style {
+    width: 80%;
+    margin-top: 10px;
+}
+
+.datetime-style {
+    width: 80%;
+    margin-top: 2px;
+}
+
+.progress-style {
+    width: 80%;
+    margin-top: 10px;
+}
+
+.result-text {
+    color: #fff;
+    background-color: rgba(110,175,255,1);
+    height: 36px;
+    margin-left: -10px;
+    margin-right: -14px;
+    padding-top: 1px;
+    padding-left: 15px;
+
+}
+
+.grid-form {
+    font-size: 1em;
+    color: #777;
+}
+
+select.ser {
+    width: 100%;
+    padding: 0.5em;
+    font-size: 0.9em;
+}
+
+.map-style {
+    width: 100%;
+    height: 100%;
+}
+
+.dispatch-btn {
+    width: 80px;
+}
+
+.water-level {
+    width: 50%;
+}
+
+.graph-style {
+    width: 287px;
+    height: 200px;
+}
+
+.model-style {
+    width: 1024px;
+    height: 700px;
+}
+
+.ds-select {
+    width: 20%;
+    padding: 0.5em;
+    font-size: 0.9em;
+    margin-left: 0.5em;
+}
+
+.pre-radio {
+    width: 11%;
+    padding: 0.5em;
+    font-size: 0.9em;
+    margin-left: 0.5em;
+    margin-top: 0.5em;
+}
+
+.evaporate-label {
+    float: left;
+    margin-right: 0.5em;
+    margin-top: 0.5em;
+}
+
+.spinner {
+    width: 100px;
+    float: left;
+}
+.spinner input {
+    text-align: right;
+}
+.input-group-btn-vertical {
+    position: relative;
+    white-space: nowrap;
+    width: 1%;
+    vertical-align: middle;
+    display: table-cell;
+}
+.input-group-btn-vertical > .btn {
+    display: block;
+    float: none;
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+    margin-left: -1px;
+    position: relative;
+    border-radius: 0;
+}
+.input-group-btn-vertical > .btn:first-child {
+    border-top-right-radius: 4px;
+}
+.input-group-btn-vertical > .btn:last-child {
+    margin-top: -2px;
+    border-bottom-right-radius: 4px;
+}
+.input-group-btn-vertical i{
+    position: absolute;
+    top: 0;
+    left: 4px;
+}
+
+.future-rainfall-label {
+    margin-right: 13px;
+}
+
+.future-rainfall-content {
+    display: block;
+    width: 1000px;
+    float: left;
+    margin-left: 40px;
+}
+
+.future-rainfall-input-group{
+    margin-top: 5px;
+}
+
+.future-rainfall-input {
+    width: 150px;
+    float: left;
+    margin-left: 20px;
+}
+
+.key-assignment {
+    margin-left: 20px;
+}
+
+.rainfall-table-div {
+    width: 900px;
+    height: 220px;
+    overflow: auto;
+    margin-top: 10px;
+}
+
+.water-table-div {
+    width: 900px;
+    height: 212px;
+    overflow: auto;
+    margin-left: 40px;
+}
+
+
+#index-container {
+    /*position: relative;*/
+    height: 800px;
+    /*min-height: 600px;*/
+}
+
+#progress-bar {
+    margin-top: 15px;
+}
+
+#map-show {
+    height: 550px;
+}
+
+#data-show {
+    height: 230px;
+}
+
+#dispatch-graph {
+    height: 700px;
+}
+
+#future-rainfall {
+    display: block;
+    width: 1000px;
+    float: left;
+}
+
+#future-release-water {
+    display: block;
+    width: 1000px;
+    float: left;
+    margin-top: 5px;
+}
+
+#future-rainfall-table a{
+    color: #777;
+}
