@@ -70,22 +70,22 @@ function keyLogin(){
         $("#btn-submit").click();
     }
 }
-
-function login() {
-    var params = getNameAndPassword();
-    alert("user"+ params);
-    // var url = "#";
-    // var params = getNameAndPassword();
-    // $.post(url,params,function(res){
-    //     if(res.resultCode == "100000"){
-    //         //window.location.href="https://mp.missionex.com.cn:443/index";
-    //     }else if(res.resultCode == "100001" || res.resultCode == "100002"){
-    //         //window.location.href="https://mp.missionex.com.cn:443/index/error?msg="+res.msg+"&wrongTitle="+res.wrongTitle;
-    //     }else{
-    //         //window.wxc.xcConfirm(res.msg, window.wxc.xcConfirm.typeEnum.info)
-    //     }
-    // })
-};
+//
+// function login() {
+//     var params = getNameAndPassword();
+//     alert("user"+ params);
+//     // var url = "#";
+//     // var params = getNameAndPassword();
+//     // $.post(url,params,function(res){
+//     //     if(res.resultCode == "100000"){
+//     //         //window.location.href="https://mp.missionex.com.cn:443/index";
+//     //     }else if(res.resultCode == "100001" || res.resultCode == "100002"){
+//     //         //window.location.href="https://mp.missionex.com.cn:443/index/error?msg="+res.msg+"&wrongTitle="+res.wrongTitle;
+//     //     }else{
+//     //         //window.wxc.xcConfirm(res.msg, window.wxc.xcConfirm.typeEnum.info)
+//     //     }
+//     // })
+// };
 
 function getNameAndPassword() {
     var params = {
