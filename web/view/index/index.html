@@ -24,6 +24,7 @@
 </head>
 <body>
 <div id="index-header">
+    <!--<#include "/view/index/header.html">-->
     <iframe align="center" width="100%" height="70px" src="/view/index/header.html" frameborder="no" border="0" marginwidth="0"
             marginheight="0" scrolling="no"></iframe>
 </div>
@@ -36,7 +37,7 @@
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div id="time" class="navbar-header">
-                        <li class="navbar-brand">2018-05-04 星期五   </li>
+                        <i class="navbar-brand">${.now?string("yyyy-MM-dd EEEE")}</i>
                     </div>
                     <div>
                         <ul class="nav navbar-nav pull-right">
@@ -87,7 +88,7 @@
         <div id="basin-select" class="dropdown">
             <div class="grid-form center-block basin-select-style">
                 <select class="ser">
-                    <option value="0">请选择流域 ${test}</option>
+                    <option value="0">请选择</option>
                     <option value="1" selected="selected">洪泽湖</option>
                 </select>
             </div>
@@ -580,7 +581,8 @@
 </div>
 
 <div id="index-footer">
-    <iframe align="center" width="100%" height="50px" src="footer.html" frameborder="no" border="0" marginwidth="0"
+    <!--<#include "/view/index/footer.html">-->
+    <iframe align="center" width="100%" height="50px" src="/view/index/footer.html" frameborder="no" border="0" marginwidth="0"
             marginheight="0" scrolling="no"></iframe>
 </div>
 
