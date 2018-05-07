@@ -16,7 +16,7 @@ public class SystemController extends Controller {
 
     public void login_view(){
         if(null != getSessionAttr("USERNAME")){
-            System.out.println(getSessionAttr("USERNAME").toString()+" kkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+            System.out.println(getSessionAttr("USERNAME").toString());
             forwardAction("/index2");
             return;
         }

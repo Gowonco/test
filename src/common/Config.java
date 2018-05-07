@@ -14,6 +14,7 @@ import controller.modelController.*;
 import controller.resultController.*;
 import controller.systemController.*;
 
+import model.Area_dis;
 import model.User;
 
 
@@ -52,6 +53,7 @@ public class Config extends JFinalConfig {
 
         ActiveRecordPlugin arp = new ActiveRecordPlugin(dp);
         arp.addMapping("f_user","ucode", User.class);
+        arp.addMapping("f_area_dis","ucode", Area_dis.class);
         me.add(arp);
     }
 
