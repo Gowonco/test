@@ -1,4 +1,6 @@
 $(document).ready(function() {
+
+
     $('.date').datepicker({
         autoclose: true, //自动关闭
         beforeShowDay: $.noop,    //在显示日期之前调用的函数
