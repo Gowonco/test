@@ -32,19 +32,19 @@
                 <h4>欢迎使用</h4>
             </div>
             <div class="login-img">
-                <img src="../common/images/hzh3.jpg" class="login-img-style"/>
-                <img src="../common/images/hzh2.jpg" class="login-img-style"/>
-                <img src="../common/images/hzh4.jpg" class="login-img-style"/>
+                <img src="/view/common/images/hzh3.jpg" class="login-img-style"/>
+                <img src="/view/common/images/hzh2.jpg" class="login-img-style"/>
+                <img src="/view/common/images/hzh4.jpg" class="login-img-style"/>
             </div>
         </div>
         <div class="col-md-4">
-            <form class="login-form" action="/system/login">
+            <form class="login-form" action="/system/login" method="post" >
                 <h4 class="no-margins font-style">用户登录</h4>
                 <!--<p class="m-t-md">欢迎使用</p>-->
                 <input type="text" id="username" name="username" class="form-control username" placeholder="用户名"/>
                 <input type="password" id="password" name="password" class="form-control password m-b" placeholder="密码"/>
-                <span id="error-info" class="error-info">${nameMsg!}</span>
-                <button id="btn-submit" class="btn btn-success btn-block" type="button">登录</button>
+                <span id="error-info" class="error-info">${nameMsg!} ${passMsg!}</span>
+                <button id="btn-submit" class="btn btn-success btn-block" type="submit">登录</button>
             </form>
 
         </div>

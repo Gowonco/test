@@ -16,8 +16,8 @@ public class SystemController extends Controller {
 
     public void login_view(){
         if(null != getSessionAttr("USERNAME")){
-            System.out.println(getSessionAttr("USERNAME").toString());
-            forwardAction("/");
+            System.out.println(getSessionAttr("USERNAME").toString()+" kkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+            forwardAction("/index2");
             return;
         }
         if(!"NONE".equals(getCookie("USERNAME","NONE"))){
@@ -30,7 +30,7 @@ public class SystemController extends Controller {
             setAttr("remember","");
         }
 
-        render("login.html");
+        renderFreeMarker("/view/system/login.html");
     }
 
     /*
@@ -40,7 +40,7 @@ public class SystemController extends Controller {
     public void login(){
         List<User> ba = User.dao.find("select * from f_user where uname='" + getPara("username") + "'");
         if(ba.size()>0){
-            if(ba.get(0).getStr("upwd").equals(getPara("password"))){
+            if(ba.get(0).getStr("UPWD").equals(getPara("password"))){
                 setSessionAttr("USERNAME",getPara("username"));
                 if("remember-me".equals(getPara("remember"))){
                     setCookie("USERNAME",getPara("username"),3600*24*360);
@@ -49,14 +49,20 @@ public class SystemController extends Controller {
                     setCookie("USERNAME","",0);
                     setCookie("PASSWORD","",0);
                 }
-                forwardAction("/");
+                forwardAction("/index2");
                 return ;
             }
         }
         setAttr("nameMsg","用户名或密码错误");
         forwardAction("/system/login_view");
     }
-
+    /*
+            登出action
+         */
+    public void logout(){
+        getSession().invalidate();
+        forwardAction("/system/login_view");
+    }
 
 
 
