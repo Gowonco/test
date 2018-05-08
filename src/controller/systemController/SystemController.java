@@ -2,7 +2,7 @@ package controller.systemController;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
-import model.User;
+import model.dbModel.User;
 import validator.LoginValidator;
 
 import java.util.List;
