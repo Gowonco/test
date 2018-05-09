@@ -2,7 +2,9 @@ package common;
 
 
 import com.jfinal.config.*;
+import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.activerecord.dialect.OracleDialect;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
 import controller.forecastController.*;
@@ -14,7 +16,8 @@ import controller.modelController.*;
 import controller.resultController.*;
 import controller.systemController.*;
 
-import model.dbModel.*;
+import interceptor.VisitInterceptor;
+import model.dbmodel._MappingKit;
 
 
 public class Config extends JFinalConfig {
@@ -47,26 +50,38 @@ public class Config extends JFinalConfig {
 
     @Override
     public void configPlugin(Plugins me) {
-        DruidPlugin dp = new DruidPlugin(getProperty("jdbcUrl"), getProperty("user"), getProperty("password").trim());
-        me.add(dp);
+        // mysql 数据源
+        DruidPlugin dsMysql = new DruidPlugin(getProperty("mysqlUrl"), getProperty("mysqlUser"), getProperty("mysqlPassword").trim());
+        me.add(dsMysql);
+        // mysql ActiveRecrodPlugin 实例，并指定configName为 mysql
+        ActiveRecordPlugin arpMysql = new ActiveRecordPlugin(dsMysql);
+        arpMysql.setContainerFactory(new CaseInsensitiveContainerFactory(true));//false 是大写, true是小写, 不写是区分大小写
+        _MappingKit.mapping(arpMysql);
+        me.add(arpMysql);
 
-        ActiveRecordPlugin arp = new ActiveRecordPlugin(dp);
-        arp.addMapping("f_user","ucode", User.class);
-        arp.addMapping("f_area_dis","ucode", Area_dis.class);
-        arp.addMapping("f_datas_cf",Datas_cf.class);
-        arp.addMapping("f_data_c",Data_c.class);
-        arp.addMapping("f_rsvr_otq",Rsvr_otq.class);
-        arp.addMapping("f_tree",Tree.class);
-        me.add(arp);
+        // oracle 数据源
+//        DruidPlugin dsOracle = new DruidPlugin(getProperty("oracleUrl"),getProperty("oracleUser"),getProperty("oraclePassword"));
+//        me.add(dsOracle);
+//
+//        // oracle ActiveRecrodPlugin 实例，并指定configName为 oracle
+//        ActiveRecordPlugin arpOracle = new ActiveRecordPlugin("oracle", dsOracle);
+//        me.add(arpOracle);
+//
+//        arpOracle.setDialect(new OracleDialect());
+
     }
 
     @Override
     public void configInterceptor(Interceptors me) {
-
+        me.add(new VisitInterceptor());
     }
 
     @Override
     public void configHandler(Handlers me) {
 
+    }
+
+    public static DruidPlugin createDruidPlugin() {
+        return new DruidPlugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password").trim());
     }
 }

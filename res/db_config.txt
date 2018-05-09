@@ -1,4 +1,5 @@
-jdbcUrl = jdbc:mysql://42.51.12.79:3308/f_data?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
-user = hhu
-password = 123456
+mysqlUrl = jdbc:mysql://42.51.12.79:3308/f_data?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+mysqlUser = hhu
+mysqlPassword = 123456
+
 devMode = true

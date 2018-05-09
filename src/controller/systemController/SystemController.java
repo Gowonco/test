@@ -2,7 +2,11 @@ package controller.systemController;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
-import model.dbModel.User;
+
+
+import model.dbmodel.Role;
+import model.dbmodel.User;
+import model.viewmodel.ViewUser;
 import validator.LoginValidator;
 
 import java.util.List;
@@ -10,14 +14,10 @@ import java.util.List;
 public class SystemController extends Controller {
 
 
-    public void ltest(){
-        render("login.html");
-    }
-
     public void login_view(){
         if(null != getSessionAttr("USERNAME")){
             System.out.println(getSessionAttr("USERNAME").toString());
-            forwardAction("/index2");
+            forwardAction("/");
             return;
         }
         if(!"NONE".equals(getCookie("USERNAME","NONE"))){
@@ -30,31 +30,33 @@ public class SystemController extends Controller {
             setAttr("remember","");
         }
 
-        renderFreeMarker("/view/system/login.html");
+        render("login.html");
     }
+
 
     /*
            登录验证action
         */
     @Before(LoginValidator.class)
     public void login(){
-        List<User> ba = User.dao.find("select * from f_user where uname='" + getPara("username") + "'");
-        if(ba.size()>0){
-            if(ba.get(0).getStr("UPWD").equals(getPara("password"))){
-                setSessionAttr("USERNAME",getPara("username"));
-                if("remember-me".equals(getPara("remember"))){
-                    setCookie("USERNAME",getPara("username"),3600*24*360);
-                    setCookie("PASSWORD",getPara("password"),3600*24*360);
-                }else{
-                    setCookie("USERNAME","",0);
-                    setCookie("PASSWORD","",0);
-                }
-                forwardAction("/index2");
-                return ;
+
+        List<User> listUser = User.dao.find("select * from f_user where uname='" + getPara("username") + "'");
+        if(listUser.size()>0){
+            if(listUser.get(0).getStr("upwd").equals(getPara("password"))){
+                User user=listUser.get(0);
+                   System.out.println(user.getStr("ucode")+" "+user.getStr("role"));
+                Role role = Role.dao.findById(user.getStr("role"));
+                ViewUser viewUser=new ViewUser();
+                viewUser.user=user;
+                viewUser.setRolenm(role.getROLENM());
+                setAttr("viewUser",viewUser);
+                setAttr("resultStatus","success");
+
             }
+        }else{
+            setAttr("resultStatus","failed");
         }
-        setAttr("nameMsg","用户名或密码错误");
-        forwardAction("/system/login_view");
+        renderJson();
     }
     /*
             登出action
@@ -67,14 +69,4 @@ public class SystemController extends Controller {
 
 
 
-
-
-
-
-
-    public void testuser(){
-        User userList=User.dao.findById(1);
-        setAttr("user",userList);
-        renderJson();
-    }
 }
