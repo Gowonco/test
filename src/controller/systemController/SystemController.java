@@ -46,6 +46,8 @@ public class SystemController extends Controller {
                 ViewUser viewUser=ViewUser.dao.getViewUser(listUser.get(0));
                 setAttr("viewUser",viewUser);
                 setAttr("resultStatus","success");
+            }else{
+                setAttr("resultStatus","failed");
             }
         }else{
             setAttr("resultStatus","failed");
