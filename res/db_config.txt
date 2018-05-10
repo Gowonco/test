@@ -2,4 +2,7 @@ mysqlUrl = jdbc:mysql://42.51.12.79:3308/f_data?characterEncoding=utf-8&zeroDate
 mysqlUser = hhu
 mysqlPassword = 123456
 
+oracleUrl =jdbc:oracle:thin:@192.168.1.124:1521:ORCL
+oracleUser = hhu
+oraclePassword=123456
 devMode = true

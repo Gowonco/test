@@ -53,21 +53,19 @@ public class Config extends JFinalConfig {
         // mysql 数据源
         DruidPlugin dsMysql = new DruidPlugin(getProperty("mysqlUrl"), getProperty("mysqlUser"), getProperty("mysqlPassword").trim());
         me.add(dsMysql);
-        // mysql ActiveRecrodPlugin 实例，并指定configName为 mysql
-        ActiveRecordPlugin arpMysql = new ActiveRecordPlugin(dsMysql);
+        ActiveRecordPlugin arpMysql = new ActiveRecordPlugin("mysql",dsMysql);// mysql ActiveRecrodPlugin 实例，并指定configName为 mysql
         arpMysql.setContainerFactory(new CaseInsensitiveContainerFactory(true));//false 是大写, true是小写, 不写是区分大小写
-        _MappingKit.mapping(arpMysql);
+        model.dbmodel._MappingKit.mapping(arpMysql);
         me.add(arpMysql);
 
-        // oracle 数据源
-//        DruidPlugin dsOracle = new DruidPlugin(getProperty("oracleUrl"),getProperty("oracleUser"),getProperty("oraclePassword"));
-//        me.add(dsOracle);
-//
-//        // oracle ActiveRecrodPlugin 实例，并指定configName为 oracle
-//        ActiveRecordPlugin arpOracle = new ActiveRecordPlugin("oracle", dsOracle);
-//        me.add(arpOracle);
-//
-//        arpOracle.setDialect(new OracleDialect());
+         //oracle 数据源
+        DruidPlugin dsOracle = new DruidPlugin(getProperty("oracleUrl"),getProperty("oracleUser"),getProperty("oraclePassword"));
+        me.add(dsOracle);
+        ActiveRecordPlugin arpOracle = new ActiveRecordPlugin("oracle", dsOracle);// oracle ActiveRecrodPlugin 实例，并指定configName为 oracle
+        arpOracle.setContainerFactory(new CaseInsensitiveContainerFactory(true));//false 是大写, true是小写, 不写是区分大小写
+        model.dbmodeloracle._MappingKit.mapping(arpOracle);
+        me.add(arpOracle);
+        arpOracle.setDialect(new OracleDialect());//设置方言
 
     }
 
@@ -82,6 +80,9 @@ public class Config extends JFinalConfig {
     }
 
     public static DruidPlugin createDruidPlugin() {
-        return new DruidPlugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password").trim());
+        return new DruidPlugin(PropKit.get("mysqlUrl"), PropKit.get("mysqlUser"), PropKit.get("mysqlPassword").trim());
+    }
+    public static DruidPlugin createDruidPluginOracle() {
+        return new DruidPlugin(PropKit.get("oracleUrl"), PropKit.get("oracleUser"), PropKit.get("oraclePassword").trim());
     }
 }

@@ -43,15 +43,9 @@ public class SystemController extends Controller {
         List<User> listUser = User.dao.find("select * from f_user where uname='" + getPara("username") + "'");
         if(listUser.size()>0){
             if(listUser.get(0).getStr("upwd").equals(getPara("password"))){
-                User user=listUser.get(0);
-                   System.out.println(user.getStr("ucode")+" "+user.getStr("role"));
-                Role role = Role.dao.findById(user.getStr("role"));
-                ViewUser viewUser=new ViewUser();
-                viewUser.user=user;
-                viewUser.setRolenm(role.getROLENM());
+                ViewUser viewUser=ViewUser.dao.getViewUser(listUser.get(0));
                 setAttr("viewUser",viewUser);
                 setAttr("resultStatus","success");
-
             }
         }else{
             setAttr("resultStatus","failed");
