@@ -59,13 +59,13 @@ public class Config extends JFinalConfig {
         me.add(arpMysql);
 
          //oracle 数据源
-        DruidPlugin dsOracle = new DruidPlugin(getProperty("oracleUrl"),getProperty("oracleUser"),getProperty("oraclePassword"));
-        me.add(dsOracle);
-        ActiveRecordPlugin arpOracle = new ActiveRecordPlugin("oracle", dsOracle);// oracle ActiveRecrodPlugin 实例，并指定configName为 oracle
-        arpOracle.setContainerFactory(new CaseInsensitiveContainerFactory(true));//false 是大写, true是小写, 不写是区分大小写
-        model.dbmodeloracle._MappingKit.mapping(arpOracle);
-        me.add(arpOracle);
-        arpOracle.setDialect(new OracleDialect());//设置方言
+//        DruidPlugin dsOracle = new DruidPlugin(getProperty("oracleUrl"),getProperty("oracleUser"),getProperty("oraclePassword"));
+//        me.add(dsOracle);
+//        ActiveRecordPlugin arpOracle = new ActiveRecordPlugin("oracle", dsOracle);// oracle ActiveRecrodPlugin 实例，并指定configName为 oracle
+//        arpOracle.setContainerFactory(new CaseInsensitiveContainerFactory(true));//false 是大写, true是小写, 不写是区分大小写
+//        model.dbmodeloracle._MappingKit.mapping(arpOracle);
+//        me.add(arpOracle);
+//        arpOracle.setDialect(new OracleDialect());//设置方言
 
     }
 

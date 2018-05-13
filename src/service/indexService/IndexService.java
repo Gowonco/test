@@ -1,6 +1,7 @@
 package service.indexService;
 
 import com.jfinal.core.Controller;
+import dao.indexDao.IndexDao;
 import model.dbmodel.AreaDis;
 import model.dbmodel.DataC;
 import model.dbmodel.DatasCf;
@@ -13,12 +14,13 @@ import java.util.List;
 
 public class IndexService extends Controller {
 
+    IndexDao indexDao=new IndexDao();
     /**
      *
      * @return 获取流域信息
      */
     public List<AreaDis> getAreaDis(){
-        return AreaDis.dao.getAreaDis();
+        return indexDao.getAreaDis();
     }
 
     /**
@@ -26,23 +28,16 @@ public class IndexService extends Controller {
      * @return 获取数据来源列表
      */
     public List<ViewDatasCf> getDatasCf(){
-        List<DatasCf> listDatasCf =DatasCf.dao.getDatasCf();
-        List<ViewDatasCf> listViewDatasCf=new ArrayList<ViewDatasCf>();
-        for(DatasCf datasCf : listDatasCf){
-            ViewDatasCf vdc=new ViewDatasCf();
-            vdc.setDs(datasCf.getDS());
-            vdc.setDsn(datasCf.getDSN());
-            listViewDatasCf.add(vdc);
-        }
-        return listViewDatasCf;
+
+        return indexDao.getDatasCf();
     }
 
     /**
      *
      * @return 获取数据处理方案列表
      */
-    public List<DataC> getData_c(){
-        return DataC.dao.getData_c();
+    public List<DataC> getDataC(){
+        return indexDao.getDataC();
     }
 
     /**
@@ -51,7 +46,7 @@ public class IndexService extends Controller {
      * @return 获取水库放水量默认值
      */
     public List<ViewRsvrOtq> getRsvrOtq(String areaDisId) {
-        return ViewRsvrOtq.dao.getViewRsvrOtq(areaDisId);
+        return indexDao.getRsvrOtq(areaDisId);
     }
 
 }

@@ -6,7 +6,10 @@
         <element id="directory" name="classes">
           <element id="module-output" name="FloodForecastAndDispatch2" />
         </element>
-        <element id="directory" name="lib" />
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="lib" />
+          <element id="library" level="project" name="lib1" />
+        </element>
       </element>
       <element id="javaee-facet-resources" facet="FloodForecastAndDispatch2/web/Web" />
     </root>

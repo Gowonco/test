@@ -1,0 +1,42 @@
+
+2018-05-09 18:49:36
+[ERROR]-[Thread: main]-[com.alibaba.druid.pool.DruidDataSource.init()]: {dataSource-1} init error
+java.sql.SQLException: oracle.jdbc.OracleDriver
+	at com.alibaba.druid.util.JdbcUtils.createDriver(JdbcUtils.java:570)
+	at com.alibaba.druid.pool.DruidDataSource.init(DruidDataSource.java:697)
+	at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:1060)
+	at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:1056)
+	at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:104)
+	at com.jfinal.plugin.activerecord.generator.MetaBuilder.build(MetaBuilder.java:90)
+	at com.jfinal.plugin.activerecord.generator.Generator.generate(Generator.java:262)
+	at model._JFinalDemoGeneratorOracle.main(_JFinalDemoGeneratorOracle.java:53)
+Caused by: java.lang.ClassNotFoundException: oracle.jdbc.OracleDriver
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:338)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:264)
+	at com.alibaba.druid.util.JdbcUtils.createDriver(JdbcUtils.java:568)
+	... 7 more
+
+2018-05-09 18:50:38
+[ERROR]-[Thread: main]-[com.alibaba.druid.pool.DruidDataSource.init()]: {dataSource-1} init error
+java.sql.SQLException: oracle.jdbc.OracleDriver
+	at com.alibaba.druid.util.JdbcUtils.createDriver(JdbcUtils.java:570)
+	at com.alibaba.druid.pool.DruidDataSource.init(DruidDataSource.java:697)
+	at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:1060)
+	at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:1056)
+	at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:104)
+	at com.jfinal.plugin.activerecord.generator.MetaBuilder.build(MetaBuilder.java:90)
+	at com.jfinal.plugin.activerecord.generator.Generator.generate(Generator.java:262)
+	at model._JFinalDemoGeneratorOracle.main(_JFinalDemoGeneratorOracle.java:53)
+Caused by: java.lang.ClassNotFoundException: oracle.jdbc.OracleDriver
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:338)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:264)
+	at com.alibaba.druid.util.JdbcUtils.createDriver(JdbcUtils.java:568)
+	... 7 more

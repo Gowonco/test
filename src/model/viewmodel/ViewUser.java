@@ -13,14 +13,6 @@ public class ViewUser {
     public User user;
     public String rolenm;
 
-    public ViewUser getViewUser(User user){
-        Role role = Role.dao.findById(user.getROLE());
-        ViewUser viewUser=new ViewUser();
-        viewUser.setUser(user);
-        viewUser.setRolenm(role.getROLENM());
-        return viewUser;
-    }
-
 
     public User getUser() { return user; }
 
