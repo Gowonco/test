@@ -40,9 +40,11 @@ public class IndexController extends Controller{
         renderJson();
     }
 
+    /**
+     * 获取加报雨量值
+     */
     public void getAddRainfall(){
-       setAttr("rainfall","hh") ;
-       indexDao.ziliuyu();
+       setAttr("listViewRainFall",indexService.getAddRainfall());//set加报雨量值
        renderJson();
     }
 

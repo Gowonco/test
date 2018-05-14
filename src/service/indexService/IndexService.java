@@ -7,6 +7,7 @@ import model.dbmodel.DataC;
 import model.dbmodel.DatasCf;
 import model.dbmodel.Tree;
 import model.viewmodel.ViewDatasCf;
+import model.viewmodel.ViewRainFall;
 import model.viewmodel.ViewRsvrOtq;
 import model.viewmodel.ViewUser;
 
@@ -56,8 +57,12 @@ public class IndexService extends Controller {
         return indexDao.getRsvrOtq(areaDisId);
     }
 
-    public void getAddRainfall(){
-
+    /**
+     * 获取加报雨量值
+     * @return
+     */
+    public List<ViewRainFall> getAddRainfall(){
+        return indexDao.getAddRainfall();
     }
 
 }

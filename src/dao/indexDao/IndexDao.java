@@ -4,9 +4,8 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import model.dbmodel.*;
-import model.dbmodeloracle.PptnR;
 import model.viewmodel.ViewDatasCf;
-import model.viewmodel.ViewPptnR;
+import model.viewmodel.ViewRainFall;
 import model.viewmodel.ViewRsvrOtq;
 
 import java.util.*;
@@ -75,21 +74,43 @@ public class IndexDao extends Controller {
         }
         return listViewRsvrOtq;
     }
+
+    /**
+     * 获取每个子流域块（23个）的雨量站
+     * @param childId
+     * @return
+     */
     public List<Tree> getRainStation(String childId){
         List<Tree> listRainStation=Tree.dao.find("select * from f_tree where rank=4 and pid=?",childId);
         return listRainStation;
     }
-    public void ziliuyu(){
 
-//        List<Tree> listChild=this.getChild();
-//        for(Tree treeChild : listChild){
-//            List<Tree> listRainStation=this.getRainStation(treeChild.getID());
-//            System.out.println(treeChild.getNAME());
-//            for(Tree treeStation :listRainStation){
-//                System.out.println(treeStation.getID()+treeStation.getNAME());
-//                Record viewPptnR=Db.use("oracle").findFirst("select sum(drp) from ST_PPTN_R t where t.stcd=? and t.tm>=to_date('2018-03-17 08:00:00','YYYY/MM/DD HH24:MI:SS') and t.tm<to_date('2018-03-17 14:00:00','YYYY/MM/DD HH24:MI:SS')",treeStation.getID());
-//                System.out.println(viewPptnR.getDouble("sum(drp)"));
-//            }
-//        }
+    /**
+     * 获取加报雨量值23个子流域块的
+     * @return
+     */
+    public List<ViewRainFall> getAddRainfall(){
+        //获取子流域
+        List<Tree> listChild=this.getChild();
+        //加报雨量list
+        List<ViewRainFall> listViewRainFall=new ArrayList<ViewRainFall>();
+        for(Tree treeChild : listChild){
+            //获取各个子流域对应雨量站列表
+            List<Tree> listRainStation=this.getRainStation(treeChild.getID());
+            int size=listRainStation.size();
+            double rainfall=0.0;
+            for(Tree treeStation :listRainStation){
+                System.out.println(treeStation.getID()+treeStation.getNAME());
+                //获取每个雨量站加报雨量和
+                Record record=Db.use("oracle").findFirst("select sum(drp) from ST_PPTN_R t where t.stcd=? and t.tm>=to_date('2018-03-17 08:00:00','YYYY/MM/DD HH24:MI:SS') and t.tm<to_date('2018-03-17 14:00:00','YYYY/MM/DD HH24:MI:SS')",treeStation.getID());
+                double rain=record.getDouble("sum(drp)")==null? 0.0:record.getDouble("sum(drp)");
+                rainfall+=rain;
+            }
+            ViewRainFall viewRainFall=new ViewRainFall();
+            viewRainFall.setId(treeChild.getID());
+            viewRainFall.setDrp(rainfall/size);
+            listViewRainFall.add(viewRainFall);
+        }
+        return listViewRainFall;
     }
 }
