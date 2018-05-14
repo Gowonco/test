@@ -5,6 +5,7 @@ import dao.indexDao.IndexDao;
 import model.dbmodel.AreaDis;
 import model.dbmodel.DataC;
 import model.dbmodel.DatasCf;
+import model.dbmodel.Tree;
 import model.viewmodel.ViewDatasCf;
 import model.viewmodel.ViewRsvrOtq;
 import model.viewmodel.ViewUser;
@@ -41,12 +42,22 @@ public class IndexService extends Controller {
     }
 
     /**
+     * 获取新安江模型 23块子流域
+     * @return
+     */
+    public List<Tree> getChild(){ return indexDao.getChild(); }
+
+    /**
      *
      * @param areaDisId
      * @return 获取水库放水量默认值
      */
     public List<ViewRsvrOtq> getRsvrOtq(String areaDisId) {
         return indexDao.getRsvrOtq(areaDisId);
+    }
+
+    public void getAddRainfall(){
+
     }
 
 }

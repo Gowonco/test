@@ -1,8 +1,12 @@
 package dao.indexDao;
 
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
 import model.dbmodel.*;
+import model.dbmodeloracle.PptnR;
 import model.viewmodel.ViewDatasCf;
+import model.viewmodel.ViewPptnR;
 import model.viewmodel.ViewRsvrOtq;
 
 import java.util.*;
@@ -44,6 +48,15 @@ public class IndexDao extends Controller {
     }
 
     /**
+     * 获取新安江模型 23块子流域
+     * @return
+     */
+    public List<Tree> getChild(){
+        List<Tree> listTree=Tree.dao.find("select * from f_tree where rank=3 and pid like '001%'");
+        return listTree;
+    }
+
+    /**
      * @param areaDisId
      * @return 获取水库放水量默认值
      */
@@ -61,5 +74,22 @@ public class IndexDao extends Controller {
             listViewRsvrOtq.add(viewRsvrOtq);
         }
         return listViewRsvrOtq;
+    }
+    public List<Tree> getRainStation(String childId){
+        List<Tree> listRainStation=Tree.dao.find("select * from f_tree where rank=4 and pid=?",childId);
+        return listRainStation;
+    }
+    public void ziliuyu(){
+
+//        List<Tree> listChild=this.getChild();
+//        for(Tree treeChild : listChild){
+//            List<Tree> listRainStation=this.getRainStation(treeChild.getID());
+//            System.out.println(treeChild.getNAME());
+//            for(Tree treeStation :listRainStation){
+//                System.out.println(treeStation.getID()+treeStation.getNAME());
+//                Record viewPptnR=Db.use("oracle").findFirst("select sum(drp) from ST_PPTN_R t where t.stcd=? and t.tm>=to_date('2018-03-17 08:00:00','YYYY/MM/DD HH24:MI:SS') and t.tm<to_date('2018-03-17 14:00:00','YYYY/MM/DD HH24:MI:SS')",treeStation.getID());
+//                System.out.println(viewPptnR.getDouble("sum(drp)"));
+//            }
+//        }
     }
 }
