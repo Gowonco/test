@@ -100,7 +100,6 @@ public class IndexDao extends Controller {
             int size=listRainStation.size();
             double rainfall=0.0;
             for(Tree treeStation :listRainStation){
-                System.out.println(treeStation.getID()+treeStation.getNAME());
                 //获取每个雨量站加报雨量和
                 Record record=Db.use("oracle").findFirst("select sum(drp) from ST_PPTN_R t where t.stcd=? and t.tm>=to_date('2018-03-17 08:00:00','YYYY/MM/DD HH24:MI:SS') and t.tm<to_date('2018-03-17 14:00:00','YYYY/MM/DD HH24:MI:SS')",treeStation.getID());
                 double rain=record.getDouble("sum(drp)")==null? 0.0:record.getDouble("sum(drp)");
