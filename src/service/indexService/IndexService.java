@@ -2,15 +2,10 @@ package service.indexService;
 
 import com.jfinal.core.Controller;
 import dao.indexDao.IndexDao;
-import model.dbmodel.AreaDis;
-import model.dbmodel.DataC;
-import model.dbmodel.DatasCf;
-import model.dbmodel.Tree;
-import model.viewmodel.ViewDatasCf;
-import model.viewmodel.ViewRainFall;
-import model.viewmodel.ViewRsvrOtq;
-import model.viewmodel.ViewUser;
+import model.dbmodel.*;
+import model.viewmodel.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,5 +59,58 @@ public class IndexService extends Controller {
     public List<ViewRainFall> getAddRainfall(){
         return indexDao.getAddRainfall();
     }
+    /**
+     * 水雨情--逐日降雨数据
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ParseException
+     */
+    public List<ViewRain> getRain(String startDate, String endDate) throws ParseException { return indexDao.getRain(startDate,endDate);}
+    /**
+     * 水雨情--水闸流量查询
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ParseException
+     */
+    public List<ViewFlow> getFlow(String startDate,String endDate) throws ParseException { return indexDao.getFlow(startDate,endDate);}
+    /**
+     * 水雨情--水库放水流量查询
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ParseException
+     */
+    public List<ViewReservoir> getReservoir(String startDate,String endDate) throws ParseException {return indexDao.getReservoir(startDate,endDate);}
 
+    /**
+     * 获取68个雨量站的id,name
+     * @return
+     */
+    public List<Tree> getRainInfo(){ return indexDao.getInfo(4); }
+
+    /**
+     * 获取5个闸坝的id,name
+     * @return
+     */
+    public List<Tree> getFlowInfo(){ return indexDao.getInfo(9); }
+
+    /**
+     * 获取9个水库的id,name
+     * @return
+     */
+    public List<Tree> getReservoirInfo(){ return indexDao.getInfo(8); }
+
+    /**
+     * 获取水雨情 默认 颜色设置
+     * @return
+     */
+    public List<ViewS> getColorSettingInfoDefault(){return indexDao.getColorSettingInfo(1);}
+
+    /**
+     * 获取水雨情 用户自定义 颜色设置
+     * @return
+     */
+    public List<ViewS> getColorSettingInfoUser(){return indexDao.getColorSettingInfo(2);}
 }

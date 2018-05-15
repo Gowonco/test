@@ -100,6 +100,8 @@ public class _MappingKit {
 		// Composite Primary Key order: DMCD,UHL,UHT
 		arp.addMapping("f_uh_b", "DMCD,UHL,UHT", UhB.class);
 		arp.addMapping("f_user", "UCODE", User.class);
+		// Composite Primary Key order: CODE,CODEN,DEFAULT,FONT
+		arp.addMapping("f_view_s", "CODE,CODEN,DEFAULT,FONT", ViewS.class);
 		// Composite Primary Key order: STCD,YMDHM
 		arp.addMapping("f_was_r", "STCD,YMDHM", WasR.class);
 		// Composite Primary Key order: DBCD,STCD,Z

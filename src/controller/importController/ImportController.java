@@ -11,5 +11,9 @@ import java.util.List;
 
 public class ImportController extends Controller {
 
+    public void dataImport(){
+        String taskId=getPara("taskId");
+        System.out.println(taskId);
+    }
 
 }

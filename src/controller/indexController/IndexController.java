@@ -5,6 +5,8 @@ import dao.indexDao.IndexDao;
 import model.viewmodel.ViewDatasCf;
 import service.indexService.IndexService;
 
+import java.text.ParseException;
+
 
 public class IndexController extends Controller{
 
@@ -46,6 +48,23 @@ public class IndexController extends Controller{
     public void getAddRainfall(){
        setAttr("listViewRainFall",indexService.getAddRainfall());//set加报雨量值
        renderJson();
+    }
+
+    /**
+     * 水雨情查询所需数据
+     * @throws ParseException
+     */
+    public void getHydrologicData() throws ParseException {
+        setAttr("hh","hhhh");
+        setAttr("listRainInfo",indexService.getRainInfo());//获取68个雨量站的id,name
+        setAttr("listFlow",indexService.getFlowInfo());//获取5个闸坝的id,name
+        setAttr("listReservoid",indexService.getReservoirInfo());//获取9个水库的id,name
+        setAttr("listColorSettingDefault",indexService.getColorSettingInfoDefault());//获取水雨情 默认 颜色设置
+        setAttr("listColorSettingUser",indexService.getColorSettingInfoUser());//获取水雨情 用户自定义 颜色设置
+        setAttr("listViewRain",indexService.getRain("2018-02-15 00:00:00","2018-03-17 00:00:00"));//水雨情--逐日降雨数据
+        setAttr("listViewFlow",indexService.getFlow("2018-02-15 00:00:00","2018-03-17 00:00:00"));//水雨情--水闸流量查询
+        setAttr("listViewReservoir",indexService.getReservoir("2018-02-15 00:00:00","2018-03-17 00:00:00"));//水雨情--水库放水流量查询
+        renderJson();
     }
 
 }

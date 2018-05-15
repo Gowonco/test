@@ -4,10 +4,12 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import model.dbmodel.*;
-import model.viewmodel.ViewDatasCf;
-import model.viewmodel.ViewRainFall;
-import model.viewmodel.ViewRsvrOtq;
+import model.dbmodeloracle.DayevR;
+import model.viewmodel.*;
+import util.DateUtil;
 
+import java.text.ParseException;
+import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.List;
 
@@ -66,7 +68,7 @@ public class IndexDao extends Controller {
         List<ViewRsvrOtq> listViewRsvrOtq = new ArrayList<ViewRsvrOtq>();
         for (Tree tree : listTree) {
             ViewRsvrOtq viewRsvrOtq = new ViewRsvrOtq();
-            RsvrOtq rsvrOtq = RsvrOtq.dao.findFirst("select * from f_rsvr_otq where stcd=? and ymdhm = ?", tree.get("id"), "2018-04-06 08:00:00");
+            RsvrOtq rsvrOtq = RsvrOtq.dao.findFirst("select * from f_rsvr_otq where stcd=? and ymdhm = ?", tree.get("id"), "2018-03-16 08:00:00");
             StDis stDis = StDis.dao.findByIdLoadColumns(tree.getID(), "stnm");
             viewRsvrOtq.setRsvrOtq(rsvrOtq);
             viewRsvrOtq.setStnm(stDis.getSTNM());
@@ -111,5 +113,90 @@ public class IndexDao extends Controller {
             listViewRainFall.add(viewRainFall);
         }
         return listViewRainFall;
+    }
+
+    /**
+     * 水雨情--逐日降雨数据
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ParseException
+     */
+    public List<ViewRain> getRain(String startDate,String endDate) throws ParseException {
+        //new 一个空的ViewRain 列表
+        List<ViewRain> listViewRain=new ArrayList<ViewRain>();
+        //获取开始日期和结束日期 中间的日期列表
+        List<String> listDate=DateUtil.getBetweenDates(startDate,endDate);
+        for(String date:listDate){
+            List<DayevH> listDayevH=DayevH.dao.find("select stcd,ymdhm,dye from f_dayev_h where YMDHM=? and  STCD in( select DISTINCT(id) from f_tree where rank=4)",date);
+            ViewRain viewRain=new ViewRain();
+            viewRain.setDate(date);
+            viewRain.setListDayevH(listDayevH);
+            listViewRain.add(viewRain);
+        }
+        return listViewRain;
+    }
+
+    /**
+     * 水雨情--水闸流量查询
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ParseException
+     */
+    public List<ViewFlow> getFlow(String startDate,String endDate) throws ParseException {
+        //new 一个空的ViewFlow 列表
+        List<ViewFlow> listViewFlow=new ArrayList<ViewFlow>();
+        //获取开始日期和结束日期 中间的日期列表
+        List<String> listDate=DateUtil.getBetweenDates(startDate,endDate);
+        for(String date:listDate){
+            List<WasR> listWasR=WasR.dao.find("select stcd,ymdhm,tgtq from f_was_r where YMDHM =? and STCD in( select DISTINCT(id) from f_tree where rank=9)",date);
+            ViewFlow viewFlow=new ViewFlow();
+            viewFlow.setDate(date);
+            viewFlow.setListWasR(listWasR);
+            listViewFlow.add(viewFlow);
+        }
+
+        return  listViewFlow;
+    }
+
+    /**
+     * 水雨情--水库放水流量查询
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ParseException
+     */
+    public List<ViewReservoir> getReservoir(String startDate,String endDate) throws ParseException {
+        //new ViewReservoir 列表
+        List<ViewReservoir> listViewReservoir=new ArrayList<ViewReservoir>();
+        //获取开始日期和结束日期 中间的日期列表
+        List<String> listDate=DateUtil.getBetweenDates(startDate,endDate);
+        for(String date:listDate) {
+            List<RsvrOtq> listRsvrOtq = RsvrOtq.dao.find("select stcd,ymdhm,otq from f_rsvr_otq where YMDHM =? and STCD in( select DISTINCT(id) from f_tree where rank=8)",date);
+            ViewReservoir viewReservoir=new ViewReservoir();
+            viewReservoir.setDate(date);
+            viewReservoir.setListRsvrOtq(listRsvrOtq);
+            listViewReservoir.add(viewReservoir);
+        }
+        return listViewReservoir;
+    }
+
+    /**
+     * 获取水雨情--雨量站、闸坝、水库 id,name 信息
+     * @param rank
+     * @return
+     */
+    public List<Tree> getInfo(int rank){
+        return Tree.dao.find("select DISTINCT(id),name from f_tree where rank=?",rank);
+    }
+
+    /**
+     * 获取水雨情颜色设置信息
+     * @param defaultValue
+     * @return
+     */
+    public List<ViewS> getColorSettingInfo(int defaultValue){
+        return ViewS.dao.find("select * from f_view_s where `DEFAULT`=?",defaultValue);
     }
 }
