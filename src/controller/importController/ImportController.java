@@ -14,6 +14,9 @@ public class ImportController extends Controller {
     public void dataImport(){
         String taskId=getPara("taskId");
         System.out.println(taskId);
+        System.out.println(getPara("futureWaterData[0][50300100]"));
+        setAttr("test","haha");
+        renderJson();
     }
 
 }

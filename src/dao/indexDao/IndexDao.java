@@ -68,7 +68,7 @@ public class IndexDao extends Controller {
         List<ViewRsvrOtq> listViewRsvrOtq = new ArrayList<ViewRsvrOtq>();
         for (Tree tree : listTree) {
             ViewRsvrOtq viewRsvrOtq = new ViewRsvrOtq();
-            RsvrOtq rsvrOtq = RsvrOtq.dao.findFirst("select * from f_rsvr_otq where stcd=? and ymdhm = ?", tree.get("id"), "2018-03-16 08:00:00");
+            RsvrOtq rsvrOtq = RsvrOtq.dao.findFirst("select * from f_rsvr_otq where stcd=? and ymdhm = ?", tree.get("id"), "2018-03-16 00:00:00");
             StDis stDis = StDis.dao.findByIdLoadColumns(tree.getID(), "stnm");
             viewRsvrOtq.setRsvrOtq(rsvrOtq);
             viewRsvrOtq.setStnm(stDis.getSTNM());
