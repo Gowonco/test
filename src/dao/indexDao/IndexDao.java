@@ -52,9 +52,9 @@ public class IndexDao extends Controller {
      * 获取新安江模型 23块子流域
      * @return
      */
-    public List<Tree> getChild(){
-        List<Tree> listTree=Tree.dao.find("select * from f_tree where rank=3 and pid like '001%'");
-        return listTree;
+    public static List<Tree> getChild(){
+        List<Tree> listChild=Tree.dao.find("select * from f_tree where rank=3 and pid like '001%'");
+        return listChild;
     }
 
     /**
@@ -91,7 +91,8 @@ public class IndexDao extends Controller {
      * 获取加报雨量值23个子流域块的
      * @return
      */
-    public List<ViewRainFall> getAddRainfall(){
+    public  List<ViewRainFall> getAddRainfall(String fStartTime){
+
         //获取子流域
         List<Tree> listChild=this.getChild();
         //加报雨量list
@@ -102,8 +103,8 @@ public class IndexDao extends Controller {
             int size=listRainStation.size();
             double rainfall=0.0;
             for(Tree treeStation :listRainStation){
-                //获取每个雨量站加报雨量和
-                Record record=Db.use("oracle").findFirst("select sum(drp) from ST_PPTN_R t where t.stcd=? and t.tm>=to_date('2018-03-17 08:00:00','YYYY/MM/DD HH24:MI:SS') and t.tm<to_date('2018-03-17 14:00:00','YYYY/MM/DD HH24:MI:SS')",treeStation.getID());
+                //获取每个雨量站加报雨量和   //第二个时间有待改成当前时间★★★★★★★★★★★★
+                Record record=Db.use("oracle").findFirst("select sum(drp) from ST_PPTN_R t where t.stcd=? and t.tm>=to_date(?,'YYYY/MM/DD HH24:MI:SS') and t.tm<to_date(?,'YYYY/MM/DD HH24:MI:SS')",treeStation.getID(),fStartTime+" 08:00:00",fStartTime+" 14:00:00");
                 double rain=record.getDouble("sum(drp)")==null? 0.0:record.getDouble("sum(drp)");
                 rainfall+=rain;
             }
@@ -123,6 +124,9 @@ public class IndexDao extends Controller {
      * @throws ParseException
      */
     public List<ViewRain> getRain(String startDate,String endDate) throws ParseException {
+        //设置时间日期
+        startDate=startDate+" 00:00:00";
+        endDate=endDate+" 00:00:00";
         //new 一个空的ViewRain 列表
         List<ViewRain> listViewRain=new ArrayList<ViewRain>();
         //获取开始日期和结束日期 中间的日期列表
@@ -145,6 +149,9 @@ public class IndexDao extends Controller {
      * @throws ParseException
      */
     public List<ViewFlow> getFlow(String startDate,String endDate) throws ParseException {
+        //设置时间日期
+        startDate=startDate+" 00:00:00";
+        endDate=endDate+" 00:00:00";
         //new 一个空的ViewFlow 列表
         List<ViewFlow> listViewFlow=new ArrayList<ViewFlow>();
         //获取开始日期和结束日期 中间的日期列表
@@ -168,6 +175,9 @@ public class IndexDao extends Controller {
      * @throws ParseException
      */
     public List<ViewReservoir> getReservoir(String startDate,String endDate) throws ParseException {
+        //设置时间日期
+        startDate=startDate+" 00:00:00";
+        endDate=endDate+" 00:00:00";
         //new ViewReservoir 列表
         List<ViewReservoir> listViewReservoir=new ArrayList<ViewReservoir>();
         //获取开始日期和结束日期 中间的日期列表

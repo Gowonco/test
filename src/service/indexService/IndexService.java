@@ -56,8 +56,8 @@ public class IndexService extends Controller {
      * 获取加报雨量值
      * @return
      */
-    public List<ViewRainFall> getAddRainfall(){
-        return indexDao.getAddRainfall();
+    public List<ViewRainFall> getAddRainfall(String fStartTime){
+        return indexDao.getAddRainfall(fStartTime);
     }
     /**
      * 水雨情--逐日降雨数据
