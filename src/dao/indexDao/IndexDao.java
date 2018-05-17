@@ -202,11 +202,26 @@ public class IndexDao extends Controller {
     }
 
     /**
-     * 获取水雨情颜色设置信息
-     * @param defaultValue
+     * 获取水雨情颜色 默认设置信息
      * @return
      */
-    public List<ViewS> getColorSettingInfo(int defaultValue){
-        return ViewS.dao.find("select * from f_view_s where `DEFAULT`=?",defaultValue);
+    public List<ViewS> getColorSettingInfoDefault(){
+        return ViewS.dao.find("select * from f_view_s where `DEFAULT`=1");
     }
+
+    /**
+     * 获取水雨情 用户自定义 颜色设置
+     * @param ucode
+     * @return
+     */
+    public List<ViewS> getColorSettingInfoUser(String ucode){
+        List<ViewS> listColorSettingInfoUser=ViewS.dao.find("select * from f_view_s where `DEFAULT`=2 and ucode=?",ucode);
+        if(listColorSettingInfoUser.size()<1){
+            listColorSettingInfoUser=getColorSettingInfoDefault();
+        }
+        return  listColorSettingInfoUser;
+    }
+
+
+
 }

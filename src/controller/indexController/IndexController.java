@@ -56,15 +56,44 @@ public class IndexController extends Controller{
      * @throws ParseException
      */
     public void getHydrologicData() throws ParseException {
-        setAttr("hh","hhhh");
+
+
         setAttr("listRainInfo",indexService.getRainInfo());//获取68个雨量站的id,name
         setAttr("listFlow",indexService.getFlowInfo());//获取5个闸坝的id,name
         setAttr("listReservoid",indexService.getReservoirInfo());//获取9个水库的id,name
-        setAttr("listColorSettingDefault",indexService.getColorSettingInfoDefault());//获取水雨情 默认 颜色设置
-        setAttr("listColorSettingUser",indexService.getColorSettingInfoUser());//获取水雨情 用户自定义 颜色设置
-        setAttr("listViewRain",indexService.getRain("2018-02-15","2018-03-17"));//水雨情--逐日降雨数据
-        setAttr("listViewFlow",indexService.getFlow("2018-02-15","2018-03-17"));//水雨情--水闸流量查询
+        setAttr("listViewRain",indexService.getRain(getPara("startTime"),getPara("endTime")));//水雨情--逐日降雨数据
+        setAttr("listViewFlow",indexService.getFlow(getPara("startTime"),getPara("endTime")));//水雨情--水闸流量查询
+        setAttr("listViewReservoir",indexService.getReservoir(getPara("startTime"),getPara("endTime")));//水雨情--水库放水流量查询
+        renderJson();
+    }
+    public void getHydrologicDataRain() throws ParseException {
+        setAttr("listRainInfo",indexService.getRainInfo());//获取68个雨量站的id,name
+        setAttr("listViewRain",indexService.getRain(getPara("startTime"),getPara("endTime")));//水雨情--逐日降雨数据
+        renderJson();
+    }
+    public void getHydrologicDataFlow() throws ParseException {
+        setAttr("listFlow",indexService.getFlowInfo());//获取5个闸坝的id,name
+        setAttr("listViewFlow",indexService.getFlow(getPara("startTime"),getPara("endTime")));//水雨情--水闸流量查询
+        renderJson();
+    }
+    public void getHydrologicDataReservoir() throws ParseException {
+        setAttr("listReservoid",indexService.getReservoirInfo());//获取9个水库的id,name
         setAttr("listViewReservoir",indexService.getReservoir("2018-02-15","2018-03-17"));//水雨情--水库放水流量查询
+        renderJson();
+    }
+    /**
+     * 获取水雨情 默认 颜色设置
+     */
+    public void getColorSettingInfoDefault(){
+        setAttr("listColorSettingDefault",indexService.getColorSettingInfoDefault());//获取水雨情 默认 颜色设置
+        renderJson();
+    }
+
+    /**
+     * 获取水雨情 用户自定义 颜色设置
+     */
+    public void getColorSettingInfoUser(){
+        setAttr("listColorSettingInfoUser",indexService.getColorSettingInfoUser(getPara("ucode")));//获取水雨情 用户自定义 颜色设置
         renderJson();
     }
 

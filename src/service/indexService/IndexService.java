@@ -106,11 +106,11 @@ public class IndexService extends Controller {
      * 获取水雨情 默认 颜色设置
      * @return
      */
-    public List<ViewS> getColorSettingInfoDefault(){return indexDao.getColorSettingInfo(1);}
+    public List<ViewS> getColorSettingInfoDefault(){return indexDao.getColorSettingInfoDefault();}
 
     /**
      * 获取水雨情 用户自定义 颜色设置
      * @return
      */
-    public List<ViewS> getColorSettingInfoUser(){return indexDao.getColorSettingInfo(2);}
+    public List<ViewS> getColorSettingInfoUser(String ucode){return indexDao.getColorSettingInfoUser(ucode);}
 }
