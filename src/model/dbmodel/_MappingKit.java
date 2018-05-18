@@ -90,6 +90,8 @@ public class _MappingKit {
 		arp.addMapping("f_soil_h", "ARCD,NO", SoilH.class);
 		// Composite Primary Key order: ARCD,DMCD,NO,YMDHM
 		arp.addMapping("f_soil_w", "ARCD,DMCD,NO,YMDHM", SoilW.class);
+		// Composite Primary Key order: ID,STCD
+		arp.addMapping("f_st_cm", "ID,STCD", StCm.class);
 		arp.addMapping("f_st_dis", "STCD", StDis.class);
 		// Composite Primary Key order: SETTM,UCODE
 		arp.addMapping("f_sys_ch", "SETTM,UCODE", SysCh.class);
@@ -100,8 +102,8 @@ public class _MappingKit {
 		// Composite Primary Key order: DMCD,UHL,UHT
 		arp.addMapping("f_uh_b", "DMCD,UHL,UHT", UhB.class);
 		arp.addMapping("f_user", "UCODE", User.class);
-		// Composite Primary Key order: CODE,CODEN,DEFAULT,FONT
-		arp.addMapping("f_view_s", "CODE,CODEN,DEFAULT,FONT", ViewS.class);
+		// Composite Primary Key order: CODE,CODEN,DEFAULT,UCODE
+		arp.addMapping("f_view_s", "CODE,CODEN,DEFAULT,UCODE", ViewS.class);
 		// Composite Primary Key order: STCD,YMDHM
 		arp.addMapping("f_was_r", "STCD,YMDHM", WasR.class);
 		// Composite Primary Key order: DBCD,STCD,Z

@@ -72,4 +72,13 @@ public abstract class BaseViewS<M extends BaseViewS<M>> extends Model<M> impleme
 		return getInt("DEFAULT");
 	}
 
+	public M setUCODE(String UCODE) {
+		set("UCODE", UCODE);
+		return (M)this;
+	}
+
+	public String getUCODE() {
+		return getStr("UCODE");
+	}
+
 }

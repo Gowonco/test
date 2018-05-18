@@ -1,4 +1,4 @@
-package model.viewmodel;
+package model.viewmodel.xajmodel;
 
 import model.dbmodel.Tree;
 
