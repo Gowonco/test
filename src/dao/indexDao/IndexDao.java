@@ -132,7 +132,7 @@ public class IndexDao extends Controller {
         //获取开始日期和结束日期 中间的日期列表
         List<String> listDate=DateUtil.getBetweenDates(startDate,endDate);
         for(String date:listDate){
-            List<DayevH> listDayevH=DayevH.dao.find("select stcd,ymdhm,dye from f_dayev_h where YMDHM=? and  STCD in( select DISTINCT(id) from f_tree where rank=4)",date);
+            List<DayevH> listDayevH=DayevH.dao.find("select stcd,ymdhm,dye from f_dayev_h where ymc=UNIX_TIMESTAMP(?) and  STCD in( select DISTINCT(id) from f_tree where rank=4)",date);
             ViewRain viewRain=new ViewRain();
             viewRain.setDate(date);
             viewRain.setListDayevH(listDayevH);
@@ -157,7 +157,7 @@ public class IndexDao extends Controller {
         //获取开始日期和结束日期 中间的日期列表
         List<String> listDate=DateUtil.getBetweenDates(startDate,endDate);
         for(String date:listDate){
-            List<WasR> listWasR=WasR.dao.find("select stcd,ymdhm,tgtq from f_was_r where YMDHM =? and STCD in( select DISTINCT(id) from f_tree where rank=9)",date);
+            List<WasR> listWasR=WasR.dao.find("select stcd,ymdhm,tgtq from f_was_r where ymc =UNIX_TIMESTAMP(?) and STCD in( select DISTINCT(id) from f_tree where rank=9)",date);
             ViewFlow viewFlow=new ViewFlow();
             viewFlow.setDate(date);
             viewFlow.setListWasR(listWasR);
@@ -183,7 +183,7 @@ public class IndexDao extends Controller {
         //获取开始日期和结束日期 中间的日期列表
         List<String> listDate=DateUtil.getBetweenDates(startDate,endDate);
         for(String date:listDate) {
-            List<RsvrOtq> listRsvrOtq = RsvrOtq.dao.find("select stcd,ymdhm,otq from f_rsvr_otq where YMDHM =? and STCD in( select DISTINCT(id) from f_tree where rank=8)",date);
+            List<RsvrOtq> listRsvrOtq = RsvrOtq.dao.find("select stcd,ymdhm,otq from f_rsvr_otq where ymc =UNIX_TIMESTAMP(?) and STCD in( select DISTINCT(id) from f_tree where rank=8)",date);
             ViewReservoir viewReservoir=new ViewReservoir();
             viewReservoir.setDate(date);
             viewReservoir.setListRsvrOtq(listRsvrOtq);
