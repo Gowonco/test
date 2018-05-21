@@ -5,9 +5,7 @@ import dao.forecastDao.ForecastDao;
 import model.dbmodel.ForecastC;
 import model.dbmodel.SoilCh;
 import model.viewmodel.ViewRain;
-import model.viewmodel.xajmodel.XAJChildRainStation;
-import model.viewmodel.xajmodel.XAJDayevH;
-import model.viewmodel.xajmodel.XAJFractureChild;
+import model.viewmodel.xajmodel.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,7 +31,7 @@ public class ForecastService extends Controller {
      */
     public void doForecast(String taskId) throws ParseException {
          this.getTaskSetting(taskId);
-        List<ViewRain> listViewRain=getBlockRainInput();
+        List<ViewRain> listViewRain=getRainData();
 
     }
 
@@ -42,7 +40,7 @@ public class ForecastService extends Controller {
      * @return
      * @throws ParseException
      */
-    public List<ViewRain> getBlockRainInput() throws ParseException {
+    public List<ViewRain> getRainData() throws ParseException {
 
         List<ViewRain> listViewRain=forecastDao.getRainData(sdf.format(forecastC.getBASEDTM()),sdf.format(forecastC.getSTARTTM()));
         return listViewRain;
@@ -77,6 +75,16 @@ public class ForecastService extends Controller {
      */
     public List<SoilCh> getSoilCh(){ return forecastDao.getSoilCh();  }
 
+    /**
+     * 获取新安江 参数表--各断面参数
+     * @return
+     */
+    public List<XAJFracturePara> getFracturePara(){ return forecastDao.getFracturePara();}
 
+    /**
+     * 新安江参数表-- 各子流域参数表
+     * @return
+     */
+    public List<XAJChildPara> getChildPara(){ return forecastDao.getChildPara(); }
 
 }

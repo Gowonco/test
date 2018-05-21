@@ -14,9 +14,13 @@ public class ForecastController extends Controller {
         String taskId=getPara("taskId");
         forecastService.doForecast(taskId);
         System.out.println(forecastService.forecastC);
-        setAttr("listViewRain",forecastService.getBlockRainInput());
+        setAttr("listViewRain",forecastService.getRainData());
         setAttr("listChildRainStation",forecastService.getChildRainStation());
+        setAttr("listFractureChild",forecastService.getFractureChild());
         setAttr("listDayevH",forecastService.getDayevH());
+        setAttr("listSoilCh",forecastService.getSoilCh());
+        setAttr("listXAJFracturePara",forecastService.getFracturePara());
+        setAttr("listXAJChildPara",forecastService.getChildPara());
         renderJson();
     }
 

@@ -25,7 +25,6 @@ public class IndexService extends Controller {
      * @return 获取数据来源列表
      */
     public List<ViewDatasCf> getDatasCf(){
-
         return indexDao.getDatasCf();
     }
 

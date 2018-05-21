@@ -4,9 +4,7 @@ import com.jfinal.core.Controller;
 import dao.indexDao.IndexDao;
 import model.dbmodel.*;
 import model.viewmodel.ViewRain;
-import model.viewmodel.xajmodel.XAJChildRainStation;
-import model.viewmodel.xajmodel.XAJDayevH;
-import model.viewmodel.xajmodel.XAJFractureChild;
+import model.viewmodel.xajmodel.*;
 import util.DateUtil;
 
 import java.text.ParseException;
@@ -114,6 +112,52 @@ public class ForecastDao extends Controller {
     public List<SoilCh> getSoilCh(){
         return SoilCh.dao.find("select * from f_soil_ch");
     }
+
+    /**
+     * 获取新安江 参数表--各断面参数
+     * @return
+     */
+    public List<XAJFracturePara> getFracturePara(){
+        List<XAJFracturePara> listXAJFracturePara=new ArrayList<XAJFracturePara>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '001%'");
+        for(Tree fracture:listFracture){
+            List<ParaM> listParaM=ParaM.dao.find("select * from f_para_m where id =?",fracture.getID());
+            XAJFracturePara xajFracturePara = new XAJFracturePara();
+            xajFracturePara.setId(fracture.getID());
+            xajFracturePara.setName(fracture.getNAME());
+            xajFracturePara.setListParaM(listParaM);
+            listXAJFracturePara.add(xajFracturePara);
+        }
+        return  listXAJFracturePara;
+    }
+
+    /**
+     * 新安江参数表-- 各子流域参数表
+     * @return
+     */
+    public List<XAJChildPara> getChildPara(){
+        List<XAJChildPara> listXAJChildPara=new ArrayList<XAJChildPara>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '001%'");
+        for(Tree fracture:listFracture){
+            List<Tree> listChild=Tree.dao.find("select * from f_tree where rank=3 and pid=?",fracture.getID());
+            for(Tree child:listChild){
+                List<ParaM> listParaM=ParaM.dao.find("select * from f_para_m where id =?",child.getID());
+                XAJChildPara xajChildPara=new XAJChildPara();
+                xajChildPara.setFractureId(fracture.getID());
+                xajChildPara.setFractureName(fracture.getNAME());
+                xajChildPara.setChildId(child.getID());
+                xajChildPara.setChildName(child.getNAME());
+                xajChildPara.setListParaM(listParaM);
+                listXAJChildPara.add(xajChildPara);
+            }
+        }
+
+        return listXAJChildPara;
+    }
+
+
+
+
 
 
 
