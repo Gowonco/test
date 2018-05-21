@@ -132,10 +132,10 @@ public class IndexDao extends Controller {
         //获取开始日期和结束日期 中间的日期列表
         List<String> listDate=DateUtil.getBetweenDates(startDate,endDate);
         for(String date:listDate){
-            List<DayevH> listDayevH=DayevH.dao.find("select stcd,ymdhm,dye from f_dayev_h where ymc=UNIX_TIMESTAMP(?) and  STCD in( select DISTINCT(id) from f_tree where rank=4)",date);
+            List<DayrnflH> listDayrnflH=DayrnflH.dao.find("select stcd,ymdhm,drn from f_dayrnfl_h where ymc=UNIX_TIMESTAMP(?) and  STCD in( select DISTINCT(id) from f_tree where rank=4)",date);
             ViewRain viewRain=new ViewRain();
             viewRain.setDate(date);
-            viewRain.setListDayevH(listDayevH);
+            viewRain.setListDayrnflH(listDayrnflH);
             listViewRain.add(viewRain);
         }
         return listViewRain;

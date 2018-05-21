@@ -16,6 +16,7 @@ public class ForecastController extends Controller {
         System.out.println(forecastService.forecastC);
         setAttr("listViewRain",forecastService.getBlockRainInput());
         setAttr("listChildRainStation",forecastService.getChildRainStation());
+        setAttr("listDayevH",forecastService.getDayevH());
         renderJson();
     }
 

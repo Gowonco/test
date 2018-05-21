@@ -2,9 +2,7 @@ package dao.forecastDao;
 
 import com.jfinal.core.Controller;
 import dao.indexDao.IndexDao;
-import model.dbmodel.DayevH;
-import model.dbmodel.ForecastC;
-import model.dbmodel.Tree;
+import model.dbmodel.*;
 import model.viewmodel.ViewRain;
 import model.viewmodel.xajmodel.XAJChildRainStation;
 import model.viewmodel.xajmodel.XAJDayevH;
@@ -44,10 +42,10 @@ public class ForecastDao extends Controller {
         //获取开始日期和结束日期 中间的日期列表
         List<String> listDate=DateUtil.getBetweenDates(stStartTime,fStartTime);
         for(String date:listDate){
-            List<DayevH> listDayevH=DayevH.dao.find("select stcd,ymdhm,dye from f_dayev_h where ymc=UNIX_TIMESTAMP(?) and  STCD in( select DISTINCT(id) from f_tree where rank=4)",date);
+            List<DayrnflH> listDayrnflH=DayrnflH.dao.find("select stcd,ymdhm,drn from f_dayrnfl_h where ymc=UNIX_TIMESTAMP(?) and  STCD in( select DISTINCT(id) from f_tree where rank=4)",date);
             ViewRain viewRain=new ViewRain();
             viewRain.setDate(date);
-            viewRain.setListDayevH(listDayevH);
+            viewRain.setListDayrnflH(listDayrnflH);
             listViewRain.add(viewRain);
         }
         return listViewRain;
@@ -107,6 +105,14 @@ public class ForecastDao extends Controller {
         }
         return listXAJDayevH;
 
+    }
+
+    /**
+     * 获取土壤含水量初值
+     * @return
+     */
+    public List<SoilCh> getSoilCh(){
+        return SoilCh.dao.find("select * from f_soil_ch");
     }
 
 

@@ -1,13 +1,14 @@
 package model.viewmodel;
 
 import model.dbmodel.DayevH;
+import model.dbmodel.DayrnflH;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ViewRain {
     public String date;
-    public List<DayevH> listDayevH=new ArrayList<DayevH>();
+    public List<DayrnflH> listDayrnflH=new ArrayList<DayrnflH>();
 
     public String getDate() {
         return date;
@@ -17,11 +18,11 @@ public class ViewRain {
         this.date = date;
     }
 
-    public List<DayevH> getListDayevH() {
-        return listDayevH;
+    public List<DayrnflH> getListDayrnflH() {
+        return listDayrnflH;
     }
 
-    public void setListDayevH(List<DayevH> listDayevH) {
-        this.listDayevH = listDayevH;
+    public void setListDayrnflH(List<DayrnflH> listDayrnflH) {
+        this.listDayrnflH = listDayrnflH;
     }
 }

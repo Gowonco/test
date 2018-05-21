@@ -3,6 +3,7 @@ package service.forecastService;
 import com.jfinal.core.Controller;
 import dao.forecastDao.ForecastDao;
 import model.dbmodel.ForecastC;
+import model.dbmodel.SoilCh;
 import model.viewmodel.ViewRain;
 import model.viewmodel.xajmodel.XAJChildRainStation;
 import model.viewmodel.xajmodel.XAJDayevH;
@@ -63,8 +64,19 @@ public class ForecastService extends Controller {
           return  forecastDao.getFractureChild();
     }
 
+    /**
+     * 日蒸发
+     * @return
+     */
     public List<XAJDayevH> getDayevH(){
         return forecastDao.getDayevH(forecastC.getYMC1(),forecastC.getYMC2());
     }
+    /**
+     * 获取土壤含水量初值
+     * @return
+     */
+    public List<SoilCh> getSoilCh(){ return forecastDao.getSoilCh();  }
+
+
 
 }

@@ -111,7 +111,7 @@ public class ImportDao extends Controller {
             JSONObject jsonObjectRain=(JSONObject) jsonArrayRain.get(i);
             String date=jsonObjectRain.getString("date")+" 00:00:00";
             for(Tree rainStation:listRainStation){
-                Db.update("update f_dayev_h set dye=? where ymc= UNIX_TIMESTAMP(?) and stcd=?",jsonObjectRain.getDouble(rainStation.getID()),date,rainStation.getID());
+                Db.update("update f_dayrnfl_h set drn=? where ymc= UNIX_TIMESTAMP(?) and stcd=?",jsonObjectRain.getDouble(rainStation.getID()),date,rainStation.getID());
             }
         }
     }
