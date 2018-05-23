@@ -27,4 +27,12 @@ public class SystemService extends Controller {
     public ViewUser getUser(String username,String password){
         return systemDao.getUser(username,password);
     }
+
+    public void doAddUser(String username,String password,int role){
+        username="liyunxia";
+        password="hahahahaha";
+        role=1;
+        systemDao.doAddUser(username,password,role);
+    }
+
 }

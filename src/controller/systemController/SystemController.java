@@ -61,6 +61,13 @@ public class SystemController extends Controller {
         forwardAction("/system/login_view");
     }
 
+    public void doAddUser(){
+        String username=getPara("username");
+        String password=getPara("password");
+        int role=getParaToInt("role");
+
+    }
+
 
 
 

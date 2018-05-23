@@ -21,8 +21,15 @@ public class ForecastController extends Controller {
         setAttr("listSoilCh",forecastService.getSoilCh());
         setAttr("listXAJFracturePara",forecastService.getFracturePara());
         setAttr("listXAJChildPara",forecastService.getChildPara());
+        setAttr("listXAJFutureRain",forecastService.getFutureRain());
+        setAttr("listXAJFutureWater",forecastService.getFutureWater());
+        setAttr("e ",forecastService.getE());
+        setAttr("listViewReservoir",forecastService.getReservoir());
+        setAttr("listStrobeFlow",forecastService.getStrobeFlow());
+        setAttr("listHydrologicFlow",forecastService.getHydrologicFlow());
+        setAttr("listXAJMMusk",forecastService.getMMusk());
+        setAttr("listXAJForecastXajr",forecastService.getForecastXajr());
         renderJson();
     }
-
 
 }
