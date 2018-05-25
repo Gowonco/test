@@ -1,11 +1,11 @@
-package model.viewmodel.xajmodel;
+package model.viewmodel.jymodel;
 
 import model.dbmodel.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class XAJFractureChild {
+public class JYFractureChild {
 
     String fractureId;
     String fractureName;
@@ -35,4 +35,5 @@ public class XAJFractureChild {
     public void setListChild(List<Tree> listChild) {
         this.listChild = listChild;
     }
+
 }

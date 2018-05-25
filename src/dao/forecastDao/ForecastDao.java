@@ -6,6 +6,7 @@ import model.dbmodel.*;
 import model.viewmodel.ViewFlow;
 import model.viewmodel.ViewRain;
 import model.viewmodel.ViewReservoir;
+import model.viewmodel.jymodel.*;
 import model.viewmodel.xajmodel.*;
 import util.DateUtil;
 
@@ -62,6 +63,7 @@ public class ForecastDao extends Controller {
            List<Tree> listRainStation=indexDao.getRainStation(child.getID());
            XAJChildRainStation xajChildRainStation=new XAJChildRainStation();
            xajChildRainStation.setChildId(child.getID());
+           xajChildRainStation.setChildName(child.getNAME());
            xajChildRainStation.setListRainStation(listRainStation);
            xajChildRainStation.setSize(listRainStation.size());
            listXAJChildRainStation.add(xajChildRainStation);
@@ -80,6 +82,7 @@ public class ForecastDao extends Controller {
             List<Tree> listChild = Tree.dao.find("select * from f_tree where pid=? and rank=3",fracture.getID());
             XAJFractureChild xajFractureChild=new XAJFractureChild();
             xajFractureChild.setFractureId(fracture.getID());
+            xajFractureChild.setFractureName(fracture.getNAME());
             xajFractureChild.setListChild(listChild);
             listFractureChild.add(xajFractureChild);
         }
@@ -298,6 +301,114 @@ public class ForecastDao extends Controller {
             listXAJForecastXajr.add(xajForecastXajr);
         }
         return listXAJForecastXajr;
+    }
+    //经验模型 输入参数---------------------------------------------------------------------------
+    /**
+     * 获取经验 子流域-雨量站 对应关系 以及雨量站个数
+     * @return
+     */
+    public List<JYChildRainStation> getExperienceChildRainStation(){
+        List<JYChildRainStation> listJYChildRainStation=new ArrayList<JYChildRainStation>();
+        List<Tree> listChild=Tree.dao.find("select * from f_tree where rank=3 and pid like '101%'");
+        for(Tree child:listChild){
+            List<Tree> listRainStation=Tree.dao.find("select * from f_tree where rank=4 and pid=?",child.getID());
+            JYChildRainStation jyChildRainStation=new JYChildRainStation();
+            jyChildRainStation.setChildId(child.getID());
+            jyChildRainStation.setChildName(child.getNAME());
+            jyChildRainStation.setListRainStation(listRainStation);
+            jyChildRainStation.setSize(listRainStation.size());
+            listJYChildRainStation.add(jyChildRainStation);
+        }
+        return  listJYChildRainStation;
+    }
+    /**
+     * 获取经验 断面-子流域关系
+     * @return
+     */
+    public List<JYFractureChild> getExperienceFractureChild() {
+        List<JYFractureChild> listJYFractureChild=new ArrayList<JYFractureChild>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '101%'");
+        for(Tree fracture:listFracture){
+            List<Tree> listChild=Tree.dao.find("select * from f_tree where rank=3 and pid =?",fracture.getID());
+            JYFractureChild jyFractureChild=new JYFractureChild();
+            jyFractureChild.setFractureId(fracture.getID());
+            jyFractureChild.setFractureName(fracture.getNAME());
+            jyFractureChild.setListChild(listChild);
+            listJYFractureChild.add(jyFractureChild);
+        }
+        return  listJYFractureChild;
+    }
+
+    /**
+     * 获取经验 各子流域参数
+     * @return
+     */
+    public List<JYChildPara> getExperienceChildPara(){
+        List<JYChildPara> listJYChildPara=new ArrayList<JYChildPara>() ;
+        List<Tree> listChild=Tree.dao.find("select * from f_tree where rank=3 and id like '101%'");
+        for(Tree child:listChild){
+            List<ParaM> listParaM=ParaM.dao.find("select * from f_para_m where id=?",child.getID());
+            JYChildPara jyChildPara=new JYChildPara();
+            jyChildPara.setChildId(child.getID());
+            jyChildPara.setChildName(child.getNAME());
+            jyChildPara.setListParaM(listParaM);
+            listJYChildPara.add(jyChildPara);
+        }
+        return listJYChildPara;
+    }
+
+    /**
+     * 经验模型-- 蚌埠 明光 淮北 配置表
+     * @return
+     */
+    public List<JYConfig> getExperienceConfig(){
+        List<JYConfig> listJYConfig=new ArrayList<JYConfig>();
+
+        JYConfig bbConfig=new JYConfig("10101000","蚌埠");
+        List<UhB> listBbUhB=UhB.dao.find("select * from f_uh_b where dmcd='10101000'");
+        bbConfig.setListUhB(listBbUhB);
+        listJYConfig.add(bbConfig);
+
+        JYConfig mgConfig=new JYConfig("10102000","明光");
+        List<UhB> listMgUhB=UhB.dao.find("select * from f_uh_b where dmcd='10102000'");
+        mgConfig.setListUhB(listMgUhB);
+        listJYConfig.add(mgConfig);
+
+        JYConfig hbConfig=new JYConfig("10103000","淮北");
+        List<UhB> listHbUhB=UhB.dao.find("select * from f_uh_b where dmcd='10103000'");
+        hbConfig.setListUhB(listHbUhB);
+        listJYConfig.add(hbConfig);
+
+        return listJYConfig;
+    }
+
+    /**
+     * 7个水文站的实测流量
+     * @param ymc1
+     * @param ymc2
+     * @return
+     */
+    public List<JYHydrologyFlow> getHydrologyFlow(int ymc1,int ymc2 ){
+        List<JYHydrologyFlow> listJYHydrologyFlow=new ArrayList<JYHydrologyFlow>();
+        List<Tree> listHydrology=Tree.dao.find("select * from f_tree where rank=5 and pid like '101%'");
+        for(Tree hydrology : listHydrology){
+            List<RiverH> listRiverH=RiverH.dao.find("select stcd,ymdhm,q from f_river_h where stcd=? and ymc>=? and ymc<=? ",hydrology.getID(),ymc1,ymc2);
+            JYHydrologyFlow jyHydrologyFlow=new JYHydrologyFlow();
+            jyHydrologyFlow.setHydrologyId(hydrology.getID());
+            jyHydrologyFlow.setHydrologyName(hydrology.getNAME());
+            jyHydrologyFlow.setListRiverH(listRiverH);
+            listJYHydrologyFlow.add(jyHydrologyFlow);
+        }
+
+        return listJYHydrologyFlow;
+    }
+
+    /**
+     * 马斯京根汇流参数
+     * @return
+     */
+    public List<ParaMu> getParaMu(){
+        return ParaMu.dao.find("select * from f_para_mu");
     }
 
 

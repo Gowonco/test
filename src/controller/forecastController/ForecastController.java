@@ -29,6 +29,14 @@ public class ForecastController extends Controller {
         setAttr("listHydrologicFlow",forecastService.getHydrologicFlow());
         setAttr("listXAJMMusk",forecastService.getMMusk());
         setAttr("listXAJForecastXajr",forecastService.getForecastXajr());
+
+        setAttr("listJYChildRainStation",forecastService.getExperienceChildRainStation());
+        setAttr("listJYFractureChild",forecastService.getExperienceFractureChild());
+        setAttr("listJYChildPara",forecastService.getExperienceChildPara());
+        setAttr("listJYConfig",forecastService.getExperienceConfig());
+        setAttr("listJYHydrologyFlow",forecastService.getHydrologyFlow());
+        setAttr("listParaMu",forecastService.getParaMu());
+
         renderJson();
     }
 

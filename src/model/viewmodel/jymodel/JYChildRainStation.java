@@ -1,15 +1,12 @@
-package model.viewmodel.xajmodel;
+package model.viewmodel.jymodel;
 
 import model.dbmodel.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class XAJChildRainStation {
+public class JYChildRainStation {
     String childId;
-    String childName;
-    List<Tree> listRainStation=new ArrayList<Tree>();
-    int size;
 
     public String getChildName() {
         return childName;
@@ -18,6 +15,10 @@ public class XAJChildRainStation {
     public void setChildName(String childName) {
         this.childName = childName;
     }
+
+    String childName;
+    List<Tree> listRainStation=new ArrayList<Tree>();
+    int size;
 
     public String getChildId() {
         return childId;

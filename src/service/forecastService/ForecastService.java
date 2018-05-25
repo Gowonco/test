@@ -3,10 +3,12 @@ package service.forecastService;
 import com.jfinal.core.Controller;
 import dao.forecastDao.ForecastDao;
 import model.dbmodel.ForecastC;
+import model.dbmodel.ParaMu;
 import model.dbmodel.SoilCh;
 import model.viewmodel.ViewFlow;
 import model.viewmodel.ViewRain;
 import model.viewmodel.ViewReservoir;
+import model.viewmodel.jymodel.*;
 import model.viewmodel.xajmodel.*;
 
 import java.text.ParseException;
@@ -22,7 +24,7 @@ public class ForecastService extends Controller {
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     Map xajMap=new HashMap();
-
+    Map jxMap=new HashMap();
     /**
      * 获取本次任务配置
      * @param taskId
@@ -38,6 +40,7 @@ public class ForecastService extends Controller {
      */
     public void doForecast(String taskId) throws ParseException {
          this.getTaskSetting(taskId);
+         //新安江模型大Map
          xajMap.put("listViewRain",getRainData());
          xajMap.put("listChildRainStation",getChildRainStation());
          xajMap.put("listFractureChild",getFractureChild());
@@ -53,11 +56,16 @@ public class ForecastService extends Controller {
          xajMap.put("listHydrologicFlow",getHydrologicFlow());
          xajMap.put("listXAJMMusk",getMMusk());
          xajMap.put("listXAJForecastXajr",getForecastXajr());
-        System.out.println(xajMap);
-        List<XAJFractureChild> list=(List<XAJFractureChild>)xajMap.get("listFractureChild");
-        for (XAJFractureChild xajFractureChild:list){
-            System.out.println(xajFractureChild.getFractureId());
-        }
+        //经验模型大Map
+         jxMap.put("listViewRain",getRainData());
+         jxMap.put("listJYChildRainStation",getExperienceChildRainStation());
+         jxMap.put("listJYFractureChild",getExperienceFractureChild());
+         jxMap.put("listJYChildPara",getExperienceChildPara());
+         jxMap.put("listViewReservoir",getReservoir());
+         jxMap.put("listStrobeFlow",getStrobeFlow());
+         jxMap.put("listJYConfig",getExperienceConfig());
+         jxMap.put("listJYHydrologyFlow",getHydrologyFlow());
+         jxMap.put("listParaMu",getParaMu());
 
     }
 
@@ -163,5 +171,53 @@ public class ForecastService extends Controller {
      * @return
      */
     public List<XAJForecastXajr> getForecastXajr(){return  forecastDao.getForecastXajr(forecastC.getNO(),forecastC.getYMC1(),forecastC.getYMC3());}
+
+
+
+
+    //经验模型 输入参数---------------------------------------------------------------------------
+    /**
+     * 获取经验 子流域-雨量站 对应关系 以及雨量站个数
+     * @return
+     */
+    public List<JYChildRainStation> getExperienceChildRainStation(){
+        return forecastDao.getExperienceChildRainStation();
+    }
+
+    /**
+     * 获取经验 断面-子流域关系
+     * @return
+     */
+    public List<JYFractureChild> getExperienceFractureChild() {
+        return  forecastDao.getExperienceFractureChild();
+    }
+
+    /**
+     * 获取经验 各子流域参数
+     * @return
+     */
+    public List<JYChildPara> getExperienceChildPara(){
+        return  forecastDao.getExperienceChildPara();
+    }
+    /**
+     * 经验模型-- 蚌埠 明光 淮北 配置表
+     * @return
+     */
+    public List<JYConfig> getExperienceConfig(){
+        return forecastDao.getExperienceConfig();
+    }
+    /**
+     * 7个水文站的实测流量
+     * @return
+     */
+    public List<JYHydrologyFlow> getHydrologyFlow(){
+        return forecastDao.getHydrologyFlow(forecastC.getYMC1(),forecastC.getYMC2());
+    }
+
+    /**
+     * 马斯京根汇流参数
+     * @return
+     */
+    public List<ParaMu> getParaMu(){return forecastDao.getParaMu();}
 
 }
