@@ -24,7 +24,7 @@ public class ForecastService extends Controller {
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     Map xajMap=new HashMap();
-    Map jxMap=new HashMap();
+    Map jyMap=new HashMap();
     /**
      * 获取本次任务配置
      * @param taskId
@@ -57,16 +57,16 @@ public class ForecastService extends Controller {
          xajMap.put("listXAJMMusk",getMMusk());
          xajMap.put("listXAJForecastXajr",getForecastXajr());
         //经验模型大Map
-         jxMap.put("listViewRain",getRainData());
-         jxMap.put("listJYChildRainStation",getExperienceChildRainStation());
-         jxMap.put("listJYFractureChild",getExperienceFractureChild());
-         jxMap.put("listJYChildPara",getExperienceChildPara());
-         jxMap.put("listViewReservoir",getReservoir());
-         jxMap.put("listStrobeFlow",getStrobeFlow());
-         jxMap.put("listJYConfig",getExperienceConfig());
-         jxMap.put("listJYHydrologyFlow",getHydrologyFlow());
-         jxMap.put("listParaMu",getParaMu());
-
+         jyMap.put("listViewRain",getRainData());
+         jyMap.put("listJYChildRainStation",getExperienceChildRainStation());
+         jyMap.put("listJYFractureChild",getExperienceFractureChild());
+         jyMap.put("listJYChildPara",getExperienceChildPara());
+         jyMap.put("listViewReservoir",getReservoir());
+         jyMap.put("listStrobeFlow",getStrobeFlow());
+         jyMap.put("listJYConfig",getExperienceConfig());
+         jyMap.put("listJYHydrologyFlow",getHydrologyFlow());
+         jyMap.put("listParaMu",getParaMu());
+         new ForecastCalculateService(forecastC,xajMap,jyMap).test();
     }
 
     /**
