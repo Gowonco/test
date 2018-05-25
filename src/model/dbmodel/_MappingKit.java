@@ -19,6 +19,8 @@ public class _MappingKit {
 		arp.addMapping("f_area_dis", "ID", AreaDis.class);
 		// Composite Primary Key order: DBCD,IL
 		arp.addMapping("f_cf_bb", "DBCD,IL", CfBb.class);
+		// Composite Primary Key order: DBCD,ID
+		arp.addMapping("f_cf_r", "DBCD,ID", CfR.class);
 		// Composite Primary Key order: DBCD,ITEM
 		arp.addMapping("f_cf_t", "DBCD,ITEM", CfT.class);
 		// Composite Primary Key order: MOD,NO
@@ -63,8 +65,8 @@ public class _MappingKit {
 		arp.addMapping("f_inflow_xajt", "ID,NO", InflowXajt.class);
 		// Composite Primary Key order: DMCD,SCD
 		arp.addMapping("f_m_musk", "DMCD,SCD", MMusk.class);
-		// Composite Primary Key order: ID,PARANAME
-		arp.addMapping("f_para_m", "ID,PARANAME", ParaM.class);
+		// Composite Primary Key order: ID,PARADES,PARANAME
+		arp.addMapping("f_para_m", "ID,PARADES,PARANAME", ParaM.class);
 		// Composite Primary Key order: DBCD,STCD
 		arp.addMapping("f_para_mu", "DBCD,STCD", ParaMu.class);
 		// Composite Primary Key order: NO,YMDHM

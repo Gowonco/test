@@ -54,42 +54,6 @@ public abstract class BaseCtrCt<M extends BaseCtrCt<M>> extends Model<M> impleme
 		return get("SOTQ");
 	}
 
-	public M setOBPZ(java.math.BigDecimal OBPZ) {
-		set("OBPZ", OBPZ);
-		return (M)this;
-	}
-	
-	public java.math.BigDecimal getOBPZ() {
-		return get("OBPZ");
-	}
-
-	public M setOBPT(java.util.Date OBPT) {
-		set("OBPT", OBPT);
-		return (M)this;
-	}
-	
-	public java.util.Date getOBPT() {
-		return get("OBPT");
-	}
-
-	public M setFOPZ(java.math.BigDecimal FOPZ) {
-		set("FOPZ", FOPZ);
-		return (M)this;
-	}
-	
-	public java.math.BigDecimal getFOPZ() {
-		return get("FOPZ");
-	}
-
-	public M setFOPT(java.util.Date FOPT) {
-		set("FOPT", FOPT);
-		return (M)this;
-	}
-	
-	public java.util.Date getFOPT() {
-		return get("FOPT");
-	}
-
 	public M setDZE(java.math.BigDecimal DZE) {
 		set("DZE", DZE);
 		return (M)this;

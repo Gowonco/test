@@ -72,6 +72,33 @@ public abstract class BaseSysCh<M extends BaseSysCh<M>> extends Model<M> impleme
 		return getInt("WUP");
 	}
 
+	public M setAOBP(java.lang.Integer AOBP) {
+		set("AOBP", AOBP);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getAOBP() {
+		return getInt("AOBP");
+	}
+
+	public M setAFOP(java.lang.Integer AFOP) {
+		set("AFOP", AFOP);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getAFOP() {
+		return getInt("AFOP");
+	}
+
+	public M setAWUP(java.lang.Integer AWUP) {
+		set("AWUP", AWUP);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getAWUP() {
+		return getInt("AWUP");
+	}
+
 	public M setDS(java.lang.Integer DS) {
 		set("DS", DS);
 		return (M)this;

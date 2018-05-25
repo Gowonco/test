@@ -189,4 +189,58 @@ public abstract class BaseForecastC<M extends BaseForecastC<M>> extends Model<M>
 		return getInt("AUTF");
 	}
 
+	public M setFR(java.lang.Integer FR) {
+		set("FR", FR);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getFR() {
+		return getInt("FR");
+	}
+
+	public M setAR(java.lang.Integer AR) {
+		set("AR", AR);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getAR() {
+		return getInt("AR");
+	}
+
+	public M setDS(java.lang.Integer DS) {
+		set("DS", DS);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getDS() {
+		return getInt("DS");
+	}
+
+	public M setIP(java.lang.Integer IP) {
+		set("IP", IP);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getIP() {
+		return getInt("IP");
+	}
+
+	public M setID(java.lang.String ID) {
+		set("ID", ID);
+		return (M)this;
+	}
+	
+	public java.lang.String getID() {
+		return getStr("ID");
+	}
+
+	public M setCURVE(java.lang.String CURVE) {
+		set("CURVE", CURVE);
+		return (M)this;
+	}
+	
+	public java.lang.String getCURVE() {
+		return getStr("CURVE");
+	}
+
 }
