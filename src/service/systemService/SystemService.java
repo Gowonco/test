@@ -2,8 +2,12 @@ package service.systemService;
 
 import com.jfinal.core.Controller;
 import dao.systemDao.SystemDao;
+import model.dbmodel.ForecastC;
+import model.dbmodel.ForecastXajt;
+import model.dbmodel.User;
 import model.viewmodel.ViewUser;
 
+import java.util.List;
 
 
 public class SystemService extends Controller {
@@ -131,9 +135,27 @@ public class SystemService extends Controller {
         systemDao.doDeleteDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
 
     }
-    public void doRefer(String no){
-        no="0010201805251555";
-        systemDao.doRefer(no);
+
+    public List<ForecastC> getTaskId(String taskId){
+        taskId="0010201805251555";
+        return systemDao.getTaskId(taskId);
+    }
+
+    public ForecastXajt getForecastXajtFirst(String taskId){
+        List<ForecastC> listForecastC=getTaskId(taskId);
+        ForecastC forecastC=listForecastC.get(listForecastC.size()-1);
+        return  getForecastXajt(forecastC.getNO());
+    }
+
+    public ForecastXajt getForecastXajt(String taskId){
+        return systemDao.getForecastXajt(taskId);
+    }
+    /**
+     * 获取所有用户
+     * @return
+     */
+    public List<User> getAllUser(){
+        return systemDao.getAllUser();
     }
 
 }

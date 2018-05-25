@@ -184,9 +184,24 @@ public class SystemController extends Controller {
         renderJson();
     }
     public void doRefer(){
-        String no=getPara("no");
-        systemService.doRefer(no);
-        setAttr("02","my");
+        String taskId=getPara("taskId");
+        setAttr("listForecastC",systemService.getTaskId(taskId));
+        setAttr("forecastxajt",systemService.getForecastXajtFirst(taskId));
+        renderJson();
+    }
+
+    public void getForecastXajt(){
+        String taskId=getPara("taskId");
+        setAttr("forecastxajt",systemService.getForecastXajt(taskId));
+        renderJson();
+    }
+    /**
+     * 获取所有用户
+     * @return
+     */
+    public void getAllUser(){
+
+        setAttr("listUser",systemService.getAllUser());
         renderJson();
     }
 
