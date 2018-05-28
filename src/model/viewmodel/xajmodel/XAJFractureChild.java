@@ -9,7 +9,7 @@ public class XAJFractureChild {
 
     String fractureId;
     String fractureName;
-
+    List<Tree> listChild=new ArrayList<Tree>();
     public String getFractureName() {
         return fractureName;
     }
@@ -17,9 +17,6 @@ public class XAJFractureChild {
     public void setFractureName(String fractureName) {
         this.fractureName = fractureName;
     }
-
-    List<Tree> listChild=new ArrayList<Tree>();
-
     public String getFractureId() {
         return fractureId;
     }

@@ -28,7 +28,10 @@ public class ImportController extends Controller {
         int isAutoForecast=getParaToInt("isAutoForecast");
         int isConsiderFutureRainfall=getParaToInt("isConsiderFutureRainfall");
         int isConsiderAddRainfall=getParaToInt("isConsiderAddRainfall");
-        importService.dataImportTaskSetting(taskId,warmTime,stStartTime,fStartTime,fEndTime,evaporationValue,isAutoForecast,isConsiderFutureRainfall,isConsiderAddRainfall);
+        String ds=getPara("ds");
+        String ip=getPara("ip");
+        String id=getPara("id");
+        importService.dataImportTaskSetting(taskId,warmTime,stStartTime,fStartTime,fEndTime,evaporationValue,isAutoForecast,isConsiderFutureRainfall,isConsiderAddRainfall,ds,ip,id);
 
         //加报雨量处理
         importService.handleAddRainfall(taskId,fStartTime,isConsiderAddRainfall);

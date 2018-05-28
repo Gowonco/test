@@ -1,6 +1,7 @@
 package controller.forecastController;
 
 import com.jfinal.core.Controller;
+import service.forecastService.ForecastResultService;
 import service.forecastService.ForecastService;
 
 import java.text.ParseException;
@@ -9,6 +10,7 @@ import java.text.ParseException;
 public class ForecastController extends Controller {
 
     ForecastService forecastService=new ForecastService();
+    ForecastResultService forecastResultService=new ForecastResultService();
 
     public void doForecast() throws ParseException {
         String taskId=getPara("taskId");
@@ -37,6 +39,14 @@ public class ForecastController extends Controller {
         setAttr("listJYHydrologyFlow",forecastService.getHydrologyFlow());
         setAttr("listParaMu",forecastService.getParaMu());
 
+        renderJson();
+    }
+
+    public void getResult(){
+        String taskId=getPara("taskId");
+        forecastResultService.setTaskSetting(taskId);
+        setAttr("listCfBb",forecastResultService.getCfBb());
+        setAttr("listCfT",forecastResultService.getCfT());
         renderJson();
     }
 

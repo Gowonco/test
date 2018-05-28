@@ -29,7 +29,7 @@ public class ForecastService extends Controller {
      * 获取本次任务配置
      * @param taskId
      */
-     public void getTaskSetting(String taskId){
+     public void setTaskSetting(String taskId){
          forecastC=forecastDao.getTaskSetting(taskId);
      }
 
@@ -39,7 +39,7 @@ public class ForecastService extends Controller {
      * @throws ParseException
      */
     public void doForecast(String taskId) throws ParseException {
-         this.getTaskSetting(taskId);
+         this.setTaskSetting(taskId);
          //新安江模型大Map
          xajMap.put("listViewRain",getRainData());
          xajMap.put("listChildRainStation",getChildRainStation());
