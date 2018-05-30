@@ -4,16 +4,16 @@ package model.viewmodel.dispatch;
  * Created by 86573 on 2018/5/28 0028.
  */
 public class DispatchWaterRelease {
-    public double ARQ;
+    public double arq;
     public String date;
-    public double TGTQ;
+    public double tgtq;
 
-    public double getARQ() {
-        return ARQ;
+    public double getArq() {
+        return arq;
     }
 
-    public void setARQ(double ARQ) {
-        this.ARQ = ARQ;
+    public void setArq(double arq) {
+        this.arq = arq;
     }
 
     public String getDate() {
@@ -24,11 +24,11 @@ public class DispatchWaterRelease {
         this.date = date;
     }
 
-    public double getTGTQ() {
-        return TGTQ;
+    public double getTgtq() {
+        return tgtq;
     }
 
-    public void setTGTQ(double TGTQ) {
-        this.TGTQ = TGTQ;
+    public void setTgtq(double tgtq) {
+        this.tgtq = tgtq;
     }
 }

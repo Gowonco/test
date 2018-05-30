@@ -59,8 +59,8 @@ public class DispatchDao extends Controller {
 
         for (WasR wasR:listWasR){
             DispatchWaterRelease dispatchWaterRelease=new DispatchWaterRelease();
-            dispatchWaterRelease.setARQ(0);
-            dispatchWaterRelease.setTGTQ(Double.parseDouble(wasR.getTGTQ().toString()));
+            dispatchWaterRelease.setArq(0);
+            dispatchWaterRelease.setTgtq(Double.parseDouble(wasR.getTGTQ().toString()));
             dispatchWaterRelease.setDate(sdf.format(wasR.getYMDHM()));
             listDispatchWaterRelease.add(dispatchWaterRelease);
         }
@@ -68,8 +68,8 @@ public class DispatchDao extends Controller {
         listDate.remove(0);
         for(String date:listDate){
             DispatchWaterRelease dispatchWaterRelease=new DispatchWaterRelease();
-            dispatchWaterRelease.setARQ(0);
-            dispatchWaterRelease.setTGTQ(0);
+            dispatchWaterRelease.setArq(0);
+            dispatchWaterRelease.setTgtq(0);
             dispatchWaterRelease.setDate(date);
             listDispatchWaterRelease.add(dispatchWaterRelease);
         }
