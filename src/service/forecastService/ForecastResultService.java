@@ -107,4 +107,23 @@ public class ForecastResultService extends Controller {
      * @return
      */
     public List<JYViewRpCr> getExperienceRpCr(){return forecastResultDao.getExperienceRpCr(forecastC.getJNO());}
+
+    /**
+     * 经验水库汇流选择
+     * @return
+     */
+    public List<CfBb> getExperienceCfBb(){
+        return forecastResultDao.getCfBb(forecastC.getJNO());
+    }
+    /**
+     * 考虑淮干与淮南水库汇流时间
+     * @return
+     */
+    public List<CfT> getExperienceCfT(){ return forecastResultDao.getCfT(forecastC.getJNO());}
+    /**
+     * 经验模型 汇流计算结果
+     * @return
+     */
+    public List<JYForecastJyt> getForecastJyt(){return forecastResultDao.getForecastJyt(forecastC.getJNO());}
+
 }

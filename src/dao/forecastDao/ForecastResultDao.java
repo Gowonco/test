@@ -102,7 +102,7 @@ public class ForecastResultDao extends Controller {
 
 
     /**
-     * 新安江水库汇流选择
+     * 水库汇流选择
      * @param taskId
      * @return
      */
@@ -262,6 +262,31 @@ public class ForecastResultDao extends Controller {
         jyViewRpCr.setRpCr(rpCr);
         listJYViewRpCr.add(jyViewRpCr);
         return  listJYViewRpCr;
+    }
+
+    /**
+     * 经验模型 汇流计算结果
+     * @param taskId
+     * @return
+     */
+    public List<JYForecastJyt> getForecastJyt(String taskId){
+        List<JYForecastJyt> listJYForecastJyt=new ArrayList<JYForecastJyt>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like'101%'");
+        for(Tree fracture:listFracture){
+            ForecastJyt forecastJyt=ForecastJyt.dao.findFirst("select * from f_forecast_jyt where no=? and id=?",taskId,fracture.getID());
+            JYForecastJyt jyForecastJyt=new JYForecastJyt();
+            jyForecastJyt.setFractureId(fracture.getID());
+            jyForecastJyt.setFractureName(fracture.getNAME());
+            jyForecastJyt.setForecastJyt(forecastJyt);
+            listJYForecastJyt.add(jyForecastJyt);
+        }
+        ForecastJyt forecastJyt=ForecastJyt.dao.findFirst("select * from f_forecast_jyt where no=? and id=?",taskId,"10100000");
+        JYForecastJyt jyForecastJyt=new JYForecastJyt();
+        jyForecastJyt.setFractureId("10100000");
+        jyForecastJyt.setFractureName("洪泽湖");
+        jyForecastJyt.setForecastJyt(forecastJyt);
+        listJYForecastJyt.add(jyForecastJyt);
+        return listJYForecastJyt;
     }
 
 

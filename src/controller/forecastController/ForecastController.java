@@ -63,6 +63,9 @@ public class ForecastController extends Controller {
         setAttr("listSoilH",forecastResultService.getExperienceSoilH());
         setAttr("listJYViewRpR",forecastResultService.getExperienceRpR());
         setAttr("listJYViewRpCr",forecastResultService.getExperienceRpCr());
+        setAttr("listJYCfBb",forecastResultService.getExperienceCfBb());
+        setAttr("listJYCfT",forecastResultService.getExperienceCfT());
+        setAttr("listJYForecastJyt",forecastResultService.getForecastJyt());
         renderJson();
     }
 
