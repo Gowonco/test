@@ -55,7 +55,7 @@ public class DispatchDao extends Controller {
 
     public List<DispatchWaterRelease> getWaterRelease(int YMC1,int YMC2,String startDate,String endDate) throws ParseException {
         List<DispatchWaterRelease> listDispatchWaterRelease = new ArrayList<DispatchWaterRelease>();
-        List<WasR> listWasR = WasR.dao.find("select YMDHM,TGTQ from f_was_r where YMC between ? and ?",YMC1,YMC2);
+        List<WasR> listWasR = WasR.dao.find("select YMDHM,TGTQ from f_was_r where STCD = ? and YMC between ? and ?","51001800",YMC1,YMC2);
 
         for (WasR wasR:listWasR){
             DispatchWaterRelease dispatchWaterRelease=new DispatchWaterRelease();
