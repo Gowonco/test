@@ -22,6 +22,39 @@ public class ForecastResultDao extends Controller {
     }
 
     /**
+     * 新安江 断面
+     * @return
+     */
+    public List<Tree> getXAJFracture(){
+        return Tree.dao.find("select * from f_tree where rank=2 and pid like '001%'");
+    }
+
+    /**
+     * 经验断面
+     * @return
+     */
+    public List<Tree> getJYFracture(){
+        return Tree.dao.find("select * from f_tree where rank=2 and pid like '101%'");
+    }
+
+    /**
+     * 新安江 子流域
+     * @return
+     */
+    public List<Tree> getXAJChild(){
+        return Tree.dao.find("select * from f_tree where rank=3 and pid like '001%'");
+    }
+
+    /**
+     * 经验 子流域
+     * @return
+     */
+    public List<Tree> getJYChild(){
+        return Tree.dao.find("select * from f_tree where rank=3 and pid like '101%'");
+    }
+
+
+    /**
      * 新安江 分块雨量
      * @param startDate
      * @param endDate
@@ -198,7 +231,7 @@ public class ForecastResultDao extends Controller {
             RpR rpR=RpR.dao.findFirst("select r,w from f_rp_r where no=? and arcd=?",taskId,child.getID());
             JYViewRpR jyViewRpR=new JYViewRpR();
             jyViewRpR.setChildId(child.getID());
-            jyViewRpR.setChildId(child.getNAME());
+            jyViewRpR.setChildName(child.getNAME());
             jyViewRpR.setRpR(rpR);
             listJYViewRpR.add(jyViewRpR);
         }

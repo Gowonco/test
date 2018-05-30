@@ -22,10 +22,32 @@ public class ForecastResultService extends Controller {
     }
 
     /**
-     * 新安江 分块雨量
+     * 新安江 断面
      * @return
-     * @throws ParseException
      */
+    public List<Tree> getXAJFracture(){return forecastResultDao.getXAJFracture();}
+
+    /**
+     * 经验断面
+     * @return
+     */
+    public List<Tree> getJYFracture(){return forecastResultDao.getJYFracture();}
+    /**
+     * 新安江 子流域
+     * @return
+     */
+    public List<Tree> getXAJChild(){return forecastResultDao.getXAJChild();}
+    /**
+     * 经验 子流域
+     * @return
+     */
+    public List<Tree> getJYChild(){return forecastResultDao.getJYChild();}
+
+        /**
+         * 新安江 分块雨量
+         * @return
+         * @throws ParseException
+         */
     public List<XAJViewRain> getRain() throws ParseException {return forecastResultDao.getRain(forecastC.getNO(),sdf.format(forecastC.getBASEDTM()),sdf.format(forecastC.getSTARTTM()));}
     /**
      * 新安江-土壤含水量参数

@@ -45,6 +45,12 @@ public class ForecastController extends Controller {
     public void getResult() throws ParseException {
         String taskId=getPara("taskId");
         forecastResultService.setTaskSetting(taskId);
+
+        setAttr("listXAJFracture",forecastResultService.getXAJFracture());
+        setAttr("listJYFracture",forecastResultService.getJYFracture());
+        setAttr("listXAJChild",forecastResultService.getXAJChild());
+        setAttr("listJYChild",forecastResultService.getJYChild());
+
         setAttr("listXAJViewRain",forecastResultService.getRain());
         setAttr("listXAJSoilW",forecastResultService.getSoilW());
         setAttr("listCfBb",forecastResultService.getCfBb());
