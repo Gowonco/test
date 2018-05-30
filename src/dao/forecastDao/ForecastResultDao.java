@@ -134,7 +134,7 @@ public class ForecastResultDao extends Controller {
         listXAJForecastXajt.add(xajForecastXajt);
         return  listXAJForecastXajt;
     }
-
+//经验模型-------------------------------------------------------------------------------
     /**
      * 经验 分块雨量
      * @param startDate
@@ -157,6 +157,81 @@ public class ForecastResultDao extends Controller {
         }
         return listJYViewRain;
     }
+
+    /**
+     * 经验模型--分块累积雨量
+     * @param taskId
+     * @return
+     */
+    public List<DayrnflCh> getExperienceDayrnflCh(String taskId){
+        return DayrnflCh.dao.find("select arcd,amrn from f_dayrnfl_ch where no=? and arcd in(select DISTINCT(id) from f_tree where rank=3 and pid like'101%') ",taskId);
+    }
+
+    /**
+     * 初始土壤湿度
+     * @param taskId
+     * @return
+     */
+    public List<JYViewSoilH> getExperienceSoilH(String taskId){
+        List<JYViewSoilH> listJYViewSoilH=new ArrayList<JYViewSoilH>();
+        List<Tree> listChild=Tree.dao.find("select * from f_tree where rank=3 and pid like'101%'");
+        for (Tree child:listChild){
+            SoilH soilH=SoilH.dao.findFirst("select w from f_soil_h where no=? and arcd=?",taskId,child.getID());
+            JYViewSoilH jyViewSoilH=new JYViewSoilH();
+            jyViewSoilH.setChildId(child.getID());
+            jyViewSoilH.setChildName(child.getNAME());
+            jyViewSoilH.setSoilH(soilH);
+            listJYViewSoilH.add(jyViewSoilH);
+        }
+        return listJYViewSoilH;
+    }
+
+    /**
+     * 经验--产流深、产流量
+     * @param taskId
+     * @return
+     */
+    public List<JYViewRpR> getExperienceRpR(String taskId){
+        List<JYViewRpR> listJYViewRpR=new ArrayList<JYViewRpR>();
+        List<Tree> listChild=Tree.dao.find("select * from f_tree where rank=3 and pid like'101%'");
+        for (Tree child:listChild){
+            RpR rpR=RpR.dao.findFirst("select r,w from f_rp_r where no=? and arcd=?",taskId,child.getID());
+            JYViewRpR jyViewRpR=new JYViewRpR();
+            jyViewRpR.setChildId(child.getID());
+            jyViewRpR.setChildId(child.getNAME());
+            jyViewRpR.setRpR(rpR);
+            listJYViewRpR.add(jyViewRpR);
+        }
+        return listJYViewRpR;
+    }
+
+    /**
+     *预报断面 计算产流量 修正产流量
+     * @param taskId
+     * @return
+     */
+    public List<JYViewRpCr> getExperienceRpCr(String taskId){
+        List<JYViewRpCr> listJYViewRpCr=new ArrayList<JYViewRpCr>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like'101%'");
+        for(Tree fracture:listFracture){
+            RpCr rpCr=RpCr.dao.findFirst("select w,cw from f_rp_cr where no=? and id=?",taskId,fracture.getID());
+            JYViewRpCr  jyViewRpCr=new JYViewRpCr();
+            jyViewRpCr.setFractureId(fracture.getID());
+            jyViewRpCr.setFractureName(fracture.getNAME());
+            jyViewRpCr.setRpCr(rpCr);
+            listJYViewRpCr.add(jyViewRpCr);
+        }
+        //再加一条洪泽湖的
+        RpCr rpCr=RpCr.dao.findFirst("select w,cw from f_rp_cr where no=? and id=?",taskId,"10100000");
+        JYViewRpCr  jyViewRpCr=new JYViewRpCr();
+        jyViewRpCr.setFractureId("10100000");
+        jyViewRpCr.setFractureName("洪泽湖");
+        jyViewRpCr.setRpCr(rpCr);
+        listJYViewRpCr.add(jyViewRpCr);
+        return  listJYViewRpCr;
+    }
+
+
 
 
 

@@ -2,9 +2,7 @@ package service.forecastService;
 
 import com.jfinal.core.Controller;
 import dao.forecastDao.ForecastResultDao;
-import model.dbmodel.CfBb;
-import model.dbmodel.CfT;
-import model.dbmodel.ForecastC;
+import model.dbmodel.*;
 import model.viewmodel.resultmodel.*;
 
 import java.text.ParseException;
@@ -67,6 +65,24 @@ public class ForecastResultService extends Controller {
     public List<JYViewRain> getExperienceRain() throws ParseException {
         return forecastResultDao.getExperienceRain(forecastC.getJNO(),sdf.format(forecastC.getBASEDTM()),sdf.format(forecastC.getSTARTTM()));
     }
-
-
+    /**
+     * 经验模型--分块累积雨量
+     * @return
+     */
+    public List<DayrnflCh> getExperienceDayrnflCh(){return forecastResultDao.getExperienceDayrnflCh(forecastC.getJNO());}
+    /**
+     * 初始土壤湿度
+     * @return
+     */
+    public List<JYViewSoilH> getExperienceSoilH(){return forecastResultDao.getExperienceSoilH(forecastC.getJNO());}
+    /**
+     * 经验--产流深、产流量
+     * @return
+     */
+    public List<JYViewRpR> getExperienceRpR(){return forecastResultDao.getExperienceRpR(forecastC.getJNO());}
+    /**
+     *预报断面 计算产流量 修正产流量
+     * @return
+     */
+    public List<JYViewRpCr> getExperienceRpCr(){return forecastResultDao.getExperienceRpCr(forecastC.getJNO());}
 }
