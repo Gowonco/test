@@ -243,4 +243,13 @@ public abstract class BaseForecastC<M extends BaseForecastC<M>> extends Model<M>
 		return getStr("CURVE");
 	}
 
+	public M setJNO(java.lang.String JNO) {
+		set("JNO", JNO);
+		return (M)this;
+	}
+	
+	public java.lang.String getJNO() {
+		return getStr("JNO");
+	}
+
 }

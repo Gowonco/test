@@ -7,6 +7,7 @@ import model.dbmodel.ForecastXajt;
 import model.dbmodel.User;
 import model.viewmodel.ViewUser;
 
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -55,7 +56,7 @@ public class SystemService extends Controller {
         systemDao.doDeleteUser(ucode,username,password);
 
     }
-    public void doAddCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut){
+    public void doAddCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut) throws ParseException {
         ucode="001";
         settm="2018-05-24 15:30:00";
         core=1;

@@ -11,6 +11,7 @@ import service.systemService.SystemService;
 import validator.LoginValidator;
 
 
+import java.text.ParseException;
 import java.util.List;
 
 public class SystemController extends Controller {
@@ -90,7 +91,7 @@ public class SystemController extends Controller {
         renderJson();
 
     }
-    public void doAddCh(){
+    public void doAddCh() throws ParseException {
         String ucode=getPara("ucode");
         String settm=getPara("settm");
         int core=getParaToInt("core");

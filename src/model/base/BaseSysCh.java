@@ -18,7 +18,7 @@ public abstract class BaseSysCh<M extends BaseSysCh<M>> extends Model<M> impleme
 		return getStr("UCODE");
 	}
 
-	public M setSETTM(String SETTM) {
+	public M setSETTM(java.util.Date SETTM) {
 		set("SETTM", SETTM);
 		return (M)this;
 	}
@@ -117,7 +117,7 @@ public abstract class BaseSysCh<M extends BaseSysCh<M>> extends Model<M> impleme
 		return getInt("IP");
 	}
 
-	public M setAUT(String AUT) {
+	public M setAUT(java.util.Date AUT) {
 		set("AUT", AUT);
 		return (M)this;
 	}

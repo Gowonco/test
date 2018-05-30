@@ -4,12 +4,17 @@ import com.jfinal.i18n.Res;
 import com.jfinal.plugin.activerecord.Db;
 import model.dbmodel.*;
 import model.viewmodel.ViewUser;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by HackerZP on 2018/5/12.
  */
 public class SystemDao {
+    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     /**
      * 验证用户存在不存在
      * @param username
@@ -114,7 +119,7 @@ public class SystemDao {
      * @param aut
      * @return
      */
-    public String doAddCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut){
+    public String doAddCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut) throws ParseException {
         List<SysCh> listCh=SysCh.dao.find("select * from f_sys_ch");
         for(SysCh sysch:listCh){
             if(sysch.getUCODE().equals(ucode)){
@@ -125,7 +130,7 @@ public class SystemDao {
 //        int code1=Integer.parseInt(code);
 //        code1+=1;
 //        code=String.valueOf(code);
-        new SysCh().setUCODE(ucode).setSETTM(settm).setCORE(core).setAUTF(autf).setOBP(obp).setFOP(fop).setWUP(wup).setAOBP(aobp).setAFOP(fop).setAWUP(awup).setDS(ds).setIP(ip).setAUT(aut).save();
+        new SysCh().setUCODE(ucode).setSETTM(sdf.parse(settm)).setCORE(core).setAUTF(autf).setOBP(obp).setFOP(fop).setWUP(wup).setAOBP(aobp).setAFOP(fop).setAWUP(awup).setDS(ds).setIP(ip).setAUT(sdf.parse(aut)).save();
         return "sucess";
     }
 

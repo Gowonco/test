@@ -9,6 +9,15 @@ import com.jfinal.plugin.activerecord.IBean;
 @SuppressWarnings({"serial", "unchecked"})
 public abstract class BaseCfT<M extends BaseCfT<M>> extends Model<M> implements IBean {
 
+	public M setNO(java.lang.String NO) {
+		set("NO", NO);
+		return (M)this;
+	}
+	
+	public java.lang.String getNO() {
+		return getStr("NO");
+	}
+
 	public M setDBCD(java.lang.String DBCD) {
 		set("DBCD", DBCD);
 		return (M)this;

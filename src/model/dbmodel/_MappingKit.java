@@ -17,12 +17,12 @@ public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
 		arp.addMapping("f_area_dis", "ID", AreaDis.class);
-		// Composite Primary Key order: DBCD,IL
-		arp.addMapping("f_cf_bb", "DBCD,IL", CfBb.class);
-		// Composite Primary Key order: DBCD,ID
-		arp.addMapping("f_cf_r", "DBCD,ID", CfR.class);
-		// Composite Primary Key order: DBCD,ITEM
-		arp.addMapping("f_cf_t", "DBCD,ITEM", CfT.class);
+		// Composite Primary Key order: DBCD,IL,NO
+		arp.addMapping("f_cf_bb", "DBCD,IL,NO", CfBb.class);
+		// Composite Primary Key order: DBCD,ID,NO,YMDHM
+		arp.addMapping("f_cf_r", "DBCD,ID,NO,YMDHM", CfR.class);
+		// Composite Primary Key order: DBCD,ITEM,NO
+		arp.addMapping("f_cf_t", "DBCD,ITEM,NO", CfT.class);
 		// Composite Primary Key order: MOD,NO
 		arp.addMapping("f_ctr_ct", "MOD,NO", CtrCt.class);
 		// Composite Primary Key order: NO,YMDHM
