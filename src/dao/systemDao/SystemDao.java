@@ -1,6 +1,5 @@
 package dao.systemDao;
 
-import com.jfinal.i18n.Res;
 import com.jfinal.plugin.activerecord.Db;
 import model.dbmodel.*;
 import model.viewmodel.ViewUser;
@@ -86,20 +85,15 @@ public class SystemDao {
        if(ucode==null){return "没有该用户";}
         Db.update("update f_user set upwd=? , role=? where ucode=?",password,role,ucode);
         return "success";
-
     }
 
     /**
      * 删除用户
      * @param ucode
-     * @param username
-     * @param password
      * @return
      */
-    public String doDeleteUser(String ucode,String username,String password){
-        if(ucode==null){return "没有该用户";}
+    public void doDeleteUser(String ucode){
         Db.delete("delete from f_user where ucode=?",ucode);
-        return "success";
     }
 
     /**
@@ -126,10 +120,6 @@ public class SystemDao {
                 return "用户已存在";
             }
         }
-//        String code=listCh.get(listCh.size()-1).getUCODE();
-//        int code1=Integer.parseInt(code);
-//        code1+=1;
-//        code=String.valueOf(code);
         new SysCh().setUCODE(ucode).setSETTM(sdf.parse(settm)).setCORE(core).setAUTF(autf).setOBP(obp).setFOP(fop).setWUP(wup).setAOBP(aobp).setAFOP(fop).setAWUP(awup).setDS(ds).setIP(ip).setAUT(sdf.parse(aut)).save();
         return "sucess";
     }
@@ -156,11 +146,6 @@ public class SystemDao {
         Db.update("update f_sys_ch set settm=?,core=?,autf=?,obp=?,fop=?,wup=?,aobp=?,afop=?,awup=?,ds=?,ip=?,aut=? where ucode=?",settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut,ucode);
         return "success";
     }
-//    public String doDeleteCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut){
-//        if(ucode==null){return "用户不存在";}
-//        Db.delete("delete from f_sys_ch where ucode=?",ucode);
-//        return "success";
-//    }
 
     /**
      * 添加数据源
@@ -201,40 +186,15 @@ public class SystemDao {
 
     /**
      * 删除数据源
-     * @param ds
-     * @param dsn
-     * @param dbn
-     * @param pot
-     * @param url
      * @param usrn
-     * @param psw
-     * @param typ
      * @return
      */
-    public String doDeleteDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
+    public String doDeleteDs(String usrn){
         if(usrn==null){return "用户不存在";}
         Db.delete("delete from f_datas_cf where usrn=?",usrn);
         return "success";
     }
 
-    /**
-     * 获取最终预报成果注释表数据
-     * @param taskId
-     * @return
-     */
-    public List<ForecastC> getTaskId(String taskId){
-       List<ForecastC> listForecastC=ForecastC.dao.find("select no from f_forecast_c where no like'%?%'",taskId);
-       return listForecastC;
-    }
-
-    /**
-     *获取新安江模型入湖总量特征值表第一条数据
-     * @param taskId
-     * @return
-     */
-    public ForecastXajt getForecastXajt(String taskId){
-        return ForecastXajt.dao.findFirst("select * from f_forecast_xajt where no=?",taskId);
-    }
 
     /**
      * 获取所有用户
@@ -242,6 +202,40 @@ public class SystemDao {
      */
     public List<User> getAllUser(){
       return  User.dao.find("select * from f_user");
+    }
 
+    /**
+     * 记录用户角色
+     * @return
+     */
+    public List<Role> doAddRole(){
+       return Role.dao.find("select * from f_role");
+
+    }
+
+    /**
+     * 获取用户名和密码
+     * @param ucode
+     * @return
+     */
+    public List<User> getUsername(String ucode) {
+        List<User> listUser=User.dao.find("select uname,upwd from f_user where ucode=?",ucode);
+        return listUser;
+    }
+
+    /**
+     * 获取数据处理方式选择表数据
+     * @return
+     */
+    public List<DataC> getDataC() {
+        return DataC.dao.find("select * from f_data_c");
+    }
+
+    /**
+     * 获取数据来源配置表数据
+     * @return
+     */
+    public List<DatasCf> getDatasCf() {
+        return DatasCf.dao.find("select * from f_datas_cf");
     }
 }

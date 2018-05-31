@@ -2,9 +2,7 @@ package service.systemService;
 
 import com.jfinal.core.Controller;
 import dao.systemDao.SystemDao;
-import model.dbmodel.ForecastC;
-import model.dbmodel.ForecastXajt;
-import model.dbmodel.User;
+import model.dbmodel.*;
 import model.viewmodel.ViewUser;
 
 import java.text.ParseException;
@@ -35,122 +33,118 @@ public class SystemService extends Controller {
         return systemDao.getUser(username,password);
     }
 
-
-    public void doAddUser(String username,String password,int role){
-        username="liyunxia";
-        password="hahahahaha";
-        role=1;
-        systemDao.doAddUser(username,password,role);
+    /**
+     * 添加用户
+     * @param username
+     * @param password
+     * @param role
+     * @return
+     */
+    public String  doAddUser(String username,String password,int role){
+        return systemDao.doAddUser(username,password,role);
     }
-    public void doUpdateUser(String ucode,String password,int role){
-        ucode="005";
-        password="121212";
-        role=1;
-        systemDao.doUpdateUser(ucode,password,role);
-
-    }
-    public void doDeleteUser(String ucode,String username,String password){
-        ucode="005";
-        username="hhh";
-        password="123321";
-        systemDao.doDeleteUser(ucode,username,password);
-
-    }
-    public void doAddCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut) throws ParseException {
-        ucode="001";
-        settm="2018-05-24 15:30:00";
-        core=1;
-        autf=1;
-        obp=30;
-        fop=8;
-        wup=6;
-        aobp=30;
-        afop=15;
-        awup=15;
-        ds=3;
-        ip=2;
-        aut="2018-05-24 8:00";
-        systemDao.doAddCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut);
-    }
-    public void doUpdateCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut){
-        ucode="003";
-        settm="2018-05-24 16:30:00";
-        core=1;
-        autf=1;
-        obp=30;
-        fop=8;
-        wup=6;
-        aobp=30;
-        afop=10;
-        awup=10;
-        ds=3;
-        ip=2;
-        aut="2018-05-28 8:00";
-        systemDao.doUpdateCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut);
+    /**
+     * 更新用户
+     * @param ucode
+     * @param password
+     * @param role
+     * @return
+     */
+    public String doUpdateUser(String ucode,String password,int role){
+       return systemDao.doUpdateUser(ucode,password,role);
 
     }
-//    public void doDeleteCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int ds,int ip,String aut){
-//        ucode="001";
-//        settm="2018-05-24 15:30:00";
-//        core=1;
-//        autf=1;
-//        obp=30;
-//        fop=8;
-//        wup=6;
-//        ds=3;
-//        ip=2;
-//        aut="2018-05-24 8:00";
-//        systemDao.doDeleteCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut);
-//    }
-    public void doAddDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
-        ds=02;
-        dsn="mysql";
-        dbn="a";
-        pot="3306";
-        url="localhost";
-        usrn="xiaoli";
-        psw="121212";
-        typ=03;
-        systemDao.doAddDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
+    /**
+     * 删除用户
+     * @param ucode
+     * @return
+     */
+    public void doDeleteUser(String ucode){
+         systemDao.doDeleteUser(ucode);
+
     }
-    public void doUpdateDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
-        ds=04;
-        dsn="sqlserver";
-        dbn="b";
-        pot="1433";
-        url="localhost";
-        usrn="xiaoli";
-        psw="121212";
-        typ=02;
-        systemDao.doUpdateDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
+    /**
+     * 添加系统参数配置
+     * @param ucode
+     * @param settm
+     * @param core
+     * @param autf
+     * @param obp
+     * @param fop
+     * @param wup
+     * @param aobp
+     * @param afop
+     * @param awup
+     * @param ds
+     * @param ip
+     * @param aut
+     * @return
+     */
+    public String doAddCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut) throws ParseException {
+        return systemDao.doAddCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut);
+
     }
-    public void doDeleteDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
-        ds=04;
-        dsn="sqlserver";
-        dbn="b";
-        pot="1433";
-        url="localhost";
-        usrn="xiaoli";
-        psw="121212";
-        typ=02;
-        systemDao.doDeleteDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
+    /**
+     * 更新系统参数配置
+     * @param ucode
+     * @param settm
+     * @param core
+     * @param autf
+     * @param obp
+     * @param fop
+     * @param wup
+     * @param aobp
+     * @param afop
+     * @param awup
+     * @param ds
+     * @param ip
+     * @param aut
+     * @return
+     */
+    public String doUpdateCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut){
+        return systemDao.doUpdateCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut);
+
+    }
+    /**
+     * 添加数据源
+     * @param ds
+     * @param dsn
+     * @param dbn
+     * @param pot
+     * @param url
+     * @param usrn
+     * @param psw
+     * @param typ
+     * @return
+     */
+    public String doAddDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
+       return systemDao.doAddDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
+    }
+    /**
+     * 更新数据源
+     * @param ds
+     * @param dsn
+     * @param dbn
+     * @param pot
+     * @param url
+     * @param usrn
+     * @param psw
+     * @param typ
+     * @return
+     */
+    public String doUpdateDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
+        return systemDao.doUpdateDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
+    }
+    /**
+     * 删除数据源
+     * @param usrn
+     * @return
+     */
+    public void doDeleteDs(String usrn){
+        systemDao.doDeleteDs(usrn);
 
     }
 
-    public List<ForecastC> getTaskId(String taskId){
-        taskId="0010201805251555";
-        return systemDao.getTaskId(taskId);
-    }
-
-    public ForecastXajt getForecastXajtFirst(String taskId){
-        List<ForecastC> listForecastC=getTaskId(taskId);
-        ForecastC forecastC=listForecastC.get(listForecastC.size()-1);
-        return  getForecastXajt(forecastC.getNO());
-    }
-
-    public ForecastXajt getForecastXajt(String taskId){
-        return systemDao.getForecastXajt(taskId);
-    }
     /**
      * 获取所有用户
      * @return
@@ -159,4 +153,37 @@ public class SystemService extends Controller {
         return systemDao.getAllUser();
     }
 
+    /**
+     * 记录用户角色
+     * @return
+     */
+    public List<Role> doAddRole(){
+        return systemDao.doAddRole();
+
+    }
+
+    /**
+     * 获取用户名和密码
+     * @param ucode
+     * @return
+     */
+    public List<User> getUsername(String ucode) {
+        return systemDao.getUsername(ucode);
+    }
+
+    /**
+     * 获取数据处理方式选择表数据
+     * @return
+     */
+    public List<DataC> getDataC() {
+        return systemDao.getDataC();
+    }
+
+    /**
+     * 获取数据来源配置表数据
+     * @return
+     */
+    public List<DatasCf> getDatasCf() {
+        return systemDao.getDatasCf();
+    }
 }
