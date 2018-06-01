@@ -125,5 +125,14 @@ public class ForecastResultService extends Controller {
      * @return
      */
     public List<JYForecastJyt> getForecastJyt(){return forecastResultDao.getForecastJyt(forecastC.getJNO());}
-
+    /**
+     * 新安江--Echarts 展示数据
+     * @return
+     */
+    public List<XAJEchartsData> getXAJEchartsData(){return forecastResultDao.getXAJEchartsData(forecastC.getNO(),forecastC.getYMC1(),forecastC.getYMC3());}
+    /**
+     * 经验--Echarts 展示数据
+     * @return
+     */
+    public List<JYEchartsData> getJYEchartsData(){return forecastResultDao.getJYEchartsData(forecastC.getJNO(),forecastC.getYMC1(),forecastC.getYMC3());}
 }

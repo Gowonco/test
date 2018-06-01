@@ -289,7 +289,59 @@ public class ForecastResultDao extends Controller {
         return listJYForecastJyt;
     }
 
+    /**
+     * 新安江--Echarts 展示数据
+     * @param taskId
+     * @param ymc1
+     * @param ymc3
+     * @return
+     */
+    public List<XAJEchartsData> getXAJEchartsData(String taskId,int ymc1,int ymc3){
+        List<XAJEchartsData> listXAJEchartsData=new ArrayList<XAJEchartsData>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '001%'");
+        for(Tree fracture:listFracture) {
+            List<ForecastXajr> listForecastXajr=ForecastXajr.dao.find("select ymdhm,drn,q,pq from f_forecast_xajr where no=? and dmcd=?  and ymc >=? and ymc<=?",taskId,fracture.getID(),ymc1,ymc3);
+            XAJEchartsData xajEchartsData=new XAJEchartsData();
+            xajEchartsData.setFractureId(fracture.getID());
+            xajEchartsData.setFractureName(fracture.getNAME());
+            xajEchartsData.setListForecastXajr(listForecastXajr);
+            listXAJEchartsData.add(xajEchartsData);
+        }
+        List<ForecastXajr> listForecastXajr=ForecastXajr.dao.find("select ymdhm,drn,q,pq from f_forecast_xajr where no=? and dmcd=?  and ymc >=? and ymc<=?",taskId,"00100000",ymc1,ymc3);
+        XAJEchartsData xajEchartsData=new XAJEchartsData();
+        xajEchartsData.setFractureId("00100000");
+        xajEchartsData.setFractureName("洪泽湖");
+        xajEchartsData.setListForecastXajr(listForecastXajr);
+        listXAJEchartsData.add(xajEchartsData);
+        return listXAJEchartsData;
+    }
 
+    /**
+     * 经验--Echarts 展示数据
+     * @param taskId
+     * @param ymc1
+     * @param ymc3
+     * @return
+     */
+    public List<JYEchartsData> getJYEchartsData(String taskId,int ymc1,int ymc3){
+        List<JYEchartsData> listJYEchartsData=new ArrayList<JYEchartsData>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '101%'");
+        for(Tree fracture:listFracture) {
+            List<ForecastJyr> listForecastJyr=ForecastJyr.dao.find("select ymdhm,drn,q,pq from f_forecast_jyr where no=? and id=? and ymc>=? and ymc>=?",taskId,fracture.getID(),ymc1,ymc3);
+            JYEchartsData jyEchartsData=new JYEchartsData();
+            jyEchartsData.setFractureId(fracture.getID());
+            jyEchartsData.setFractureName(fracture.getNAME());
+            jyEchartsData.setListForecastJyr(listForecastJyr);
+            listJYEchartsData.add(jyEchartsData);
+        }
+        List<ForecastJyr> listForecastJyr=ForecastJyr.dao.find("select ymdhm,drn,q,pq from f_forecast_jyr where no=? and id=? and ymc>=? and ymc>=?",taskId,"10100000",ymc1,ymc3);
+        JYEchartsData jyEchartsData=new JYEchartsData();
+        jyEchartsData.setFractureId("10100000");
+        jyEchartsData.setFractureName("洪泽湖");
+        jyEchartsData.setListForecastJyr(listForecastJyr);
+        listJYEchartsData.add(jyEchartsData);
+        return listJYEchartsData;
+    }
 
 
 
