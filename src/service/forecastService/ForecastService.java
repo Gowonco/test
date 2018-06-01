@@ -41,32 +41,32 @@ public class ForecastService extends Controller {
     public void doForecast(String taskId) throws ParseException {
          this.setTaskSetting(taskId);
          //新安江模型大Map
-         xajMap.put("listViewRain",getRainData());
-         xajMap.put("listChildRainStation",getChildRainStation());
-         xajMap.put("listFractureChild",getFractureChild());
-         xajMap.put("listDayevH",getDayevH());
-         xajMap.put("listSoilCh",getSoilCh());
-         xajMap.put("listXAJFracturePara",getFracturePara());
-         xajMap.put("listXAJChildPara",getChildPara());
-         xajMap.put("listXAJFutureRain",getFutureRain());
-         xajMap.put("listXAJFutureWater",getFutureWater());
-         xajMap.put("e",getE());
-         xajMap.put("listViewReservoir",getReservoir());
-         xajMap.put("listStrobeFlow",getStrobeFlow());
-         xajMap.put("listHydrologicFlow",getHydrologicFlow());
-         xajMap.put("listXAJMMusk",getMMusk());
-         xajMap.put("listXAJForecastXajr",getForecastXajr());
+         xajMap.put("listViewRain",getRainData());//68个雨量站插值处理过的日雨量
+         xajMap.put("listChildRainStation",getChildRainStation());//获取新安江 子流域-雨量站 对应关系 以及雨量站个数
+         xajMap.put("listFractureChild",getFractureChild());//获取新安江 断面-子流域关系
+         xajMap.put("listDayevH",getDayevH());//日蒸发
+         xajMap.put("listSoilCh",getSoilCh());//获取土壤含水量初值
+         xajMap.put("listXAJFracturePara",getFracturePara());//获取新安江 参数表--各断面参数
+         xajMap.put("listXAJChildPara",getChildPara());//新安江参数表-- 各子流域参数表
+         xajMap.put("listXAJFutureRain",getFutureRain());//获取新安江--未来雨量
+         xajMap.put("listXAJFutureWater",getFutureWater());//新安江--未来放水
+         xajMap.put("e",getE());//获取流域蒸发值
+         xajMap.put("listViewReservoir",getReservoir());//水库日放水流量
+         xajMap.put("listStrobeFlow",getStrobeFlow());//获取5个闸坝流量
+         xajMap.put("listHydrologicFlow",getHydrologicFlow());//新安江--7个河道水文站流量
+         xajMap.put("listXAJMMusk",getMMusk());//新安江模型--各断面马斯京根参数
+         xajMap.put("listXAJForecastXajr",getForecastXajr());//新安江--各断面的实测流量、预报流量
         //经验模型大Map
-         jyMap.put("listViewRain",getRainData());
-         jyMap.put("listJYChildRainStation",getExperienceChildRainStation());
-         jyMap.put("listJYFractureChild",getExperienceFractureChild());
-         jyMap.put("listJYChildPara",getExperienceChildPara());
-         jyMap.put("listViewReservoir",getReservoir());
-         jyMap.put("listStrobeFlow",getStrobeFlow());
-         jyMap.put("listJYConfig",getExperienceConfig());
-         jyMap.put("listJYHydrologyFlow",getHydrologyFlow());
-         jyMap.put("listParaMu",getParaMu());
-         new ForecastCalculateService(forecastC,xajMap,jyMap).test();
+         jyMap.put("listViewRain",getRainData());//68个雨量站插值处理过的日雨量
+         jyMap.put("listJYChildRainStation",getExperienceChildRainStation());//获取经验 子流域-雨量站 对应关系 以及雨量站个数
+         jyMap.put("listJYFractureChild",getExperienceFractureChild());//获取经验 断面-子流域关系
+         jyMap.put("listJYChildPara",getExperienceChildPara());//获取经验 各子流域参数
+         jyMap.put("listViewReservoir",getReservoir());//水库日放水流量
+         jyMap.put("listStrobeFlow",getStrobeFlow());//获取5个闸坝流量
+         jyMap.put("listJYConfig",getExperienceConfig());//经验模型-- 蚌埠 明光 淮北 配置表
+         jyMap.put("listJYHydrologyFlow",getHydrologyFlow());//7个水文站的实测流量
+         jyMap.put("listParaMu",getParaMu());//马斯京根汇流参数
+         new ForecastCalculateService(forecastC,xajMap,jyMap).test();//
     }
 
     /**
