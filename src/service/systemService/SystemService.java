@@ -40,7 +40,7 @@ public class SystemService extends Controller {
      * @param role
      * @return
      */
-    public String  doAddUser(String username,String password,int role){
+    public String  doAddUser(String username,String password,int role) throws ParseException {
         return systemDao.doAddUser(username,password,role);
     }
     /**

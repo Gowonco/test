@@ -68,11 +68,10 @@ public class SystemController extends Controller {
     /**
      * 添加用户
      */
-    public void doAddUser(){
+    public void doAddUser() throws ParseException {
         String username=getPara("username");
         String password=getPara("password");
         int role=getParaToInt("role");
-
         setAttr("resultStatus",systemService.doAddUser(username,password,role));
         renderJson();
 

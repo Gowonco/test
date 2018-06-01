@@ -53,7 +53,7 @@ public class SystemDao {
      * @param role
      * @return
      */
-    public String  doAddUser(String username,String password,int role){
+    public String  doAddUser(String username,String password,int role) throws ParseException {
 
         List<User> listUser=User.dao.find("select * from f_user");
         for(User user:listUser){
@@ -71,7 +71,7 @@ public class SystemDao {
             ucode="0"+ucode;
         }
         new User().setROLE(role).setUCODE(ucode).setUNAME(username).setUPWD(password).save();
-
+        doAddCh(ucode,sdf.format(new Date()),0,0,30,15,30,1,1,15,1,1,"1970-01-01 08:00:00");
         return "success";
     }
 
@@ -122,7 +122,7 @@ public class SystemDao {
                 return "用户已存在";
             }
         }
-        new SysCh().setUCODE(ucode).setSETTM(sdf.parse(settm)).setCORE(core).setAUTF(autf).setOBP(obp).setFOP(fop).setWUP(wup).setAOBP(aobp).setAFOP(fop).setAWUP(awup).setDS(ds).setIP(ip).setAUT(sdf1.parse(aut)).save();
+        new SysCh().setUCODE(ucode).setSETTM(sdf.parse(settm)).setCORE(core).setAUTF(autf).setOBP(obp).setFOP(fop).setWUP(wup).setAOBP(aobp).setAFOP(fop).setAWUP(awup).setDS(ds).setIP(ip).setAUT(sdf.parse(aut)).save();
         return "sucess";
     }
 
