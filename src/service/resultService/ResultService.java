@@ -25,13 +25,11 @@ public class ResultService extends Controller {
 
     /**
      * 新安江模型最近一次预报查询
-     * @param userId
+     * @param taskId
      * @return
      */
-    public List<ForecastXajt> getMonthHistoryXajtLatest(String userId) {
-        List<ForecastC> listForecastC=getTaskId(userId);
-        ForecastC forecastC=listForecastC.get(listForecastC.size()-1);
-        return getMonthHistoryXajt(forecastC.getNO());
+    public List<ForecastXajt> getMonthHistoryXajtLatest(String taskId) {
+            return getMonthHistoryXajt(taskId);
     }
 
     /**
@@ -54,13 +52,11 @@ public class ResultService extends Controller {
 
     /**
      * 经验模型最近一次预报查询
-     * @param userId
+     * @param taskJid
      * @return
      */
-    public List<ForecastJyt> getMonthHistoryJytLatest(String userId) {
-        List<ForecastC> listForecastC=getTaskId(userId);
-        ForecastC forecastC=listForecastC.get(listForecastC.size()-1);
-        return getMonthHistoryJyt(forecastC.getJNO());
+    public List<ForecastJyt> getMonthHistoryJytLatest(String taskJid) {
+        return getMonthHistoryJyt(taskJid);
     }
 
     /**
@@ -84,14 +80,11 @@ public class ResultService extends Controller {
 
     /**
      * 点击搜索获取新安江模型最近一次预报结果
-     * @param userId
-     * @param searchText
+     * @param taskId
      * @return
      */
-    public List<ForecastXajt> getSearchHistoryXajtLatest(String userId,String searchText) {
-        List<ForecastC> listForecastC=getTaskId(userId);
-        ForecastC forecastC=listForecastC.get(listForecastC.size()-1);
-        return getSearchHistoryXajt(forecastC.getNO());
+    public List<ForecastXajt> getSearchHistoryXajtLatest(String taskId) {
+        return getSearchHistoryXajt(taskId);
 
     }
 
@@ -105,15 +98,12 @@ public class ResultService extends Controller {
     }
 
     /**
-     *  点击搜索获取经验模型最近一次预报结果
-     * @param userId
-     * @param searchText
+     * 点击搜索获取经验模型最近一次预报结果
+     * @param taskJid
      * @return
      */
-    public List<ForecastJyt> getSearchHistoryJytLatest(String userId,String searchText) {
-        List<ForecastC> listForecastC=getTaskId(userId);
-        ForecastC forecastC=listForecastC.get(listForecastC.size()-1);
-        return getSearchHistoryJyt(forecastC.getJNO());
+    public List<ForecastJyt> getSearchHistoryJytLatest(String taskJid) {
+        return getSearchHistoryJyt(taskJid);
     }
 
     /**
@@ -123,15 +113,6 @@ public class ResultService extends Controller {
      */
     public List<ForecastJyt> getSearchHistoryJyt(String taskId){
         return resultDao.getSearchHistoryJytLatest(taskId);
-    }
-
-    /**
-     * 根据任务编号获取数据
-     * @param taskId
-     * @return
-     */
-    public List<ForecastC> getHistoryByTaskId(String taskId) {
-        return resultDao.getHistoryByTaskId(taskId);
     }
 
     /**

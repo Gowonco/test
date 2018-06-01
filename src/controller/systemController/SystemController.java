@@ -1,5 +1,6 @@
 package controller.systemController;
 
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 
@@ -226,5 +227,60 @@ public class SystemController extends Controller {
         renderJson();
     }
 
+    /**
+     * 根据数据源获取数据来源配置表中数据
+     */
+    public void getDatasCfDs(){
+        int ds=getParaToInt("ds");
+        setAttr("resultStatus",systemService.getDatasCfDs(ds));
+        renderJson();
+    }
 
+    /**
+     * 获取数据库连接类型信息表中数据
+     */
+    public void getDatasLt(){
+        setAttr("resultStatus",systemService.getDatasLt());
+        renderJson();
+    }
+
+    /**
+     * 根据数据源获取数据源信息表中数据
+     */
+    public void getDatasM(){
+        int ds=getParaToInt("ds");
+        setAttr("resultStatus",systemService.getDatasM(ds));
+        renderJson();
+    }
+
+    /**
+     * 在数据源信息表中添加数据
+     */
+    public void doAddDatasM(){
+       int ds=getParaToInt("ds");
+       String tid=getPara("tid");
+       String tnm=getPara("tnm");
+       setAttr("resultStatus",systemService.doAddDatasM(ds,tid,tnm));
+       renderJson();
+    }
+
+    /**
+     * 更新数据源信息表
+     */
+    public void doUpdateDatasM(){
+        int ds=getParaToInt("ds");
+        String tid=getPara("tid");
+        String tnm=getPara("tnm");
+        setAttr("resultStatus",systemService.doUpdateDatasM(ds,tid,tnm));
+        renderJson();
+    }
+
+    /**
+     * 删除数据源信息表中数据
+     */
+    public void doDeleteDatasM(){
+        int ds=getParaToInt("ds");
+        setAttr("resultStatus",systemService.doDeleteDatasM(ds));
+        renderJson();
+    }
 }

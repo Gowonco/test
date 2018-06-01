@@ -22,7 +22,8 @@ public class ResultDao extends Controller {
      * @return
      */
     public List<ForecastC> getMonthHistory(String userId) {
-        List<ForecastC> listForecastC=ForecastC.dao.find("select  DISTINCT(no) from f_forecast_c where no like '"+userId+"%"+df.format(day)+"%' order by no desc");
+//        List<ForecastC> listForecastC=ForecastC.dao.find("select  DISTINCT(no) from f_forecast_c where no like '"+userId+"%"+df.format(day)+"%' order by no desc");
+        List<ForecastC> listForecastC=ForecastC.dao.find("select  DISTINCT(no) from f_forecast_c where no like '"+userId+"%' order by no desc");
         return listForecastC;
     }
 
@@ -50,7 +51,8 @@ public class ResultDao extends Controller {
      * @return
      */
     public List<ForecastC> getTaskId(String userId) {
-        List<ForecastC> listForecastC=ForecastC.dao.find("select no from f_forecast_c where no like '"+userId+"%"+df.format(day)+"%'");
+//        List<ForecastC> listForecastC=ForecastC.dao.find("select no from f_forecast_c where no like '"+userId+"%"+df.format(day)+"%'");
+        List<ForecastC> listForecastC=ForecastC.dao.find("select no from f_forecast_c where no like '"+userId+"%'");
         return listForecastC;
     }
 

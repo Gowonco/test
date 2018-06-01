@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class SystemDao {
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat sdf1=new SimpleDateFormat("HH:mm");
+
     /**
      * 验证用户存在不存在
      * @param username
@@ -120,7 +122,7 @@ public class SystemDao {
                 return "用户已存在";
             }
         }
-        new SysCh().setUCODE(ucode).setSETTM(sdf.parse(settm)).setCORE(core).setAUTF(autf).setOBP(obp).setFOP(fop).setWUP(wup).setAOBP(aobp).setAFOP(fop).setAWUP(awup).setDS(ds).setIP(ip).setAUT(sdf.parse(aut)).save();
+        new SysCh().setUCODE(ucode).setSETTM(sdf.parse(settm)).setCORE(core).setAUTF(autf).setOBP(obp).setFOP(fop).setWUP(wup).setAOBP(aobp).setAFOP(fop).setAWUP(awup).setDS(ds).setIP(ip).setAUT(sdf1.parse(aut)).save();
         return "sucess";
     }
 
@@ -237,5 +239,66 @@ public class SystemDao {
      */
     public List<DatasCf> getDatasCf() {
         return DatasCf.dao.find("select * from f_datas_cf");
+    }
+
+    /**
+     * 根据数据源获取数据来源配置表中数据
+     * @param ds
+     * @return
+     */
+    public List<DatasCf> getDatasCfDs(int ds) {
+        return DatasCf.dao.find("select * from f_datas_cf where ds=?",ds);
+    }
+
+    /**
+     * 获取数据库连接类型信息表中数据
+     * @return
+     */
+    public List<DatasLt> getDatasLt() {
+        return DatasLt.dao.find("select * from f_datas_lt");
+    }
+
+    /**
+     * 根据数据源获取数据源信息表中数据
+     * @param ds
+     * @return
+     */
+    public List<DatasM> getDatasM(int ds) {
+        return DatasM.dao.find("select * from f_datas_m");
+    }
+
+    /**
+     * 在数据源信息表中添加数据
+     * @param ds
+     * @param tid
+     * @param tnm
+     * @return
+     */
+    public String doAddDatasM(int ds, String tid, String tnm) {
+        List<DatasM> listDatasM=DatasM.dao.find("select * from f_datas_m");
+        new DatasM().setDS(ds).setTID(tid).setTNM(tnm).save();
+        return "success";
+    }
+
+    /**
+     * 更新数据源信息表
+     * @param ds
+     * @param tid
+     * @param tnm
+     * @return
+     */
+    public String doUpdateDatasM(int ds,String tid, String tnm) {
+        Db.update("update f_datas_m set tid=?,tnm=? where ds=?",tid,tnm,ds);
+        return "success";
+    }
+
+    /**
+     * 删除数据源信息表中数据
+     * @param ds
+     * @return
+     */
+    public String doDeleteDatasM(int ds) {
+        Db.delete("delete from f_datas_m where ds=?",ds);
+        return "success";
     }
 }

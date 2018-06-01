@@ -186,4 +186,61 @@ public class SystemService extends Controller {
     public List<DatasCf> getDatasCf() {
         return systemDao.getDatasCf();
     }
+
+    /**
+     * 根据数据源获取数据来源配置表中数据
+     * @param ds
+     * @return
+     */
+    public List<DatasCf> getDatasCfDs(int ds) {
+        return systemDao.getDatasCfDs(ds);
+    }
+
+    /**
+     * 获取数据库连接类型信息表中数据
+     * @return
+     */
+    public List<DatasLt> getDatasLt() {
+        return systemDao.getDatasLt();
+    }
+
+    /**
+     * 根据数据源获取数据源信息表中数据
+     * @param ds
+     * @return
+     */
+    public List<DatasM> getDatasM(int ds) {
+        return systemDao.getDatasM(ds);
+    }
+
+    /**
+     * 在数据源信息表中添加数据
+     * @param ds
+     * @param tid
+     * @param tnm
+     * @return
+     */
+    public String doAddDatasM(int ds, String tid, String tnm) {
+        return systemDao.doAddDatasM(ds,tid,tnm);
+    }
+
+    /**
+     * 更新数据源信息表
+     * @param ds
+     * @param tid
+     * @param tnm
+     * @return
+     */
+    public String doUpdateDatasM(int ds,String tid, String tnm) {
+        return systemDao.doUpdateDatasM(ds,tid,tnm);
+    }
+
+    /**
+     * 删除数据源信息表中数据
+     * @param ds
+     * @return
+     */
+    public String doDeleteDatasM(int ds) {
+        return systemDao.doDeleteDatasM(ds);
+    }
 }

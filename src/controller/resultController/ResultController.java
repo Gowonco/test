@@ -1,7 +1,10 @@
 package controller.resultController;
 
 import com.jfinal.core.Controller;
+import model.dbmodel.ForecastC;
 import service.resultService.ResultService;
+
+import java.util.List;
 
 public class ResultController extends Controller {
     ResultService resultService=new ResultService();
@@ -11,10 +14,21 @@ public class ResultController extends Controller {
       */
     public void getMonthHistory(){
         String userId=getPara("userId");
-        setAttr("monthTaskLists",resultService.getMonthHistory(userId));
-        setAttr("latestXajForecastResult",resultService.getMonthHistoryXajtLatest(userId));
-        setAttr("latestJyForecastResult",resultService.getMonthHistoryJytLatest(userId));
-        renderJson();
+        List<ForecastC> taskLists= resultService.getMonthHistory(userId);
+        if(!taskLists.isEmpty() && taskLists != null){
+            String taskId=taskLists.get(0).getNO();
+            String taskJid = taskLists.get(0).getJNO();
+            setAttr("monthTaskLists",taskLists);
+            setAttr("latestXajForecastResult",resultService.getMonthHistoryXajtLatest(taskId));
+            setAttr("latestJyForecastResult",resultService.getMonthHistoryJytLatest(taskJid));
+            renderJson();
+        }else{
+            setAttr("monthTaskLists","");
+            setAttr("latestXajForecastResult","");
+            setAttr("latestJyForecastResult","");
+            renderJson();
+        }
+
     }
 
     /**
@@ -23,10 +37,21 @@ public class ResultController extends Controller {
     public void getSearchHistory(){
         String userId=getPara("userId");
         String searchText=getPara("searchText");
-        setAttr("taskLists",resultService.getSearchHistory(userId,searchText));
-        setAttr("firstXajtForecastResult",resultService.getSearchHistoryXajtLatest(userId,searchText));
-        setAttr("firstJytForecastResult",resultService.getSearchHistoryJytLatest(userId,searchText));
-        renderJson();
+        List<ForecastC> taskLists= resultService.getSearchHistory(userId,searchText);
+        if(!taskLists.isEmpty() && taskLists != null){
+            String taskId=taskLists.get(0).getNO();
+            String taskJid=taskLists.get(0).getJNO();
+            setAttr("taskLists",taskLists);
+            setAttr("firstXajtForecastResult",resultService.getSearchHistoryXajtLatest(taskId));
+            setAttr("firstJytForecastResult",resultService.getSearchHistoryJytLatest(taskJid));
+            renderJson();
+        }else{
+            setAttr("taskLists","");
+            setAttr("firstXajtForecastResult","");
+            setAttr("firstJytForecastResult","");
+            renderJson();
+        }
+
     }
 
     /**
@@ -34,7 +59,6 @@ public class ResultController extends Controller {
      */
     public void getHistoryByTaskId(){
         String taskId=getPara("taskId");
-        setAttr("forecastResult",resultService.getHistoryByTaskId(taskId));
         setAttr("forecastResultXajt",resultService.getHistoryByTaskIdXajt(taskId));
         setAttr("forecastResultJyt",resultService.getHistoryByTaskIdJyt(taskId));
         renderJson();
