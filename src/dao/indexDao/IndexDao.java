@@ -1,5 +1,7 @@
 package dao.indexDao;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
@@ -220,6 +222,29 @@ public class IndexDao extends Controller {
             listColorSettingInfoUser=getColorSettingInfoDefault();
         }
         return  listColorSettingInfoUser;
+    }
+
+    /**
+     * 保存用户颜色设置
+     * @param fontSettings
+     */
+    public void doSaveUserColorSetting(String fontSettings){
+        JSONArray jsonArrayfontSettings=(JSONArray) JSONArray.parse(fontSettings);
+        JSONObject jsonObjectfontSettings = (JSONObject) jsonArrayfontSettings.get(0);
+        List<ViewS> listViewS=ViewS.dao.find("select * from f_view_s where  ucode=?",jsonObjectfontSettings.getString("ucode"));
+        if(listViewS.size()>0){
+            for(int i=0;i<jsonArrayfontSettings.size();i++) {
+                jsonObjectfontSettings = (JSONObject) jsonArrayfontSettings.get(i);
+                Db.update("update f_view_s set value=?,frontcolorcode=?,backcolorcode=?,font=? where ucode=? and code=? and coden=?",jsonObjectfontSettings.getInteger("value"),jsonObjectfontSettings.getString("frontcolorcode"),jsonObjectfontSettings.getString("backcolorcode"),jsonObjectfontSettings.getString("font"),jsonObjectfontSettings.getString("ucode"),jsonObjectfontSettings.getInteger("code"),jsonObjectfontSettings.getString("coden"));
+            }
+        }else{
+            for(int i=0;i<jsonArrayfontSettings.size();i++) {
+                jsonObjectfontSettings = (JSONObject) jsonArrayfontSettings.get(i);
+                Db.update("insert into f_view_s values(?,?,?,?,?,?,?,?)",jsonObjectfontSettings.getInteger("code"),jsonObjectfontSettings.getString("coden"),jsonObjectfontSettings.getString("value"),jsonObjectfontSettings.getString("frontcolorcode"),jsonObjectfontSettings.getString("backcolorcode"),jsonObjectfontSettings.getString("font"),jsonObjectfontSettings.getInteger("default"),jsonObjectfontSettings.getString("ucode"));
+            }
+        }
+
+
     }
 
 

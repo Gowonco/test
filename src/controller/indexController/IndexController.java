@@ -96,5 +96,14 @@ public class IndexController extends Controller{
         setAttr("listColorSettingInfoUser",indexService.getColorSettingInfoUser(getPara("ucode")));//获取水雨情 用户自定义 颜色设置
         renderJson();
     }
+    /**
+     * 保存用户颜色设置
+     */
+    public void doSaveUserColorSetting(){
+        String fontSettings=getPara("fontSettings");
+        indexService.doSaveUserColorSetting(fontSettings);
+        setAttr("resultStatus","success");
+        renderJson();
+    }
 
 }

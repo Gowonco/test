@@ -112,4 +112,12 @@ public class IndexService extends Controller {
      * @return
      */
     public List<ViewS> getColorSettingInfoUser(String ucode){return indexDao.getColorSettingInfoUser(ucode);}
+    /**
+     * 保存用户颜色设置
+     * @param fontSettings
+     */
+    public void doSaveUserColorSetting(String fontSettings){
+        indexDao.doSaveUserColorSetting(fontSettings);
+    }
+
 }
