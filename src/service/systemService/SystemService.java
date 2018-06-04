@@ -51,7 +51,7 @@ public class SystemService extends Controller {
      * @return
      */
     public String doUpdateUser(String ucode,String password,int role){
-       return systemDao.doUpdateUser(ucode,password,role);
+        return systemDao.doUpdateUser(ucode,password,role);
 
     }
     /**
@@ -60,7 +60,7 @@ public class SystemService extends Controller {
      * @return
      */
     public void doDeleteUser(String ucode){
-         systemDao.doDeleteUser(ucode);
+        systemDao.doDeleteUser(ucode);
 
     }
     /**
@@ -84,6 +84,10 @@ public class SystemService extends Controller {
         return systemDao.doAddCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut);
 
     }
+    //新加的
+    public SysCh getSysCh(String ucode){
+        return systemDao.getSysCh(ucode);
+    }
     /**
      * 更新系统参数配置
      * @param ucode
@@ -101,7 +105,7 @@ public class SystemService extends Controller {
      * @param aut
      * @return
      */
-    public String doUpdateCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut){
+    public String doUpdateCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut) throws ParseException {
         return systemDao.doUpdateCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut);
 
     }
@@ -118,12 +122,11 @@ public class SystemService extends Controller {
      * @return
      */
     public String doAddDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
-       return systemDao.doAddDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
+        return systemDao.doAddDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
     }
     /**
      * 更新数据源
      * @param ds
-     * @param dsn
      * @param dbn
      * @param pot
      * @param url
@@ -132,8 +135,8 @@ public class SystemService extends Controller {
      * @param typ
      * @return
      */
-    public String doUpdateDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
-        return systemDao.doUpdateDs(ds,dsn,dbn,pot,url,usrn,psw,typ);
+    public String doUpdateDs(String url,String pot,String dbn,String usrn,String psw,int typ,int ds){
+        return systemDao.doUpdateDs(url,pot,dbn,usrn,psw,typ,ds);
     }
     /**
      * 删除数据源
@@ -240,7 +243,7 @@ public class SystemService extends Controller {
      * @param ds
      * @return
      */
-    public String doDeleteDatasM(int ds) {
-        return systemDao.doDeleteDatasM(ds);
+    public String doDeleteDatasM(int ds,String tid) {
+        return systemDao.doDeleteDatasM(ds,tid);
     }
 }

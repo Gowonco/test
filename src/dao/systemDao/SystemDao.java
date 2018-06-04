@@ -84,7 +84,7 @@ public class SystemDao {
      */
     public String doUpdateUser(String ucode,String password,int role){
 
-       if(ucode==null){return "没有该用户";}
+        if(ucode==null){return "没有该用户";}
         Db.update("update f_user set upwd=? , role=? where ucode=?",password,role,ucode);
         return "success";
     }
@@ -120,10 +120,29 @@ public class SystemDao {
         for(SysCh sysch:listCh){
             if(sysch.getUCODE().equals(ucode)){
                 return "用户已存在";
+                //doUpdateCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut);
             }
         }
         new SysCh().setUCODE(ucode).setSETTM(sdf.parse(settm)).setCORE(core).setAUTF(autf).setOBP(obp).setFOP(fop).setWUP(wup).setAOBP(aobp).setAFOP(fop).setAWUP(awup).setDS(ds).setIP(ip).setAUT(sdf.parse(aut)).save();
-        return "sucess";
+        return "success";
+    }
+    //新加的
+    public SysCh getSysCh(String ucode){
+        SysCh sysCh1 = SysCh.dao.find("select * from f_sys_ch where ucode=?",ucode).get(0);
+        SysCh sysCh = new SysCh();
+        sysCh.setSETTM(sysCh1.getSETTM());
+        sysCh.setCORE(sysCh1.getCORE());
+        sysCh.setAUTF(sysCh1.getAUTF());
+        sysCh.setOBP(sysCh1.getOBP());
+        sysCh.setFOP(sysCh1.getFOP());
+        sysCh.setWUP(sysCh1.getWUP());
+        sysCh.setAOBP(sysCh1.getAOBP());
+        sysCh.setAFOP(sysCh1.getAFOP());
+        sysCh.setAWUP(sysCh1.getAWUP());
+        sysCh.setDS(sysCh1.getDS());
+        sysCh.setAUT(sysCh1.getAUT());
+        sysCh.setIP(sysCh1.getIP());
+        return sysCh;
     }
 
     /**
@@ -143,9 +162,9 @@ public class SystemDao {
      * @param aut
      * @return
      */
-    public String doUpdateCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut){
+    public String doUpdateCh(String ucode,String settm,int core,int autf,int obp,int fop,int wup,int aobp,int afop,int awup,int ds,int ip,String aut) throws ParseException {
         if(ucode==null){return "用户不存在";}
-        Db.update("update f_sys_ch set settm=?,core=?,autf=?,obp=?,fop=?,wup=?,aobp=?,afop=?,awup=?,ds=?,ip=?,aut=? where ucode=?",settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut,ucode);
+        Db.update("update f_sys_ch set settm=?,core=?,autf=?,obp=?,fop=?,wup=?,aobp=?,afop=?,awup=?,ds=?,ip=?,aut=? where ucode=?",sdf.parse(settm),core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,sdf1.parse(aut),ucode);
         return "success";
     }
 
@@ -171,7 +190,6 @@ public class SystemDao {
     /**
      * 更新数据源
      * @param ds
-     * @param dsn
      * @param dbn
      * @param pot
      * @param url
@@ -180,9 +198,9 @@ public class SystemDao {
      * @param typ
      * @return
      */
-    public String doUpdateDs(int ds,String dsn,String dbn,String pot,String url,String usrn,String psw,int typ){
-        if(usrn==null){return "用户不存在";}
-        Db.update("update f_datas_cf set ds=?,dsn=?,dbn=?,pot=?,url=?,psw=?,typ=? where usrn=?",ds,dsn,dbn,pot,url,psw,typ,usrn);
+    public String doUpdateDs(String url,String pot,String dbn,String usrn,String psw,int typ,int ds){
+        //if(usrn==null){return "用户不存在";}
+        Db.update("update f_datas_cf set url=?,pot=?,dbn=?,usrn=?,psw=?,typ=? where ds=?",url,pot,dbn,usrn,psw,typ,ds);
         return "success";
     }
 
@@ -203,7 +221,7 @@ public class SystemDao {
      * @return
      */
     public List<User> getAllUser(){
-      return  User.dao.find("select * from f_user");
+        return  User.dao.find("select * from f_user");
     }
 
     /**
@@ -211,7 +229,7 @@ public class SystemDao {
      * @return
      */
     public List<Role> doAddRole(){
-       return Role.dao.find("select * from f_role");
+        return Role.dao.find("select * from f_role");
 
     }
 
@@ -264,7 +282,7 @@ public class SystemDao {
      * @return
      */
     public List<DatasM> getDatasM(int ds) {
-        return DatasM.dao.find("select * from f_datas_m");
+        return DatasM.dao.find("select * from f_datas_m where ds=?",ds);
     }
 
     /**
@@ -297,8 +315,8 @@ public class SystemDao {
      * @param ds
      * @return
      */
-    public String doDeleteDatasM(int ds) {
-        Db.delete("delete from f_datas_m where ds=?",ds);
+    public String doDeleteDatasM(int ds,String tid) {
+        Db.delete("delete from f_datas_m where ds=? and tid=?",ds,tid);
         return "success";
     }
 }

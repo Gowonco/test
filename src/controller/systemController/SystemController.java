@@ -49,9 +49,9 @@ public class SystemController extends Controller {
         Boolean flag=systemService.validateUser(getPara("username"),getPara("password"));
 
         if(flag==false){
-                setAttr("resultStatus","failed");
+            setAttr("resultStatus","failed");
         }else{
-           ViewUser viewUser= systemService.getUser(getPara("username"),getPara("password"));
+            ViewUser viewUser= systemService.getUser(getPara("username"),getPara("password"));
             setAttr("resultStatus","success");
             setAttr("viewUser",viewUser);
         }
@@ -120,7 +120,12 @@ public class SystemController extends Controller {
         setAttr("resultStatus", systemService.doAddCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut));
         renderJson();
     }
-
+    //新加的
+    public void getSysCh(){
+        String ucode = getPara("ucode");
+        setAttr("listSysCh",systemService.getSysCh(ucode));
+        renderJson();
+    }
     /**
      * 更新系统参数配置
      */
@@ -138,7 +143,11 @@ public class SystemController extends Controller {
         int ds=getParaToInt("ds");
         int ip=getParaToInt("ip");
         String aut=getPara("aut");
-        setAttr("resultStatus",systemService.doUpdateCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut));
+        try {
+            setAttr("resultStatus",systemService.doUpdateCh(ucode,settm,core,autf,obp,fop,wup,aobp,afop,awup,ds,ip,aut));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         renderJson();
     }
 
@@ -163,14 +172,13 @@ public class SystemController extends Controller {
      */
     public void doUpdateDs(){
         int ds=getParaToInt("ds");
-        String dsn=getPara("dsn");
         String dbn=getPara("dbn");
         String pot=getPara("pot");
         String url=getPara("url");
         String usrn=getPara("usrn");
         String psw=getPara("psw");
         int typ=getParaToInt("typ");
-        setAttr("resultStatus",systemService.doUpdateDs(ds,dsn,dbn,pot,url,usrn,psw,typ));
+        setAttr("resultStatus",systemService.doUpdateDs(url,pot,dbn,usrn,psw,typ,ds));
         renderJson();
     }
 
@@ -256,11 +264,11 @@ public class SystemController extends Controller {
      * 在数据源信息表中添加数据
      */
     public void doAddDatasM(){
-       int ds=getParaToInt("ds");
-       String tid=getPara("tid");
-       String tnm=getPara("tnm");
-       setAttr("resultStatus",systemService.doAddDatasM(ds,tid,tnm));
-       renderJson();
+        int ds=getParaToInt("ds");
+        String tid=getPara("tid");
+        String tnm=getPara("tnm");
+        setAttr("resultStatus",systemService.doAddDatasM(ds,tid,tnm));
+        renderJson();
     }
 
     /**
@@ -279,7 +287,8 @@ public class SystemController extends Controller {
      */
     public void doDeleteDatasM(){
         int ds=getParaToInt("ds");
-        setAttr("resultStatus",systemService.doDeleteDatasM(ds));
+        String tid = getPara("tid");
+        setAttr("resultStatus",systemService.doDeleteDatasM(ds,tid));
         renderJson();
     }
 }
