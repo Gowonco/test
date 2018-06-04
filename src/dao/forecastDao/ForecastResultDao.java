@@ -327,7 +327,7 @@ public class ForecastResultDao extends Controller {
         List<JYEchartsData> listJYEchartsData=new ArrayList<JYEchartsData>();
         List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '101%'");
         for(Tree fracture:listFracture) {
-            List<ForecastJyr> listForecastJyr=ForecastJyr.dao.find("select ymdhm,drn,q,pq from f_forecast_jyr where no=? and id=? and ymc>=? and ymc>=?",taskId,fracture.getID(),ymc1,ymc3);
+            List<ForecastJyr> listForecastJyr=ForecastJyr.dao.find("select ymdhm,drn,q,pq from f_forecast_jyr where no=? and id=? and ymc>=? and ymc<=?",taskId,fracture.getID(),ymc1,ymc3);
             JYEchartsData jyEchartsData=new JYEchartsData();
             jyEchartsData.setFractureId(fracture.getID());
             jyEchartsData.setFractureName(fracture.getNAME());
