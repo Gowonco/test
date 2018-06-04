@@ -15,6 +15,9 @@ public class ResultController extends Controller {
     public void getMonthHistory(){
         String userId=getPara("userId");
         List<ForecastC> taskLists= resultService.getMonthHistory(userId);
+
+
+
         if(!taskLists.isEmpty() && taskLists != null){
             String taskId=taskLists.get(0).getNO();
             String taskJid = taskLists.get(0).getJNO();
