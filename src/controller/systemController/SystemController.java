@@ -35,7 +35,6 @@ public class SystemController extends Controller {
             setAttr("password","");
             setAttr("remember","");
         }
-
         render("login.html");
     }
 
