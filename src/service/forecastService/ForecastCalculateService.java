@@ -19,27 +19,52 @@ public class ForecastCalculateService extends Controller {
         forecastAdapterService.setAdapterConfig(forecastC,xajMap,jyMap);
     }
     //分块雨量计算
-//    public void testRain(){
-//        RainCalcu rainCalcu = new RainCalcu();
-//        try {
-//            mapp=rainCalcu.partRain(forecastAdapterService.getRain(),forecastAdapterService.getInitialTime(),forecastAdapterService.getStartTime(),forecastAdapterService.getRainTime(),forecastAdapterService.getTree());
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        float[][] pp=(float[][]) mapp.get("averageRainfall");
-//        float[] addpp=(float[])mapp.get("totalRainfall");
-//        float[] maxrain=(float[])mapp.get("maxTotalRainfall");
-//        String[] maxname=(String [])mapp.get("maxStationName");
-//        String[] timeseries=(String [])mapp.get("timeSeries");
-//        //System.out.println(timeseries.length);
-//        for (int i=0;i<pp.length;i++) {
-//            for(int j=0;j<pp[0].length;j++){
-//                System.out.print(pp[i][j]+" ");
-//            }
-//            System.out.println("\n");
-//        }
-//
-//    }
+    public void testRain(){
+        RainCalcu rainCalcu = new RainCalcu();
+        try {
+            mapp=rainCalcu.partRain(forecastAdapterService.getRain(),forecastAdapterService.getInitialTime(),forecastAdapterService.getStartTime(),forecastAdapterService.getRainTime(),forecastAdapterService.getTree());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        float[][] pp=(float[][]) mapp.get("averageRainfall");
+        float[] addpp=(float[])mapp.get("totalRainfall");
+        float[] maxrain=(float[])mapp.get("maxTotalRainfall");
+        String[] maxname=(String [])mapp.get("maxStationName");
+        String[] timeseries=(String [])mapp.get("timeSeries");
+        //System.out.println(timeseries.length);
+        for (int i=0;i<pp.length;i++) {
+            for(int j=0;j<pp[0].length;j++){
+                System.out.print(pp[i][j]+" ");
+            }
+            System.out.println("\n");
+        }
+
+    }
+    //入湖流量计算
+    public void testQ() throws ParseException {
+        CalculationLake jy = new CalculationLake();
+        Map mapp = new HashMap();
+        mapp = jy.ruLake(forecastAdapterService.getMuskK(), forecastAdapterService.getMuskX(), forecastAdapterService.getMuskN(), forecastAdapterService.getRain(), forecastAdapterService.getQr(), forecastAdapterService.getStartTime(), forecastAdapterService.getEndTime());
+        // starttime = (String) mapp.get("开始时间");
+        float ppj = (float) mapp.get("totalRainfall");
+        float[] wm = (float[]) mapp.get("totalW");
+        float[] qm = (float[]) mapp.get("forecastPeak");
+        String[] im = (String[]) mapp.get("peakTime");
+        //以上是预报特征值
+        String[] timeSeries = (String[]) mapp.get("dt");
+        float[] pp = (float[]) mapp.get("rainfall");
+        float[][] qr = (float[][]) mapp.get("sectionFlow");
+        float[] qcal = (float[]) mapp.get("totalFlow");
+        for (int i = 0; i < im.length; i++) {
+            // System.out.println(pp[i]);
+            //System.out.print(ppj+" ");
+            // for (int j = 0; j < qr[0].length; j++) {
+            System.out.println(wm[i] + " "+qm[i]+" "+im[i]);
+        }
+        // System.out.println();
+        //  }
+
+    }
     //测试初始时间
     public void testInitialTime(){
         System.out.println(forecastAdapterService.getInitialTime());

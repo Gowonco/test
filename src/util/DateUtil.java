@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DateUtil {
     public static List<String> getBetweenDates(String startDate, String endDate) throws ParseException {
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
         Date start=sdf.parse(startDate);
         Date end=sdf.parse(endDate);
         List<String> listDate = new ArrayList<String>();

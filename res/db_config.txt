@@ -1,4 +1,4 @@
-mysqlUrl = jdbc:mysql://192.168.1.124:3306/f_data?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+mysqlUrl = jdbc:mysql://localhost:3306/f_data?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
 mysqlUser = hhu
 mysqlPassword = 123456
 

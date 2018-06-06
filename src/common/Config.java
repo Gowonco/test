@@ -11,6 +11,7 @@ import controller.forecastController.*;
 import controller.importController.*;
 import controller.indexController.*;
 import controller.dispatchController.*;
+import controller.linearInterpolationPackage.LinearInterpolationController;
 import controller.materialController.*;
 import controller.modelController.*;
 import controller.resultController.*;
@@ -40,6 +41,7 @@ public class Config extends JFinalConfig {
         me.add("/result",ResultController.class,"view/result/");
         me.add("/system",SystemController.class,"view/system/");
 
+        me.add("/insert",LinearInterpolationController.class);
 
     }
 

@@ -6,6 +6,7 @@ import model.viewmodel.ViewRain;
 import model.viewmodel.xajmodel.XAJChildRainStation;
 import model.viewmodel.xajmodel.XAJForecastXajr;
 import model.viewmodel.xajmodel.XAJFractureChild;
+import model.viewmodel.xajmodel.XAJMMusk;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.math.BigDecimal;
@@ -48,6 +49,7 @@ public class ForecastAdapterService extends Controller {
     public String getRainTime(){
         return sdf2.format(forecastC.getSTARTTM());
     }
+    public String getEndTime(){return sdf2.format(forecastC.getENDTM());}
     //获取新安江模型68个雨量站的雨量数据（经验模型68个雨量站的雨量数据）
     public float[][] getRain(){
         List<ViewRain> rainList = (List<ViewRain>) xajMap.get("listViewRain");
@@ -83,49 +85,49 @@ public class ForecastAdapterService extends Controller {
                 if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50500900")){
                     rainArr[i][8] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50604800\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50604800")){
                     rainArr[i][9] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50603000\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50603000")){
                     rainArr[i][10] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50300100\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50300100")){
                     rainArr[i][11] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50605200\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50605200")){
                     rainArr[i][12] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50607900\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50607900")){
                     rainArr[i][13] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50604000\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50604000")){
                     rainArr[i][14] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50302400\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50302400")){
                     rainArr[i][15] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50302010\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50302010")){
                     rainArr[i][16] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50304900\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50304900")){
                     rainArr[i][17] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50326550\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50326550")){
                     rainArr[i][18] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50301100\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50301100")){
                     rainArr[i][19] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50301400\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50301400")){
                     rainArr[i][20] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50607050\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50607050")){
                     rainArr[i][21] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50603000\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50603000")){
                     rainArr[i][22] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
-                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50300100\n")){
+                if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50300100")){
                     rainArr[i][23] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
             }
@@ -182,29 +184,29 @@ public class ForecastAdapterService extends Controller {
 
     //获取马斯京根汇流参数k
     public float[] getMuskK(){
-        List<MMusk> mMusks = (List<MMusk>) xajMap.get("listXAJMMusk");
+        List<XAJMMusk> mMusks = (List<XAJMMusk>) xajMap.get("listXAJMMusk");
         float[] muskK = new float[mMusks.size()];
         for(int i=0;i<mMusks.size();i++){
-            muskK[i] = mMusks.get(i).getK();
+          //  muskK[i] = mMusks.get(i).get;
         }
        return  muskK;
     }
 
     //获取马斯京根汇流参数X
     public float[] getMuskX(){
-        List<MMusk> mMusks = (List<MMusk>) xajMap.get("listXAJMMusk");
+        List<XAJMMusk> mMusks = (List<XAJMMusk>) xajMap.get("listXAJMMusk");
         float[] muskX = new float[mMusks.size()];
         for(int i=0;i<mMusks.size();i++){
-            muskX[i] = mMusks.get(i).getX().floatValue();
+           // muskX[i] = mMusks.get(i).getX().floatValue();
         }
         return muskX;
     }
     //获取马斯京根汇流参数N
     public int[] getMuskN(){
-        List<MMusk> mMusks = (List<MMusk>) xajMap.get("listXAJMMusk");
+        List<XAJMMusk> mMusks = (List<XAJMMusk>) xajMap.get("listXAJMMusk");
         int[] muskN = new int[mMusks.size()];
         for(int i=0;i<mMusks.size();i++){
-            muskN[i] = mMusks.get(i).getN();
+           // muskN[i] = mMusks.get(i).getN();
         }
         return muskN;
     }
@@ -230,7 +232,7 @@ public class ForecastAdapterService extends Controller {
         for(int i=0;i<qr.length;i++){
             qr[i] = new float[listXajForecastXajr.size()-1];//5个,没有鲁台子
             for(int j=0;j<qr[i].length;j++){
-                qr[i][j] = listXajForecastXajr.get(0).getListForecastXajr().get(size*2+j*size+i).getPQ().floatValue();
+                qr[i][j] = listXajForecastXajr.get(0).getListForecastXajr().get(size+j*size+i).getPQ().floatValue();
                //System.out.println(size*2+size*j-1);
             }
         }
