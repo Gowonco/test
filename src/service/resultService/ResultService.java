@@ -2,15 +2,19 @@ package service.resultService;
 
 import com.jfinal.core.Controller;
 import dao.resultDao.ResultDao;
+import model.base.BaseCfBb;
 import model.dbmodel.ForecastC;
 import model.dbmodel.ForecastJyt;
 import model.dbmodel.ForecastXajt;
+import model.viewmodel.resultmodel.JYForecastJyt;
+import model.viewmodel.resultmodel.XAJForecastXajt;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class ResultService extends Controller {
+    public ForecastC forecastC=new ForecastC();
 
     ResultDao resultDao=new ResultDao();
 
@@ -131,5 +135,21 @@ public class ResultService extends Controller {
      */
     public List<ForecastJyt> getHistoryByTaskIdJyt(String taskId){
         return resultDao.getHistoryByTaskIdJyt(taskId);
+    }
+
+    /**
+     * 获取级联表数据
+     * @param taskId
+     * @return
+     */
+    public List<XAJForecastXajt> getXajName(String taskId) { return  resultDao.getXajName(forecastC.getID());
+    }
+
+    /**
+     * 获取级联表数据
+     * @param taskJid
+     * @return
+     */
+    public List<JYForecastJyt> getJyName(String taskJid) { return resultDao.getJyName(forecastC.getID());
     }
 }

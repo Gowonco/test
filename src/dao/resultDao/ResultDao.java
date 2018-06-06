@@ -4,8 +4,13 @@ import com.jfinal.core.Controller;
 import model.dbmodel.ForecastC;
 import model.dbmodel.ForecastJyt;
 import model.dbmodel.ForecastXajt;
+import model.dbmodel.Tree;
+import model.viewmodel.resultmodel.JYForecastJyt;
+import model.viewmodel.resultmodel.XAJForecastXajt;
+import service.resultService.XajName;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -112,5 +117,42 @@ public class ResultDao extends Controller {
     public List<ForecastJyt> getHistoryByTaskIdJyt(String taskId) {
         return ForecastJyt.dao.find("select * from f_forecast_jyt where no=?",taskId);
     }
+
+    /**
+     * 获取级联表数据
+     * @param taskId
+     * @return
+     */
+    public List<XAJForecastXajt> getXajName(String taskId) {
+        List<XAJForecastXajt> listXAJForecastXajt=new ArrayList<XAJForecastXajt>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '001%'");
+        for(Tree fracture:listFracture){
+            List<ForecastXajt> listForecastXajt=ForecastXajt.dao.find("select * from f_forecast_xajt where no=?",taskId);
+            XAJForecastXajt xajtName=new XAJForecastXajt();
+            xajtName.setFractureId(fracture.getID());
+            xajtName.setFractureName(fracture.getNAME());
+            listXAJForecastXajt.add(xajtName);
+        }
+        return listXAJForecastXajt;
+    }
+
+    /**
+     * 获取级联表数据
+     * @param taskJid
+     * @return
+     */
+    public List<JYForecastJyt> getJyName(String taskJid) {
+        List<JYForecastJyt> listJYForecastJyt=new ArrayList<JYForecastJyt>();
+        List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '101%'");
+        for(Tree fracture:listFracture){
+            List<ForecastJyt> listForecastJyt=ForecastJyt.dao.find("select * from f_forecast_xajt where no=?",taskJid);
+            JYForecastJyt jyName=new JYForecastJyt();
+            jyName.setFractureId(fracture.getID());
+            jyName.setFractureName(fracture.getNAME());
+            listJYForecastJyt.add(jyName);
+        }
+        return listJYForecastJyt;
+    }
 }
+
 
