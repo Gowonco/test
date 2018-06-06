@@ -1,63 +1,95 @@
 package controller.dispatchController;
 
 import com.jfinal.core.Controller;
+import model.dbmodel.ForecastC;
+import model.dbmodel.RiverH;
 import service.dispatchService.DispatchService;
 
 import java.text.ParseException;
+import java.util.List;
 
 public class DispatchController extends Controller {
 
     DispatchService dispatchService=new DispatchService();
 
     public void getWaterRelease() throws ParseException {
-        //String taskId=getPara("taskId");
-        String taskId = "0010201805181230";
-        setAttr("listWasR",dispatchService.getWaterRelease(taskId));
+        String taskId=getPara("taskId");
+        dispatchService.taskId = taskId;
+        //String taskId = "0010201805181230";
+        setAttr("listWasR",dispatchService.getWaterRelease());
+        List<RiverH> list = dispatchService.getJiangBaDailyWaterLevel();
+        setAttr("lastJBZ",list.get(list.size()-1).getZ());
+        //蒋坝最后一日数据
         renderJson();
     }
     //放水资料读取
 
+
     public void doDispatchParaSave(){
-        //String taskId=getPara("taskId");
-        String taskId = "0010201805181230";
+        String taskId=getPara("taskId");
+        dispatchService.taskId = taskId;
+        //String taskId = "0010201805181230";
+        String curve = getPara("CURVE");
+        int FLD = getParaToInt("FLD");
+        String Z = getPara("Z");
+        String Q = getPara("Q");
+        String WE = getPara("WE");
+        String STZ = getPara("STZ");
+        String ELQ = getPara("ELQ");
+        String TLQ = getPara("TLQ");
+        String HLQ = getPara("HLQ");
+        String waterReleaseData = getPara("waterReleaseData");
+        dispatchService.doDispatchParaSave(taskId,curve,FLD,Z,Q,WE,STZ,ELQ,TLQ,HLQ);
+        dispatchService.waterReleaseDataSave(taskId,waterReleaseData);
+        dispatchService.doDispatch();
+        setAttr("resultStatus","success");
+        renderJson();
     }
+    //调度参数保存
 
     public void getStorageCurve(){
 
         setAttr("listCurveHs",dispatchService.getStorageCurve());
         renderJson();
     }
+    //调度库容曲线读取
 
     public void getDispatchPara(){
         //String taskId=getPara("taskId");
         String taskId = "0010201805181230";
-        setAttr("forecastC",dispatchService.getDispatchPara(taskId));
+        setAttr("forecastC",dispatchService.getDispatchPara());
         renderJson();
     }
+    //调度参数读取
 
     public void getDischargeCurve(){
         setAttr("listXlqxB",dispatchService.getDischargeCurve());
         renderJson();
     }
+    //调度闸门泄流曲线读取
+
 
     public void getForecastResult(){
         //String taskId=getPara("taskId");
         String taskId = "0010201805181230";
-        setAttr("listInflowXajr",dispatchService.getForecastResult(taskId));
+        setAttr("listInflowXajr",dispatchService.getForecastResult());
         renderJson();
     }
+    //调度入湖面平均雨量、总入流读取
 
     public void getJiangBaDailyWaterLevel(){
         //String taskId=getPara("taskId");
         String taskId = "0010201805181230";
-        setAttr("RiverH",dispatchService.getJiangBaDailyWaterLevel(taskId));
+        setAttr("listRiverH",dispatchService.getJiangBaDailyWaterLevel());
         renderJson();
     }
+    //蒋坝日水位读取
 
     public void getDispatchWaterReleaseInfo(){
         //String taskId=getPara("taskId");
         String taskId = "0010201805181230";
-        setAttr("listCtrOtq",dispatchService.getDispatchWaterReleaseInfo(taskId));
+        setAttr("listCtrOtq",dispatchService.getDispatchWaterReleaseInfo());
         renderJson();
     }
+    //调度放水情况读取
 }
