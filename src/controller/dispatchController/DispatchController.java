@@ -14,8 +14,9 @@ public class DispatchController extends Controller {
 
     public void getWaterRelease() throws ParseException {
         String taskId=getPara("taskId");
-        dispatchService.taskId = taskId;
+        System.out.println(taskId);
         //String taskId = "0010201805181230";
+        dispatchService.setTaskSetting(taskId);
         setAttr("listWasR",dispatchService.getWaterRelease());
         List<RiverH> list = dispatchService.getJiangBaDailyWaterLevel();
         setAttr("lastJBZ",list.get(list.size()-1).getZ());
@@ -27,7 +28,7 @@ public class DispatchController extends Controller {
 
     public void doDispatchSave(){
         String taskId=getPara("taskId");
-        dispatchService.taskId = taskId;
+        dispatchService.setTaskSetting(taskId);
         //String taskId = "0010201805181230";
         String curve = getPara("CURVE");
         int FLD = getParaToInt("FLD");
