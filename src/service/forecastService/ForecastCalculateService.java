@@ -18,7 +18,10 @@ public class ForecastCalculateService extends Controller {
     public ForecastCalculateService (ForecastC forecastC, Map xajMap, Map jyMap){
         forecastAdapterService.setAdapterConfig(forecastC,xajMap,jyMap);
     }
-    //分块雨量计算
+
+    /**
+     * 分块雨量计算
+     */
     public void testRain(){
         RainCalcu rainCalcu = new RainCalcu();
         try {
@@ -40,11 +43,15 @@ public class ForecastCalculateService extends Controller {
         }
 
     }
-    //入湖流量计算
+
+    /**
+     * 入湖流量计算
+     * @throws ParseException
+     */
     public void testQ() throws ParseException {
         CalculationLake jy = new CalculationLake();
         Map mapp = new HashMap();
-        mapp = jy.ruLake(forecastAdapterService.getMuskK(), forecastAdapterService.getMuskX(), forecastAdapterService.getMuskN(), forecastAdapterService.getRain(), forecastAdapterService.getQr(), forecastAdapterService.getStartTime(), forecastAdapterService.getEndTime());
+        mapp = jy.ruLake( forecastAdapterService.getPj(), forecastAdapterService.getQr(), forecastAdapterService.getStartTime(), forecastAdapterService.getEndTime());
         // starttime = (String) mapp.get("开始时间");
         float ppj = (float) mapp.get("totalRainfall");
         float[] wm = (float[]) mapp.get("totalW");
@@ -55,11 +62,12 @@ public class ForecastCalculateService extends Controller {
         float[] pp = (float[]) mapp.get("rainfall");
         float[][] qr = (float[][]) mapp.get("sectionFlow");
         float[] qcal = (float[]) mapp.get("totalFlow");
-        for (int i = 0; i < im.length; i++) {
+        //System.out.println(qcal.length);
+        for (int i = 0; i < qcal.length; i++) {
             // System.out.println(pp[i]);
             //System.out.print(ppj+" ");
             // for (int j = 0; j < qr[0].length; j++) {
-            System.out.println(wm[i] + " "+qm[i]+" "+im[i]);
+            System.out.println(qcal[i] );
         }
         // System.out.println();
         //  }

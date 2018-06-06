@@ -69,7 +69,7 @@ public class ForecastService extends Controller {
          jyMap.put("listParaMu",getParaMu());//马斯京根汇流参数
         ForecastCalculateService fc=new ForecastCalculateService(forecastC,xajMap,jyMap);
         ForecastCalculateService f = new ForecastCalculateService(mapp);
-         //fc.testQ();
+         fc.testQ();
     }
 
     /**
