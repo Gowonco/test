@@ -25,6 +25,7 @@ public class ForecastService extends Controller {
 
     Map xajMap=new HashMap();
     Map jyMap=new HashMap();
+    Map mapp = new HashMap();
     /**
      * 获取本次任务配置
      * @param taskId
@@ -66,7 +67,9 @@ public class ForecastService extends Controller {
          jyMap.put("listJYConfig",getExperienceConfig());//经验模型-- 蚌埠 明光 淮北 配置表
          jyMap.put("listJYHydrologyFlow",getHydrologyFlow());//7个水文站的实测流量
          jyMap.put("listParaMu",getParaMu());//马斯京根汇流参数
-         new ForecastCalculateService(forecastC,xajMap,jyMap).test();//
+        ForecastCalculateService fc=new ForecastCalculateService(forecastC,xajMap,jyMap);
+        ForecastCalculateService f = new ForecastCalculateService(mapp);
+         fc.testpp();
     }
 
     /**
