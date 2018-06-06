@@ -16,7 +16,6 @@ public class DispatchService extends Controller {
     DispatchDao dispatchDao = new DispatchDao();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-
     //调度参数
     ForecastC dispatchParams = getDispatchPara();
     //获取实测开始时间，预报开始时间，预报结束时间
