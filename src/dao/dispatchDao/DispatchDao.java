@@ -1,6 +1,9 @@
 package dao.dispatchDao;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Db;
 import model.dbmodel.*;
 import model.viewmodel.dispatch.DispatchWaterRelease;
 import util.DateUtil;
@@ -34,7 +37,7 @@ public class DispatchDao extends Controller {
     }
 
     public List<XlqxB> getDischargeCurve(){
-        List<XlqxB> listXlqxB = XlqxB.dao.find("select * from f_xlqx_b");
+        List<XlqxB> listXlqxB = XlqxB.dao.find("select * from f_xlqx_b where DBCD = ?","00100000");
         return listXlqxB;
     }
 
@@ -43,9 +46,10 @@ public class DispatchDao extends Controller {
         return listInflowXajr;
     }
 
-    public ForecastC getJiangBaDailyWaterLevel(int YMC1,int YMC2){
-        ForecastC RiverH = ForecastC.dao.findFirst("select Z from f_river_h where YMC between ? and ?",YMC1,YMC2);
-        return RiverH;
+    public List<RiverH> getJiangBaDailyWaterLevel(int YMC1,int YMC2){
+        List<RiverH> listRiverH = RiverH.dao.find("select STCD,YMDHM,Z from f_river_h where YMC between ? and ? and STCD = ?",YMC1,YMC2,"50916500" );
+        listRiverH.remove(listRiverH.size()-1);
+        return listRiverH;
     }
 
     public List<CtrOtq> getDispatchWaterReleaseInfo(String taskId){
@@ -75,4 +79,23 @@ public class DispatchDao extends Controller {
         }
         return listDispatchWaterRelease;
     }
+
+    public void doDispatchParaSave(String taskId, String curve, int FLD, String Z, String Q, String WE, String STZ, String ELQ, String TLQ, String HLQ){
+        try {
+            Db.update("update f_forecast_c set CURVE=?,FLD=?,Z=?,Q=?,WE=?,STZ=?,ELQ=?,TLQ=?,HLQ=? where NO=?",curve,FLD,Z,Q,WE,STZ,ELQ,TLQ,HLQ,taskId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        //System.out.println("success");
+    }
+
+    public void waterReleaseDataSave(int YMC1,int YMC2,String waterReleaseData){
+        JSONArray jsonwaterReleaseData=(JSONArray) JSONArray.parse(waterReleaseData);
+        List<WasR> listWasR = WasR.dao.find("select YMDHM,TGTQ from f_was_r where STCD in {?,?,?}and YMC between ? and ?","51001750","51002650","51110300", YMC1,YMC2);
+        for(int i=0;i<jsonwaterReleaseData.size();i++) {
+            JSONObject jsonObjectwaterReleaseData=(JSONObject) jsonwaterReleaseData.get(i);
+        }
+    }
+
+
 }
