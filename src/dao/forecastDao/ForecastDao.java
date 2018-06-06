@@ -293,7 +293,7 @@ public class ForecastDao extends Controller {
         List<XAJForecastXajr> listXAJForecastXajr=new ArrayList<XAJForecastXajr>();
         List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '001%'");
         for(Tree fracture:listFracture){
-            List<ForecastXajr> listForecastXajr=ForecastXajr.dao.find("select dmcd,ymdhm,drn,q,pq from f_forecast_xajr where no=? and ymc>=? and ymc<=?",taskId,ymc1,ymc3);
+            List<ForecastXajr> listForecastXajr=ForecastXajr.dao.find("select dmcd,ymdhm,drn,q,pq from f_forecast_xajr where no=? and dmcd=? and ymc>=? and ymc<=?",taskId,fracture.getID(),ymc1,ymc3);
             XAJForecastXajr xajForecastXajr=new XAJForecastXajr();
             xajForecastXajr.setFractureId(fracture.getID());
             xajForecastXajr.setFractureName(fracture.getNAME());
