@@ -272,7 +272,7 @@ public class ForecastDao extends Controller {
         List<XAJMMusk> listXAJMMusk=new ArrayList<XAJMMusk>();
         List<Tree> listFracture=Tree.dao.find("select * from f_tree where rank=2 and pid like '001%'");
         for(Tree fracture:listFracture){
-            List<MMusk> listMMusk=MMusk.dao.find("select * from f_m_musk");
+            List<MMusk> listMMusk=MMusk.dao.find("select * from f_m_musk where dmcd=? ",fracture.getID());
             XAJMMusk xajmMusk=new XAJMMusk();
             xajmMusk.setFractureId(fracture.getID());
             xajmMusk.setFractureName(fracture.getNAME());

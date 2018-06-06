@@ -19,27 +19,27 @@ public class ForecastCalculateService extends Controller {
         forecastAdapterService.setAdapterConfig(forecastC,xajMap,jyMap);
     }
     //分块雨量计算
-    public void testRain(){
-        RainCalcu rainCalcu = new RainCalcu();
-        try {
-            mapp=rainCalcu.partRain(forecastAdapterService.getRain(),forecastAdapterService.getInitialTime(),forecastAdapterService.getStartTime(),forecastAdapterService.getRainTime(),forecastAdapterService.getTree());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        float[][] pp=(float[][]) mapp.get("averageRainfall");
-        float[] addpp=(float[])mapp.get("totalRainfall");
-        float[] maxrain=(float[])mapp.get("maxTotalRainfall");
-        String[] maxname=(String [])mapp.get("maxStationName");
-        String[] timeseries=(String [])mapp.get("timeSeries");
-        //System.out.println(timeseries.length);
-        for (int i=0;i<pp.length;i++) {
-            for(int j=0;j<pp[0].length;j++){
-                System.out.print(pp[i][j]+" ");
-            }
-            System.out.println("\n");
-        }
-
-    }
+//    public void testRain(){
+//        RainCalcu rainCalcu = new RainCalcu();
+//        try {
+//            mapp=rainCalcu.partRain(forecastAdapterService.getRain(),forecastAdapterService.getInitialTime(),forecastAdapterService.getStartTime(),forecastAdapterService.getRainTime(),forecastAdapterService.getTree());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        float[][] pp=(float[][]) mapp.get("averageRainfall");
+//        float[] addpp=(float[])mapp.get("totalRainfall");
+//        float[] maxrain=(float[])mapp.get("maxTotalRainfall");
+//        String[] maxname=(String [])mapp.get("maxStationName");
+//        String[] timeseries=(String [])mapp.get("timeSeries");
+//        //System.out.println(timeseries.length);
+//        for (int i=0;i<pp.length;i++) {
+//            for(int j=0;j<pp[0].length;j++){
+//                System.out.print(pp[i][j]+" ");
+//            }
+//            System.out.println("\n");
+//        }
+//
+//    }
     //测试初始时间
     public void testInitialTime(){
         System.out.println(forecastAdapterService.getInitialTime());

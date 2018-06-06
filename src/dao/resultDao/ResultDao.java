@@ -7,7 +7,6 @@ import model.dbmodel.ForecastXajt;
 import model.dbmodel.Tree;
 import model.viewmodel.resultmodel.JYForecastJyt;
 import model.viewmodel.resultmodel.XAJForecastXajt;
-import service.resultService.XajName;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
