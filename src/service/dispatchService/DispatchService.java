@@ -15,8 +15,22 @@ public class DispatchService extends Controller {
     public String taskId;
     DispatchDao dispatchDao = new DispatchDao();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
     //调度参数
     ForecastC dispatchParams = getDispatchPara();
+    //获取实测开始时间，预报开始时间，预报结束时间
+    ForecastC time =getForecastC();
+    //调度库容曲线
+    List<CurveHs> storageCurve = getStorageCurve();
+    //闸门泄流曲线读取
+    List<XlqxB> dischargeCurve = getDischargeCurve();
+    //调度入湖面平均雨量、总入流
+    List<InflowXajr> forecastResult = getForecastResult();
+    //蒋坝日水位读取
+    List<RiverH> jiangBaDailyWaterLevel = getJiangBaDailyWaterLevel();
+    //调度放水情况读取
+    List<CtrOtq> dispatchWaterReleaseInfo = getDispatchWaterReleaseInfo();
 
     public boolean doDispatch(){
         //进行调度
@@ -33,7 +47,7 @@ public class DispatchService extends Controller {
 
     public List<CurveHs> getStorageCurve() {
         return dispatchDao.getStorageCurve();
-    }
+    }//调度库容曲线读取
 
     public ForecastC getDispatchPara() {
         return dispatchDao.getDispatchPara(taskId);
@@ -48,6 +62,7 @@ public class DispatchService extends Controller {
     public List<InflowXajr> getForecastResult() {
         return dispatchDao.getForecastResult(taskId);
     }
+    //调度入湖面平均雨量、总入流
 
     public List<RiverH> getJiangBaDailyWaterLevel() {
         ForecastC forecastC = getForecastC();
@@ -60,10 +75,11 @@ public class DispatchService extends Controller {
         int YMC2 = forecastC.getYMC2();
         return dispatchDao.getJiangBaDailyWaterLevel(YMC1, YMC2);
     }
+    //蒋坝日水位读取
 
     public List<CtrOtq> getDispatchWaterReleaseInfo() {
         return dispatchDao.getDispatchWaterReleaseInfo(taskId);
-    }
+    }//调度放水情况读取
 
     public List<DispatchWaterRelease> getWaterRelease() throws ParseException {
         ForecastC forecastC = getForecastC();

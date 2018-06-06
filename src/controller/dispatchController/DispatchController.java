@@ -25,7 +25,7 @@ public class DispatchController extends Controller {
     //放水资料读取
 
 
-    public void doDispatchParaSave(){
+    public void doDispatchSave(){
         String taskId=getPara("taskId");
         dispatchService.taskId = taskId;
         //String taskId = "0010201805181230";
