@@ -95,9 +95,9 @@ public class DispatchService extends Controller {
         dispatchDao.doDispatchParaSave(taskId,curve,FLD,Z,Q,WE,STZ,ELQ,TLQ,HLQ);
     }
 
-    public void waterReleaseDataSave(String taskId,String waterReleaseData){
+    public void waterReleaseDataSave(String waterReleaseData){
 
-        dispatchDao.waterReleaseDataSave(forecastC.getYMC1(), forecastC.getYMC2(),waterReleaseData);
+        dispatchDao.waterReleaseDataSave(forecastC.getNO(),forecastC.getYMC1(), forecastC.getYMC2(),waterReleaseData);
     }
 }
 

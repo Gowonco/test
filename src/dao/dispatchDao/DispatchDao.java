@@ -89,12 +89,27 @@ public class DispatchDao extends Controller {
         //System.out.println("success");
     }
 
-    public void waterReleaseDataSave(int YMC1,int YMC2,String waterReleaseData){
-        JSONArray jsonwaterReleaseData=(JSONArray) JSONArray.parse(waterReleaseData);
-        List<WasR> listWasR = WasR.dao.find("select YMDHM,TGTQ from f_was_r where STCD in {?,?,?}and YMC between ? and ?","51001750","51002650","51110300", YMC1,YMC2);
-        for(int i=0;i<jsonwaterReleaseData.size();i++) {
-            JSONObject jsonObjectwaterReleaseData=(JSONObject) jsonwaterReleaseData.get(i);
+    public void waterReleaseDataSave(String taskId,int YMC1,int YMC2,String waterReleaseData){
+        List<CtrOtq> listCtrOtq = CtrOtq.dao.find("select * from f_ctr_otq where NO = ?",taskId);
+        JSONArray jsonArrayWaterReleaseData=(JSONArray) JSONArray.parse(waterReleaseData);
+        List<WasR> listWasR = WasR.dao.find("select YMDHM,TGTQ,YMC,STCD from f_was_r where STCD in (?,?,?) and YMC between ? and ?","51001750","51002650","51110300", YMC1,YMC2);
+        for(int i=0;i<jsonArrayWaterReleaseData.size();i++) {
+            JSONObject jsonObjectWaterReleaseData=(JSONObject) jsonArrayWaterReleaseData.get(i);
+            String ymdhm=jsonObjectWaterReleaseData.getString("date")+" 00:00:00";
+            if(listCtrOtq.size()==0) {
+                Db.update("insert into f_ctr_otq(NO,YMDHM,YMC,GLDZQ,ARQ) values(?,?,UNIX_TIMESTAMP(?),?,?)", taskId, ymdhm, ymdhm, jsonObjectWaterReleaseData.getDouble("tgtq"), jsonObjectWaterReleaseData.getDouble("arq"));
+                //jsonObjectwaterReleaseData.getString("date");
+            }else {
+               //Db.update("update f_ctr_otq set")
+            }
         }
+        /*for (WasR wasR:listWasR){
+            if (){
+                Db.update("update f_ctr_otq set GLDZQ = ? where ymc = ?",wasR.getTGTQ(),wasR.getYMC());
+            }
+        }*/
+
+
     }
 
 

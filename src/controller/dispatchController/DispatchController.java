@@ -41,7 +41,7 @@ public class DispatchController extends Controller {
         String HLQ = getPara("HLQ");
         String waterReleaseData = getPara("waterReleaseData");
         dispatchService.doDispatchParaSave(taskId,curve,FLD,Z,Q,WE,STZ,ELQ,TLQ,HLQ);
-        dispatchService.waterReleaseDataSave(taskId,waterReleaseData);
+        dispatchService.waterReleaseDataSave(waterReleaseData);
         dispatchService.doDispatch();
         setAttr("resultStatus","success");
         renderJson();
