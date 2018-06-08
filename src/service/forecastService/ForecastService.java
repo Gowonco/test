@@ -69,7 +69,12 @@ public class ForecastService extends Controller {
          jyMap.put("listParaMu",getParaMu());//马斯京根汇流参数
         ForecastCalculateService fc=new ForecastCalculateService(forecastC,xajMap,jyMap);
         ForecastCalculateService f = new ForecastCalculateService(mapp);
-         fc.testQ();
+         //fc.testInitialTime();
+        //fc.testStartTime();
+       //fc.testQ();
+       // fc.testK1();
+        //fc.testK2();
+        //fc.testJYM();
     }
 
     /**
@@ -79,7 +84,7 @@ public class ForecastService extends Controller {
      */
     public List<ViewRain> getRainData() throws ParseException {
 
-        List<ViewRain> listViewRain=forecastDao.getRainData(sdf.format(forecastC.getBASEDTM()),sdf.format(forecastC.getSTARTTM()));
+        List<ViewRain> listViewRain=forecastDao.getRainData(sdf.format(forecastC.getWUTM()),sdf.format(forecastC.getSTARTTM()));
         return listViewRain;
     }
 

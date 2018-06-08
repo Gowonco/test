@@ -105,6 +105,8 @@ class CalculationLake {
                 if (qrr[j][i] > qm[i]) {
                     qm[i] = qrr[j][i];
                     im[i] = timeSeries[j]; }
+            if(im[i]==null)
+            {im[i]=timeSeries[0];}
         }
         //统计洪峰流量和峰现时间
         float ppj=0;

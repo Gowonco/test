@@ -3,6 +3,8 @@ package service.forecastService;
 import com.jfinal.core.Controller;
 import model.dbmodel.*;
 import model.viewmodel.ViewRain;
+import model.viewmodel.jymodel.JYChildPara;
+import model.viewmodel.jymodel.JYChildRainStation;
 import model.viewmodel.xajmodel.XAJChildRainStation;
 import model.viewmodel.xajmodel.XAJForecastXajr;
 import model.viewmodel.xajmodel.XAJFractureChild;
@@ -25,6 +27,9 @@ public class ForecastAdapterService extends Controller {
 
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+
+    //经验模型面平均雨量
+     public static float[][] pP;
 
     public void setAdapterConfig(ForecastC forecastC,Map xajMap,Map jyMap){
         this.forecastC=forecastC;
@@ -53,14 +58,15 @@ public class ForecastAdapterService extends Controller {
     public String getEndTime(){
         return sdf2.format(forecastC.getENDTM());
     }
+    //----------------------------新安江模型面平均雨量-----------------------------
     //获取新安江模型68个雨量站的雨量数据（经验模型68个雨量站的雨量数据）
     public float[][] getRain(){
         List<ViewRain> rainList = (List<ViewRain>) xajMap.get("listViewRain");
         float[][] rainArr = new float[rainList.size()][];
-
         for(int i=0;i<rainList.size();i++){
             rainArr[i] = new float[rainList.get(i).getListDayrnflH().size()];
             for(int j=0;j<rainList.get(i).getListDayrnflH().size();j++){
+                //System.out.println(rainList.get(i).getListDayrnflH().get(j).getSTCD());
                 if(rainList.get(i).getListDayrnflH().get(j).getSTCD().equals("50100100")){
                     rainArr[i][0] = rainList.get(i).getListDayrnflH().get(j).getDRN().floatValue();
                 }
@@ -272,7 +278,7 @@ public class ForecastAdapterService extends Controller {
         return rainArr;
     }
     //获取新安江 子流域-雨量站级联关系表
-    public String[][] getTree(){
+    public String[][] getXAJTree(){
         List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
         String [][] treeArr = new String[listXAJChildRainStation.size()][];
         for(int i=0;i<listXAJChildRainStation.size();i++){
@@ -283,8 +289,8 @@ public class ForecastAdapterService extends Controller {
         }
         return treeArr;
     }
-    //返回雨量分析特征表
-    public List<DayrnflCh> getDayrnflCh(float addPp[],float totalRain[],String maxRain[]){
+    //返回雨量分析特征表—新安江模型
+    public List<DayrnflCh> getXAJDayrnflCh(float addPp[],float totalRain[],String maxName[]){
         List<DayrnflCh> listDayrnflCh = new ArrayList<>();
         List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
         for(int i=0;i<listXAJChildRainStation.size();i++){
@@ -293,9 +299,9 @@ public class ForecastAdapterService extends Controller {
             dayrnflCh.setNO(forecastC.getNO());
             dayrnflCh.setAMRN(BigDecimal.valueOf(addPp[i]));
             dayrnflCh.setSTMRN(BigDecimal.valueOf(totalRain[i]));
-            dayrnflCh.setSTNM(maxRain[i]);
+            dayrnflCh.setSTNM(maxName[i]);
             for(int j=0;j<listXAJChildRainStation.get(i).getSize();j++){
-                if(listXAJChildRainStation.get(i).getListRainStation().get(j).getNAME().equals(maxRain[i])){
+                if(listXAJChildRainStation.get(i).getListRainStation().get(j).getNAME().equals(maxName[i])){
                     dayrnflCh.setSTCD(listXAJChildRainStation.get(i).getListRainStation().get(j).getID());break;
                 }
             }
@@ -304,24 +310,27 @@ public class ForecastAdapterService extends Controller {
         return listDayrnflCh;
     }
 
-    //返回面平均雨量表
-    public List<DayrnflAvg> getDayrnflAvg(Float pp[][],String timeSeries[]) throws ParseException {
+    //返回面平均雨量表—新安江模型
+    public List<DayrnflAvg> getXAJDayrnflAvg(float pp[][],String timeSeries[]) throws ParseException {
         List<DayrnflAvg> listDayrnflAvg = new ArrayList<>();
         List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
-        for(int m=0;m<listXAJChildRainStation.size();m++){//子流域
-            for(int t=0;t<timeSeries.length;t++){//日期
+        // System.out.println(pp.length);
+        //System.out.println(timeSeries.length);
+        for(int t=0;t<pp.length;t++){//日期
+            for(int m=0;m<listXAJChildRainStation.size();m++){//子流域
                 DayrnflAvg dayrnflAvg = new DayrnflAvg();
                 dayrnflAvg.setARCD(listXAJChildRainStation.get(m).getChildId());
-                dayrnflAvg.setYMDHM(sdf2.parse(timeSeries[t]));
+                dayrnflAvg.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
                 dayrnflAvg.setNO(forecastC.getNO());
-                dayrnflAvg.setYMC((int) sdf2.parse(timeSeries[t]).getTime());
-                dayrnflAvg.setDRN(BigDecimal.valueOf(pp[t][m]));
+                //dayrnflAvg.setYMC((int) sdf2.parse(timeSeries[t]).getTime());
+                dayrnflAvg.setDRN(new BigDecimal(Float.toString(pp[t][m])));
                 listDayrnflAvg.add(dayrnflAvg);
             }
         }
         return listDayrnflAvg;
     }
 
+    //---------------------------新安江模型入湖流量计算---------------------------
     //获取各断面雨量
     public float[][] getPj(){
         List<XAJForecastXajr> listXajForecastXajr = (List<XAJForecastXajr>) xajMap.get("listXAJForecastXajr");
@@ -352,26 +361,27 @@ public class ForecastAdapterService extends Controller {
     public List<InflowXajr> getInflowXajr(String[] timeSeries,float pp[],float qr[][],float[] qcal) throws ParseException {
         List<InflowXajr> listInflowXajr = new ArrayList<>();
         List<XAJFractureChild> listXAJFractureChild  = (List<XAJFractureChild>) xajMap.get("listFractureChild");
-        for(int m=0;m<listXAJFractureChild.size()-1;m++){//断面
-            for(int t=0;t<qr.length;t++){//日期——timeSeries和qr里日期一样
-                InflowXajr inflowXajr = new InflowXajr();
-                inflowXajr.setNO(forecastC.getNO());
-                inflowXajr.setID(listXAJFractureChild.get(m+1).getFractureId());
-                inflowXajr.setYMDHM(sdf2.parse(timeSeries[t]));
-                inflowXajr.setYMC((int) sdf2.parse(timeSeries[t]).getTime());
-                inflowXajr.setDRN(BigDecimal.valueOf(pp[t]));
-                inflowXajr.setQ(BigDecimal.valueOf(qr[t][m+1]));
-                listInflowXajr.add(inflowXajr);
+        for(int t=0;t<qr.length;t++){//日期——timeSeries和qr里日期一样
+            for(int m=0;m<listXAJFractureChild.size();m++){//断面
+                if(m+1<listXAJFractureChild.size()){
+                    InflowXajr inflowXajr = new InflowXajr();
+                    inflowXajr.setNO(forecastC.getNO());
+                    inflowXajr.setID(listXAJFractureChild.get(m+1).getFractureId());
+                    inflowXajr.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
+                    inflowXajr.setDRN(new BigDecimal(Float.toString(pp[t])));
+                    inflowXajr.setQ(new BigDecimal(Float.toString(qr[t][m])));
+                    listInflowXajr.add(inflowXajr);
+                }
             }
         }
         for(int t=0;t<qr.length;t++){//洪泽湖
             InflowXajr inflowXajr = new InflowXajr();
             inflowXajr.setNO(forecastC.getNO());
             inflowXajr.setID("00100000");
-            inflowXajr.setYMDHM(sdf2.parse(timeSeries[t]));
-            inflowXajr.setYMC((int) sdf2.parse(timeSeries[t]).getTime());
-            inflowXajr.setDRN(BigDecimal.valueOf(pp[t]));
-            inflowXajr.setQ(BigDecimal.valueOf(qcal[t]));
+            inflowXajr.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
+            //inflowXajr.setYMC((int) sdf2.parse(timeSeries[t]).getTime());
+            inflowXajr.setDRN(new BigDecimal(Float.toString(pp[t])));
+            inflowXajr.setQ(new BigDecimal(Float.toString(qcal[t])));
             listInflowXajr.add(inflowXajr);
         }
         return listInflowXajr;
@@ -380,15 +390,121 @@ public class ForecastAdapterService extends Controller {
     public List<InflowXajt> getInflowXajt(float ppj,float[]ww,float[] qm,String[] im) throws ParseException {
         List<InflowXajt> listInflowXajt = new ArrayList<>();
         List<XAJFractureChild> listXAJFractureChild  = (List<XAJFractureChild>) xajMap.get("listFractureChild");
-        for(int m=0;m<listXAJFractureChild.size()-1;m++){//断面
-            InflowXajt inflowXajt = new InflowXajt();
-            inflowXajt.setNO(forecastC.getNO());
-            inflowXajt.setID(listXAJFractureChild.get(m+1).getFractureId());
-            //总雨量
-            inflowXajt.setPOW(BigDecimal.valueOf(ww[m+1]));
-            inflowXajt.setFOPD((double) qm[m+1]);
-            inflowXajt.setFOPT(sdf2.parse(im[m+1]));
+        //System.out.println(im.length);
+        for(int m=0;m<listXAJFractureChild.size();m++){//5个断面，没有鲁台子
+            if(m+1<listXAJFractureChild.size()){
+                InflowXajt inflowXajt = new InflowXajt();
+                inflowXajt.setNO(forecastC.getNO());
+                inflowXajt.setID(listXAJFractureChild.get(m+1).getFractureId());
+                inflowXajt.setPOW(new BigDecimal(Float.toString(ww[m+1])));
+               inflowXajt.setFOPD(new BigDecimal(Float.toString(qm[m+1])) );
+                inflowXajt.setFOPT(sdf.parse(im[m+1]+" 00:00:00"));
+                listInflowXajt.add(inflowXajt);
+            }
         }
+        //添加入湖的
+        InflowXajt inflowXajt = new InflowXajt();
+        inflowXajt.setNO(forecastC.getNO());
+        inflowXajt.setID("00100000");
+        inflowXajt.setP(BigDecimal.valueOf(ppj));
+        inflowXajt.setPOW(new BigDecimal(Float.toString(ww[0])));
+        inflowXajt.setFOPD(new BigDecimal(Float.toString(qm[0])));
+        inflowXajt.setFOPT(sdf.parse(im[0]+" 00:00:00"));
+        listInflowXajt.add(inflowXajt);
         return listInflowXajt;
     }
+
+
+    //-------------------------------经验模型面平均雨量-----------------------------------
+    //获取经验模型 子流域-雨量站级联关系表
+    public String[][] getJYTree(){
+        List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
+        String treeArr[][] = new String[listJYChildRainStation.size()][];
+        for(int i=0;i<listJYChildRainStation.size();i++){
+            treeArr[i] = new String[listJYChildRainStation.get(i).getSize()];
+            for(int j=0;j<listJYChildRainStation.get(i).getSize();j++){
+                treeArr[i][j] = listJYChildRainStation.get(i).getListRainStation().get(j).getNAME();
+            }
+        }
+        return treeArr;
+    }
+    //返回雨量分析特征值表—经验模型
+    public List<DayrnflCh> getJYDayrnflCh(float[] addPp){
+        List<DayrnflCh> listDayrnflCh = new ArrayList<>();
+        List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
+        for(int i=0;i<listJYChildRainStation.size();i++){
+            DayrnflCh dayrnflCh = new DayrnflCh();
+            dayrnflCh.setARCD(listJYChildRainStation.get(i).getChildId());
+            dayrnflCh.setNO(forecastC.getNO());
+            dayrnflCh.setAMRN(new BigDecimal(Float.toString(addPp[i])));
+            //单站累计最大降雨量
+            //对应站码
+            //对应站名
+            listDayrnflCh.add(dayrnflCh);
+        }
+        return listDayrnflCh;
+    }
+    //返回面平均雨量—经验模型
+    public List<DayrnflAvg> getJYDayrnflAvg(float[][] pp,String timeSeries[]) throws ParseException {
+        List<DayrnflAvg> listDayrnflAvg = new ArrayList<>();
+        List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
+        pP = new float[timeSeries.length][];
+        for(int t=0;t<timeSeries.length;t++){
+            pP[t] = new float[listJYChildRainStation.size()];
+            for(int i=0;i<listJYChildRainStation.size();i++){//16个
+                DayrnflAvg dayrnflAvg = new DayrnflAvg();
+                dayrnflAvg.setARCD(listJYChildRainStation.get(i).getChildId());
+                dayrnflAvg.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
+                dayrnflAvg.setNO(forecastC.getNO());
+                dayrnflAvg.setDRN(new BigDecimal(Float.toString(pp[t][i])));
+                listDayrnflAvg.add(dayrnflAvg);
+                pP[t][i] = pp[t][i];//获取经验模型面平均雨量pp
+            }
+        }
+        return listDayrnflAvg;
+    }
+    //---------------------------------------------经验模型初始土壤湿度----------------------------------------
+    //获取经验模型产流参数IM
+    public float[] getJYIm(){
+        List<JYChildPara> listJYChildPara = (List<JYChildPara>) jyMap.get("listJYChildPara");
+        float[] im = new float[listJYChildPara.size()];
+        for(int i=0;i<listJYChildPara.size();i++){
+            im[i] = listJYChildPara.get(i).getListParaM().get(0).getPARAVAL().floatValue();
+        }
+        return im;
+    }
+    //获取获取经验模型产流参数K1
+    public float[] getIYK1(){
+        List<JYChildPara> listJYChildPara = (List<JYChildPara>) jyMap.get("listJYChildPara");
+        float[] k1 = new float[listJYChildPara.size()];
+        for(int i=0;i<listJYChildPara.size();i++){
+            k1[i] = listJYChildPara.get(i).getListParaM().get(1).getPARAVAL().floatValue();
+        }
+        return k1;
+    }
+    //获取获取经验模型产流参数K2
+    public float[] getIYK2(){
+        List<JYChildPara> listJYChildPara = (List<JYChildPara>) jyMap.get("listJYChildPara");
+        float[] k2 = new float[listJYChildPara.size()];
+        for(int i=0;i<listJYChildPara.size();i++){
+            k2[i] = listJYChildPara.get(i).getListParaM().get(2).getPARAVAL().floatValue();
+        }
+        return k2;
+    }
+
+    //经验模型初始土壤湿度表
+    public List<SoilH> getJYSoilH(float paa[]){
+        List<SoilH> listSoilH = new ArrayList<>();
+        List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
+        for(int i=0;i<listJYChildRainStation.size();i++){
+            SoilH soilH = new SoilH();
+            soilH.setARCD(listJYChildRainStation.get(i).getChildId());
+            soilH.setNO(forecastC.getNO());
+            soilH.setW(new BigDecimal(Float.toString(paa[i])));
+            listSoilH.add(soilH);
+        }
+        return listSoilH;
+    }
+
+
 }

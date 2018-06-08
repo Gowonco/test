@@ -1,5 +1,4 @@
 package service.forecastService;
-
 import util.DateUtil;
 
 import java.text.ParseException;
@@ -27,24 +26,24 @@ class JyRainCalcu {
     float[][]pp;
     float[] addpp;
     String[] timeseries;
-     public Map<String,Object>jyRain(float[][]p,String initialtime,String starttime,String raintime) throws ParseException {
+    public Map<String,Object>jyRain(float[][]p,String initialtime,String starttime,String raintime) throws ParseException {
         p1=new float[p.length][p[0].length];
-         p2=new float[p.length][p[0].length];
-         p3=new float[p.length][p[0].length];
-         p4=new float[p.length][p[0].length];
-         p5=new float[p.length][p[0].length];
-         p6=new float[p.length][p[0].length];
-         p7=new float[p.length][p[0].length];
-         p8=new float[p.length][p[0].length];
-         p9=new float[p.length][p[0].length];
-         p10=new float[p.length][p[0].length];
-         p11=new float[p.length][p[0].length];
-         p12=new float[p.length][p[0].length];
-         p13=new float[p.length][p[0].length];
-         p14=new float[p.length][p[0].length];
-         p15=new float[p.length][p[0].length];
-         p16=new float[p.length][p[0].length];
-         pp=new float[p.length][16];
+        p2=new float[p.length][p[0].length];
+        p3=new float[p.length][p[0].length];
+        p4=new float[p.length][p[0].length];
+        p5=new float[p.length][p[0].length];
+        p6=new float[p.length][p[0].length];
+        p7=new float[p.length][p[0].length];
+        p8=new float[p.length][p[0].length];
+        p9=new float[p.length][p[0].length];
+        p10=new float[p.length][p[0].length];
+        p11=new float[p.length][p[0].length];
+        p12=new float[p.length][p[0].length];
+        p13=new float[p.length][p[0].length];
+        p14=new float[p.length][p[0].length];
+        p15=new float[p.length][p[0].length];
+        p16=new float[p.length][p[0].length];
+        pp=new float[p.length][16];
         for (int i = 0; i < p.length; i++) {
             //第一块雨量计算
             p1[i][1] = p[i][1];
@@ -151,31 +150,31 @@ class JyRainCalcu {
             p16[i][4] = p[i][65];
             pp[i][15] = (p16[i][1] + p16[i][2] + p16[i][3] + p16[i][4] ) / 4;
         }
-         for(int i=0;i<pp.length;i++){
-             for(int j=0;j<pp[0].length;j++){
-                 pp[i][j]= (float) (Math.floor(pp[i][j]*100))/100;
-             }
-         }
-         List a= DateUtil.getBetweenDates(initialtime,starttime);
-         int m=a.size();
-         List b=DateUtil.getBetweenDates(initialtime,raintime);
-         int n=b.size();
-         timeseries=new String[n];
-         for(int i=0;i<n;i++){timeseries[i]=(String)b.get(i);}
-         addpp=new float[pp[0].length];
-         for(int j=0;j<pp[0].length;j++){
-             //addpp[0]=0;
-                 for(int i=m-1;i<pp.length;i++){
-                 addpp[j]=addpp[j]+pp[i][j];
-             }
-         }
-         for(int i=0;i<addpp.length;i++){
-             addpp[i]= (float) (Math.floor(addpp[i]*100))/100;
-         }
-          HashMap map=new HashMap();
-         map.put("averageRainfall",pp);//每块面平均雨量
-         map.put("totalRainfall",addpp);//每块累计雨量
-         map.put("timeSeries",timeseries);//预热期加实测期时间序列
-          return map;
+        for(int i=0;i<pp.length;i++){
+            for(int j=0;j<pp[0].length;j++){
+                pp[i][j]= (float) (Math.floor(pp[i][j]*100))/100;
+            }
+        }
+        List a= DateUtil.getBetweenDates(initialtime,starttime);
+        int m=a.size();
+        List b=DateUtil.getBetweenDates(initialtime,raintime);
+        int n=b.size();
+        timeseries=new String[n];
+        for(int i=0;i<n;i++){timeseries[i]=(String)b.get(i);}
+        addpp=new float[pp[0].length];
+        for(int j=0;j<pp[0].length;j++){
+            //addpp[0]=0;
+            for(int i=m-1;i<pp.length;i++){
+                addpp[j]=addpp[j]+pp[i][j];
+            }
+        }
+        for(int i=0;i<addpp.length;i++){
+            addpp[i]= (float) (Math.floor(addpp[i]*100))/100;
+        }
+        HashMap map=new HashMap();
+        map.put("averageRainfall",pp);//每块面平均雨量
+        map.put("totalRainfall",addpp);//每块累计雨量
+        map.put("timeSeries",timeseries);//预热期加实测期时间序列
+        return map;
     }
 }
