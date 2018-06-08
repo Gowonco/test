@@ -48,6 +48,15 @@ public class DispatchController extends Controller {
     }
     //调度参数保存
 
+    //用于测试，后期删除
+    public void dispatchTest(){
+        String taskId=getPara("taskId");
+        dispatchService.setTaskSetting(taskId);
+        dispatchService.doDispatch();
+        setAttr("resultStatus","success");
+        renderJson();
+    }
+
     public void getStorageCurve(){
 
         setAttr("listCurveHs",dispatchService.getStorageCurve());

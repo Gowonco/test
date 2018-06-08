@@ -37,13 +37,16 @@ public class DispatchService extends Controller {
         dispatchMap.put("listDischargeCurve",getDischargeCurve());
         dispatchMap.put("listjiangBaDailyWaterLevel",getJiangBaDailyWaterLevel());
         dispatchMap.put("listdispatchWaterReleaseInfo",getDispatchWaterReleaseInfo());
+        dispatchMap.put("forecastC",getDispatchPara());
+        dispatchMap.put("listForecastResult",getForecastResult());
+
+
+
+
+
         DispatchCalculateService fc=new DispatchCalculateService(forecastC,dispatchMap);
-
+        fc.test();
         return true;
-    }
-
-    public void ShiftArray(){
-        //dispatchParams
     }
 
     public void setTaskSetting(String taskId){

@@ -16,5 +16,10 @@ public class DispatchCalculateService {
     }
 
     //在这里写调度计算的步骤
+    public void test(){
+        dispatchAdapterService.test();
+
+    }
+
 
 }

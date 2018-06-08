@@ -25,7 +25,30 @@ public class Operation {
     public boolean[] breakPolder,slantedStorage;
     public double[][] rStorage,reservoirStorage;
 
+    //test.................................................
+    Map paraMap=new HashMap();
+    int a=0;
+    double b=0.0;
+    String c=" ";
+    public void setParaMap(int inta,double doubleb,String stringc) {
+        paraMap.put("a",inta);
+        paraMap.put("b",doubleb);
+        paraMap.put("c",stringc);
+    }
 
+    public Map getParaMap(){
+        return paraMap;
+    }
+    //constructor
+    public void setPara(Map paraMap2){
+        a=(Integer) paraMap2.get("a");
+        b=(double)paraMap2.get("b");
+        c=(String)paraMap2.get("c");
+
+    }
+
+
+    //test...................................................
     //constructor
     public Operation(int lakeArea, double slantedQ, double breakStage, int ti, int timeInterval, int taskNo, double stage, double deltaStorage, double initialZ, int obsEndTime, int forecastEndTime, double safe3Q, double safe2Q, double safeGQ, double er, double sumEwater, boolean updateIndex, boolean storageIndex, Map<String, Object> characteristicValue, Map<String, Object> operationResults, double[] reStorage, double[] obsStorage, double[] calStorage, double[] calStage, double[] lakeStage, double[] waterLevelR, double[] error, double[] averageP, double[] MSQ, double[] totalOutQ, double[] totalQ, double[] eWater, double[] gate3Q, double[] gate2Q, double[] gateGQ, double[] hydropowerQ, double[] surroundQ, double[] correctStage, double[] waterLevelG, double[] gateCurve2, double[] gateCurve3, double[] gateCurveG, boolean[] breakPolder, boolean[] slantedStorage, double[][] rStorage, double[][] reservoirStorage) {
         this.lakeArea = lakeArea;
