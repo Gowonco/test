@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ForecastCalculateService extends Controller {
-    ForecastAdapterService forecastAdapterService=new ForecastAdapterService();
+    ForecastAdapterService fAS=new ForecastAdapterService();
     Map mapp =new HashMap();
     public ForecastCalculateService(Map mapp){
         this.mapp = mapp;
     }
     public ForecastCalculateService (ForecastC forecastC, Map xajMap, Map jyMap){
-        forecastAdapterService.setAdapterConfig(forecastC,xajMap,jyMap);
+        fAS.setAdapterConfig(forecastC,xajMap,jyMap);
     }
 
     /**
@@ -25,7 +25,7 @@ public class ForecastCalculateService extends Controller {
     public void testRain(){
         RainCalcu rainCalcu = new RainCalcu();
         try {
-            mapp=rainCalcu.partRain(forecastAdapterService.getRain(),forecastAdapterService.getInitialTime(),forecastAdapterService.getStartTime(),forecastAdapterService.getRainTime(),forecastAdapterService.getTree());
+            mapp=rainCalcu.partRain(fAS.getRain(),fAS.getInitialTime(),fAS.getStartTime(),fAS.getRainTime(),fAS.getTree());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -51,7 +51,7 @@ public class ForecastCalculateService extends Controller {
     public void testQ() throws ParseException {
         CalculationLake jy = new CalculationLake();
         Map mapp = new HashMap();
-        mapp = jy.ruLake( forecastAdapterService.getPj(), forecastAdapterService.getQr(), forecastAdapterService.getStartTime(), forecastAdapterService.getEndTime());
+        mapp = jy.ruLake( fAS.getPj(), fAS.getQr(), fAS.getStartTime(), fAS.getEndTime());
         // starttime = (String) mapp.get("开始时间");
         float ppj = (float) mapp.get("totalRainfall");
         float[] wm = (float[]) mapp.get("totalW");
@@ -75,19 +75,19 @@ public class ForecastCalculateService extends Controller {
     }
     //测试初始时间
     public void testInitialTime(){
-        System.out.println(forecastAdapterService.getInitialTime());
+        System.out.println(fAS.getInitialTime());
     }
     //测试实测资料开始时间
     public void testStartTime(){
-        System.out.println(forecastAdapterService.getStartTime());
+        System.out.println(fAS.getStartTime());
     }
     //测试实测资料结束时间
     public void testRainTime(){
-        System.out.println(forecastAdapterService.getRainTime());
+        System.out.println(fAS.getRainTime());
     }
     //测试级联关系表
     public void testTree(){
-        String[][] s = forecastAdapterService.getTree();
+        String[][] s = fAS.getTree();
         for(int i=0;i<s.length;i++){
             for(int j=0;j<s[i].length;j++){
                 System.out.print(s[i][j]+" ");
@@ -97,7 +97,7 @@ public class ForecastCalculateService extends Controller {
     }
     //68个雨量站日雨量
     public void testDrn(){
-        float[][] d = forecastAdapterService.getRain();
+        float[][] d = fAS.getRain();
         for(int i=0;i<d.length;i++){
             for(int j=0;j<d[i].length;j++){
                 System.out.print(d[i][j]+"");
@@ -108,7 +108,7 @@ public class ForecastCalculateService extends Controller {
 
     //各断面雨量
     public void testpp(){
-        float[][] pp = forecastAdapterService.getPj();
+        float[][] pp = fAS.getPj();
         for(int i=0;i<pp.length;i++){
             for(int j=0;j<pp[i].length;j++){
                 System.out.print(pp[i][j]+" ");
@@ -118,8 +118,8 @@ public class ForecastCalculateService extends Controller {
     }
     //各断面预报流量
     public void testQr(){
-        //System.out.println(forecastAdapterService.getQr());
-        float[][] pp = forecastAdapterService.getQr();
+        //System.out.println(fAS.getQr());
+        float[][] pp = fAS.getQr();
         for(int i=0;i<pp.length;i++){
             for(int j=0;j<pp[i].length;j++){
                 System.out.print(pp[i][j]+" ");

@@ -60,8 +60,8 @@ public class SystemController extends Controller {
             登出action
          */
     public void logout(){
-        getSession().invalidate();
-        forwardAction("/system/login_view");
+//        getSession().invalidate();
+//        forwardAction("/system/login_view");
     }
 
     /**

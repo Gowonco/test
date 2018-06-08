@@ -16,7 +16,7 @@ public class ForecastController extends Controller {
         String taskId=getPara("taskId");
         forecastService.doForecast(taskId);
 //        System.out.println(forecastService.forecastC);
-       // setAttr("listViewRain",forecastService.getRainData());
+        //setAttr("listViewRain",forecastService.getRainData());
         //setAttr("listChildRainStation",forecastService.getChildRainStation());
 //        setAttr("listFractureChild",forecastService.getFractureChild());
 //        setAttr("listDayevH",forecastService.getDayevH());
@@ -29,8 +29,8 @@ public class ForecastController extends Controller {
 //        setAttr("listViewReservoir",forecastService.getReservoir());
 //        setAttr("listStrobeFlow",forecastService.getStrobeFlow());
 //        setAttr("listHydrologicFlow",forecastService.getHydrologicFlow());
-      setAttr("listXAJMMusk",forecastService.getMMusk());
-       // setAttr("listXAJForecastXajr",forecastService.getForecastXajr());
+//       setAttr("listXAJMMusk",forecastService.getMMusk());
+       setAttr("listXAJForecastXajr",forecastService.getForecastXajr());
 //
 //        setAttr("listJYChildRainStation",forecastService.getExperienceChildRainStation());
 //        setAttr("listJYFractureChild",forecastService.getExperienceFractureChild());
@@ -38,6 +38,7 @@ public class ForecastController extends Controller {
 //        setAttr("listJYConfig",forecastService.getExperienceConfig());
 //        setAttr("listJYHydrologyFlow",forecastService.getHydrologyFlow());
       //  setAttr("listParaMu",forecastService.getParaMu());
+
 
         renderJson();
     }
