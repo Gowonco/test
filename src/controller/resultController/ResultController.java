@@ -19,17 +19,13 @@ public class ResultController extends Controller {
             String taskId=taskLists.get(0).getNO();
             String taskJid = taskLists.get(0).getJNO();
             setAttr("monthTaskLists",taskLists);
-            setAttr("latestXajForecastResult",resultService.getMonthHistoryXajtLatest(taskId));
-            setAttr("latestJyForecastResult",resultService.getMonthHistoryJytLatest(taskJid));
-            setAttr("xajName",resultService.getXajName(taskId));
-            setAttr("jyName",resultService.getJyName(taskJid));
+            setAttr("latestXajForecastResult",resultService.getXajT(taskId));
+            setAttr("latestJyForecastResult",resultService.getJyT(taskJid));
             renderJson();
         }else{
             setAttr("monthTaskLists","");
             setAttr("latestXajForecastResult","");
             setAttr("latestJyForecastResult","");
-            setAttr("xajName","");
-            setAttr("jyName","");
             renderJson();
         }
 
@@ -46,17 +42,13 @@ public class ResultController extends Controller {
             String taskId=taskLists.get(0).getNO();
             String taskJid=taskLists.get(0).getJNO();
             setAttr("taskLists",taskLists);
-            setAttr("firstXajtForecastResult",resultService.getSearchHistoryXajtLatest(taskId));
-            setAttr("firstJytForecastResult",resultService.getSearchHistoryJytLatest(taskJid));
-            setAttr("xajName",resultService.getXajName(taskId));
-            setAttr("jyName",resultService.getJyName(taskJid));
+            setAttr("firstXajtForecastResult",resultService.getXajT(taskId));
+            setAttr("firstJytForecastResult",resultService.getJyT(taskJid));
             renderJson();
         }else{
             setAttr("taskLists","");
             setAttr("firstXajtForecastResult","");
             setAttr("firstJytForecastResult","");
-            setAttr("xajName","");
-            setAttr("jyName","");
             renderJson();
         }
 
@@ -67,10 +59,9 @@ public class ResultController extends Controller {
      */
     public void getHistoryByTaskId(){
         String taskId=getPara("taskId");
-        setAttr("forecastResultXajt",resultService.getHistoryByTaskIdXajt(taskId));
+        setAttr("forecastC",resultService.getForecastC(taskId));
+        setAttr("forecastResultXajt",resultService.getXajT(taskId));
         setAttr("forecastResultJyt",resultService.getHistoryByTaskIdJyt(taskId));
-        setAttr("xajName",resultService.getXajName(taskId));
-        setAttr("jyName",resultService.getJyName(taskId));
         renderJson();
     }
 
