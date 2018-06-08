@@ -16,6 +16,8 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
+		// Composite Primary Key order: ID,NO
+		arp.addMapping("f_ inflow_xajt", "ID,NO",  inflowXajt.class);
 		arp.addMapping("f_area_dis", "ID", AreaDis.class);
 		// Composite Primary Key order: DBCD,IL,NO
 		arp.addMapping("f_cf_bb", "DBCD,IL,NO", CfBb.class);
@@ -65,6 +67,8 @@ public class _MappingKit {
 		arp.addMapping("f_inflow_xajt", "ID,NO", InflowXajt.class);
 		// Composite Primary Key order: DMCD,SCD
 		arp.addMapping("f_m_musk", "DMCD,SCD", MMusk.class);
+		// Composite Primary Key order: ARCD,NO
+		arp.addMapping("f_material_c", "ARCD,NO", MaterialC.class);
 		// Composite Primary Key order: ID,PARADES,PARANAME
 		arp.addMapping("f_para_m", "ID,PARADES,PARANAME", ParaM.class);
 		// Composite Primary Key order: DBCD,STCD

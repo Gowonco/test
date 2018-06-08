@@ -45,13 +45,13 @@ public abstract class BaseInflowXajt<M extends BaseInflowXajt<M>> extends Model<
 		return get("POW");
 	}
 
-	public M setFOPD(java.lang.Double FOPD) {
+	public M setFOPD(java.math.BigDecimal FOPD) {
 		set("FOPD", FOPD);
 		return (M)this;
 	}
 	
-	public java.lang.Double getFOPD() {
-		return getDouble("FOPD");
+	public java.math.BigDecimal getFOPD() {
+		return get("FOPD");
 	}
 
 	public M setFOPT(java.util.Date FOPT) {
