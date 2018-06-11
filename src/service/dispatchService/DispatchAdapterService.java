@@ -5,30 +5,32 @@ import model.dbmodel.ForecastC;
 import model.dbmodel.*;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public class DispatchAdapterService extends Controller {
-    public ForecastC forecastC;
     public Map dispatchMap=new HashMap();
+    public ForecastC forecastC;
     public Map temMap=new HashMap();
+    double[] waterLevelR=new double[10];
+    double[][] reservoirStorage = new double[10][8];
 
     public  DispatchAdapterService(ForecastC forecastC, Map dispatchMap){
-        this.forecastC=forecastC;
+        this.forecastC =forecastC;
         this.dispatchMap=dispatchMap;
     }
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     //在这里写list转数组 或 数组转list
-
-
-    public String test(){
+    public Map<String,Object> test(){
+        Map dispatchInput=new HashMap();
         List<CurveHs> storageCurve=(List<CurveHs>)dispatchMap.get("listStorageCurve");
         //读取库容曲线数组
-        double[] waterLevelR=new double[10];
-        double[][] reservoirStorage = new double[10][8];
         for(int i=0;i<80;i=i+8){
             int k=i/8;
             waterLevelR[k]=Double.parseDouble(String.valueOf(storageCurve.get(i).getZ())) ;
@@ -61,13 +63,13 @@ public class DispatchAdapterService extends Controller {
         }
 
         //读取调度参数
-        ForecastC operationPara=(ForecastC)dispatchMap.get("forecastC");
         String obsStartDay = sdf.format(forecastC.getBASEDTM());//实测开始时间
+        System.out.println(obsStartDay);
         String forcastStartDay = sdf.format(forecastC.getSTARTTM());//预报开始时间
         String forecastEndDay = sdf.format(forecastC.getENDTM());//预报结束时间
         double slantedQ = forecastC.getQ().doubleValue();//斜蓄起始流量
         double breakStage = forecastC.getZ().doubleValue();//破圩水位
-        //新老选择
+        boolean storageIndex = forecastC.getCURVE()=="new"?true:false;//新老选择
         double evapor = forecastC.getWE().doubleValue();//水面蒸发值
         double safe2Q = forecastC.getELQ().doubleValue();//二河闸下游安全泄量
         double safe3Q = forecastC.getTLQ().doubleValue();//三河闸下游安全泄量
@@ -75,27 +77,61 @@ public class DispatchAdapterService extends Controller {
         double initialZ = forecastC.getSTZ().doubleValue();//起始水位;
         boolean  updateIndex = forecastC.getFLD()==1?true:false;//实时校正选择
         // int taskNo = .//方案号
-        List<InflowXajr> listInflowXajr = (List<InflowXajr>) dispatchMap.get("listForecastResult");
-
-
-
+        int forecastLength= getDayIndex(obsStartDay,forecastEndDay)+1;
+        int observeLength=getDayIndex(obsStartDay,forcastStartDay)+1;
+        System.out.println(observeLength);
         //读取蒋坝水位
-        List<RiverH> lakeStage=(List<RiverH>)dispatchMap.get("listjiangBaDailyWaterLevel");
-        for(int i=0;i<7;i=i+3){
-            int k=i/3;
-        }
+        List<RiverH> listStage=(List<RiverH>)dispatchMap.get("listjiangBaDailyWaterLevel");
+        double[] lakeStage=new double[forecastLength];
+        for(int i=0;i<forecastLength;i++){
+            if (i< observeLength) {
+                lakeStage[i]=Double.parseDouble(String.valueOf(listStage.get(i).getZ()));
+            }
 
+        }
+        System.out.println(lakeStage[4]);
         //读取放水资料
         List<CtrOtq> outQ=(List<CtrOtq>)dispatchMap.get("listdispatchWaterReleaseInfo");
 
-        //读取面平均雨量
+        //读取面平均雨量.总入流
         List<InflowXajr> forecastResult=(List<InflowXajr>)dispatchMap.get("listForecastResult");
-        //读取总入流
+        double[] averageP=new double[forecastLength];
+        double[] totalQ=new double[forecastLength];
+        for(int i=0;i<forecastLength;i++){
+            averageP[i]=Double.parseDouble(String.valueOf(forecastResult.get(i).getDRN()));
+            totalQ[i]=Double.parseDouble(String.valueOf(forecastResult.get(i).getQ()));
+        }
+
+
+        dispatchInput.put("waterlevelR",waterLevelR);
+        dispatchInput.put("reservoirStorage",reservoirStorage);
+        dispatchInput.put("waterlevelG",waterLevelG);
+        dispatchInput.put("gateCurveG",gateCurveG);
+        dispatchInput.put("gateCurve2",gateCurve2);
+        dispatchInput.put("gateCurve3",gateCurve3);
+        dispatchInput.put("obsStartDay",obsStartDay);
 
 
 
-        return "kk";
+
+        return dispatchInput;
     }
+    public int getDayIndex(String startDay,String correctDay){
+        int correctDayIndex=0;
+        try {
+            Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDay);
+            Date correctDate = new SimpleDateFormat("yyyy-MM-dd").parse(correctDay);
+            long dayIndex = (correctDate.getTime()-startDate.getTime())/(24*60*60*1000);
+            //从dayIndex开始计算,覆盖预报期之后的值
+            correctDayIndex= Integer.parseInt(String.valueOf(dayIndex));
+            return correctDayIndex;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return correctDayIndex;
+    }
+
+
     public void setTemMap(int a,double b,String c){
         temMap.put("a",a);
         temMap.put("b",b);
