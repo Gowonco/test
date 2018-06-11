@@ -45,7 +45,15 @@ public class DispatchService extends Controller {
 
 
         DispatchCalculateService fc=new DispatchCalculateService(forecastC,dispatchMap);
-        fc.test();
+        fc.initialOperation();
+        return true;
+    }
+
+    public boolean doFixMS(String correctDay,List<RcmR> correctData){
+        DispatchCalculateService fc=new DispatchCalculateService(forecastC,dispatchMap);
+        //todo: list转array
+        double [] correctData1={100,200,50,50};
+        fc.taskMSFix(correctDay,correctData1);
         return true;
     }
 

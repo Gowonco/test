@@ -27,7 +27,7 @@ public class DispatchAdapterService extends Controller {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     //在这里写list转数组 或 数组转list
-    public Map<String,Object> test(){
+    public Map<String,Object> shiftArray(){
         Map dispatchInput=new HashMap();
         List<CurveHs> storageCurve=(List<CurveHs>)dispatchMap.get("listStorageCurve");
         //读取库容曲线数组
@@ -64,11 +64,12 @@ public class DispatchAdapterService extends Controller {
         //读取调度参数
         String obsStartDay = sdf.format(forecastC.getBASEDTM());//实测开始时间
        // System.out.println(obsStartDay);
+
         String forcastStartDay = sdf.format(forecastC.getSTARTTM());//预报开始时间
         String forecastEndDay = sdf.format(forecastC.getENDTM());//预报结束时间
         double slantedQ = forecastC.getQ().doubleValue();//斜蓄起始流量
         double breakStage = forecastC.getZ().doubleValue();//破圩水位
-        boolean storageIndex = forecastC.getCURVE()=="new"?true:false;//新老选择
+        boolean storageIndex = "new".equals(forecastC.getCURVE());//新老选择
         double evapor = forecastC.getWE().doubleValue();//水面蒸发值
         double safe2Q = forecastC.getELQ().doubleValue();//二河闸下游安全泄量
         double safe3Q = forecastC.getTLQ().doubleValue();//三河闸下游安全泄量
@@ -109,18 +110,27 @@ public class DispatchAdapterService extends Controller {
             averageP[i]=Double.parseDouble(String.valueOf(forecastResult.get(i).getDRN()));
             totalQ[i]=Double.parseDouble(String.valueOf(forecastResult.get(i).getQ()));
         }
-       // System.out.println(totalQ[63]);
+        //System.out.println(totalQ[63]);
 
-        dispatchInput.put("waterlevelR",waterLevelR);
+        dispatchInput.put("waterLevelR",waterLevelR);
         dispatchInput.put("reservoirStorage",reservoirStorage);
-        dispatchInput.put("waterlevelG",waterLevelG);
+        dispatchInput.put("waterLevelG",waterLevelG);
         dispatchInput.put("gateCurveG",gateCurveG);
         dispatchInput.put("gateCurve2",gateCurve2);
         dispatchInput.put("gateCurve3",gateCurve3);
 
         dispatchInput.put("obsStartDay",obsStartDay);
-        dispatchInput.put("forcastStartDay",forcastStartDay);
+        dispatchInput.put("forecastStartDay",forcastStartDay);
         dispatchInput.put("forecastEndDay",forecastEndDay);
+        dispatchInput.put("slantedQ",slantedQ);
+        dispatchInput.put("breakStage",breakStage);
+        dispatchInput.put("storageIndex",storageIndex);
+        dispatchInput.put("evapor",evapor);
+        dispatchInput.put("safe2Q",safe2Q);
+        dispatchInput.put("safe3Q",safe3Q);
+        dispatchInput.put("safeGQ",safeGQ);
+        dispatchInput.put("initialZ",initialZ);
+        dispatchInput.put("updateIndex",updateIndex);
 
         dispatchInput.put("gate2Q",gate2Q);
         dispatchInput.put("gate3Q",gate3Q);
@@ -128,23 +138,29 @@ public class DispatchAdapterService extends Controller {
         dispatchInput.put("hydropowerQ",hydropowerQ);
         dispatchInput.put("surroundQ",surroundQ);
 
+        dispatchInput.put("lakeStage",lakeStage);
+        dispatchInput.put("averageP",averageP);
+        dispatchInput.put("totalQ",totalQ);
+
         return dispatchInput;
     }
-    public int getDayIndex(String startDay,String correctDay){
-        int correctDayIndex=0;
+
+    public int getDateIndex(String startDay,String correctDay){
         try {
             Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDay);
             Date correctDate = new SimpleDateFormat("yyyy-MM-dd").parse(correctDay);
             long dayIndex = (correctDate.getTime()-startDate.getTime())/(24*60*60*1000);
             //从dayIndex开始计算,覆盖预报期之后的值
-            correctDayIndex= Integer.parseInt(String.valueOf(dayIndex));
-            return correctDayIndex;
+            return Integer.parseInt(String.valueOf(dayIndex));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return correctDayIndex;
+        return 0;
     }
 
+    public int getDayIndex(String startDay,String correctDay){
+        return getDateIndex(startDay,correctDay);
+    }
 
     public void setTemMap(int a,double b,String c){
         temMap.put("a",a);

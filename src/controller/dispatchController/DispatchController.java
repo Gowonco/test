@@ -2,10 +2,15 @@ package controller.dispatchController;
 
 import com.jfinal.core.Controller;
 import model.dbmodel.ForecastC;
+import model.dbmodel.RcmR;
 import model.dbmodel.RiverH;
 import service.dispatchService.DispatchService;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DispatchController extends Controller {
@@ -49,10 +54,22 @@ public class DispatchController extends Controller {
     //调度参数保存
 
     //用于测试，后期删除
-    public void dispatchTest(){
+    public void dispatchTest() throws ParseException {
         String taskId=getPara("taskId");
         dispatchService.setTaskSetting(taskId);
         dispatchService.doDispatch();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<RcmR> list = new ArrayList<>();
+        RcmR rcmR = new RcmR();
+        rcmR.setNO(taskId);
+        rcmR.setYMDHM((sdf.parse("2000-08-10 00:00:00")));
+        rcmR.setEHZQ(BigDecimal.valueOf(100));
+        rcmR.setSHZQ(BigDecimal.valueOf(200));
+        rcmR.setGLZQ(BigDecimal.valueOf(50));
+        rcmR.setGLDZQ(BigDecimal.valueOf(50));
+        list.add(rcmR);
+        dispatchService.doFixMS("2000-8-10",list);
+
         setAttr("resultStatus","success");
         renderJson();
     }

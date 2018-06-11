@@ -9,14 +9,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Operation {
-    public int lakeArea;//洪泽湖面积1700平方千米
+    public int lakeArea=1700;//洪泽湖面积1700平方千米
+    public String obsStartDay,forecastStartDay,forecastEndDay;
     public double slantedQ, breakStage;
-    public int ti,timeInterval,taskNo;// 时间间隔为24，调度方式选择
-    public double stage, deltaStorage, initialZ;//实测最后一天水位显示在前台
+    public int ti,timeInterval=24,taskNo;// 时间间隔为24，调度方式选择
+    public double stage, deltaStorage, initialZ,evapor;//实测最后一天水位显示在前台
     public int obsEndTime, forecastEndTime;
     public double safe3Q, safe2Q, safeGQ, er,sumEwater;
     public boolean updateIndex,storageIndex;
     public Map<String, Object> characteristicValue = new HashMap<>();
+    public Map<String, Object> adviseDischarge = new HashMap<>();
     public Map<String, Object> operationResults = new HashMap<>();
     public double[] reStorage, obsStorage, calStorage, calStage, lakeStage, waterLevelR, error;
     public double[] averageP,MSQ;
@@ -25,91 +27,65 @@ public class Operation {
     public boolean[] breakPolder,slantedStorage;
     public double[][] rStorage,reservoirStorage;
 
-    //test.................................................
+    public Operation(){};
+
     Map paraMap=new HashMap();
-    int a=0;
-    double b=0.0;
-    String c=" ";
-    public void setParaMap(int inta,double doubleb,String stringc) {
-        paraMap.put("a",inta);
-        paraMap.put("b",doubleb);
-        paraMap.put("c",stringc);
+    //constructor
+    public Operation(Map<String,Object> dispatchInput) {
+        paraMap=dispatchInput;
     }
 
     public Map getParaMap(){
         return paraMap;
     }
-    //constructor
-    public void setPara(Map paraMap2){
-        a=(Integer) paraMap2.get("a");
-        b=(double)paraMap2.get("b");
-        c=(String)paraMap2.get("c");
 
+    public void setPara(){
+        this.waterLevelR=(double[]) paraMap.get("waterLevelR");
+        this.reservoirStorage=(double[][])paraMap.get("reservoirStorage");
+        this.waterLevelG=(double[])paraMap.get("waterLevelG");
+        this.gateCurveG=(double[])paraMap.get("gateCurveG");
+        this.gateCurve2=(double[])paraMap.get("gateCurve2");
+        this.gateCurve3=(double[])paraMap.get("gateCurve3");
+
+        this.obsStartDay=(String)paraMap.get("obsStartDay") ;
+        this.forecastStartDay=(String)paraMap.get("forecastStartDay") ;
+        this.forecastEndDay=(String)paraMap.get("forecastEndDay") ;
+        this.slantedQ=(double)paraMap.get("slantedQ") ;
+        this.breakStage=(double)paraMap.get("breakStage") ;
+        this.evapor=(double)paraMap.get("evapor") ;
+        this.safe2Q=(double)paraMap.get("safe2Q") ;
+        this.safe3Q=(double)paraMap.get("safe3Q") ;
+        this.safeGQ=(double)paraMap.get("safeGQ") ;
+        this.initialZ=(double)paraMap.get("initialZ") ;
+        this.storageIndex=(boolean)paraMap.get("storageIndex") ;
+        this.updateIndex=(boolean)paraMap.get("updateIndex") ;
+
+        this.gate2Q=(double[])paraMap.get("gate2Q");
+        this.gate3Q=(double[])paraMap.get("gate3Q");
+        this.gateGQ=(double[])paraMap.get("gateGQ");
+        this.hydropowerQ=(double[])paraMap.get("hydropowerQ");
+        this.surroundQ=(double[])paraMap.get("surroundQ");
+
+        this.lakeStage=(double[])paraMap.get("lakeStage");
+        this.averageP=(double[])paraMap.get("averageP");
+        this.totalQ=(double[])paraMap.get("totalQ");
     }
 
 
-    //test...................................................
     //constructor
-    public Operation(int lakeArea, double slantedQ, double breakStage, int ti, int timeInterval, int taskNo, double stage, double deltaStorage, double initialZ, int obsEndTime, int forecastEndTime, double safe3Q, double safe2Q, double safeGQ, double er, double sumEwater, boolean updateIndex, boolean storageIndex, Map<String, Object> characteristicValue, Map<String, Object> operationResults, double[] reStorage, double[] obsStorage, double[] calStorage, double[] calStage, double[] lakeStage, double[] waterLevelR, double[] error, double[] averageP, double[] MSQ, double[] totalOutQ, double[] totalQ, double[] eWater, double[] gate3Q, double[] gate2Q, double[] gateGQ, double[] hydropowerQ, double[] surroundQ, double[] correctStage, double[] waterLevelG, double[] gateCurve2, double[] gateCurve3, double[] gateCurveG, boolean[] breakPolder, boolean[] slantedStorage, double[][] rStorage, double[][] reservoirStorage) {
-        this.lakeArea = lakeArea;
-        this.slantedQ = slantedQ;
-        this.breakStage = breakStage;
-        this.ti = ti;
-        this.timeInterval = timeInterval;
-        this.taskNo = taskNo;
-        this.stage = stage;
-        this.deltaStorage = deltaStorage;
-        this.initialZ = initialZ;
-        this.obsEndTime = obsEndTime;
-        this.forecastEndTime = forecastEndTime;
-        this.safe3Q = safe3Q;
-        this.safe2Q = safe2Q;
-        this.safeGQ = safeGQ;
-        this.er = er;
-        this.sumEwater = sumEwater;
-        this.updateIndex = updateIndex;
-        this.storageIndex = storageIndex;
-        this.characteristicValue = characteristicValue;
-        this.operationResults = operationResults;
-        this.reStorage = reStorage;
-        this.obsStorage = obsStorage;
-        this.calStorage = calStorage;
-        this.calStage = calStage;
-        this.lakeStage = lakeStage;
-        this.waterLevelR = waterLevelR;
-        this.error = error;
-        this.averageP = averageP;
-        this.MSQ = MSQ;
-        this.totalOutQ = totalOutQ;
-        this.totalQ = totalQ;
-        this.eWater = eWater;
-        this.gate3Q = gate3Q;
-        this.gate2Q = gate2Q;
-        this.gateGQ = gateGQ;
-        this.hydropowerQ = hydropowerQ;
-        this.surroundQ = surroundQ;
-        this.correctStage = correctStage;
-        this.waterLevelG = waterLevelG;
-        this.gateCurve2 = gateCurve2;
-        this.gateCurve3 = gateCurve3;
-        this.gateCurveG = gateCurveG;
-        this.breakPolder = breakPolder;
-        this.slantedStorage = slantedStorage;
-        this.rStorage = rStorage;
-        this.reservoirStorage = reservoirStorage;
-    }
 
 
     //setter & getter of public variables
 
-
-
     public void operationMainObs() {
+        obsEndTime=getDayIndex(obsStartDay,forecastStartDay);
+        forecastEndTime=getDayIndex(obsStartDay,forecastEndDay)+1;
         /*计算实测期的蓄量*/
         obsStorage=new double[forecastEndTime];
         calStorage=new double[forecastEndTime];
         calStage=new double[forecastEndTime];
         totalOutQ=new double[forecastEndTime];
+        eWater=new double[forecastEndTime];
 
         this.ti = 0;
         rStorage=this.readStorage();
@@ -127,7 +103,10 @@ public class Operation {
         for (int i = 0; i < obsEndTime; i++) {
             totalOutQ[i ] = gate3Q[i] + gate2Q[i] + gateGQ[i] + hydropowerQ[i] + surroundQ[i];
         }
-
+        /*蒸发赋值*/
+        for (int i = 0; i < forecastEndTime; i++) {
+            eWater[i]=evapor;
+        }
         /*计算预报期的蓄量*/
         for (int i = 0; i < forecastEndTime; i++) {
             stage = lakeStage[i];
@@ -343,7 +322,7 @@ public class Operation {
     //调度结果表，计算水位绝对误差
     //对于预报期，计算水位和实测水位误差为0
     public Map<String,Object> operationResult(){
-        Map<String,Object> operationResults=new HashMap<>();
+        //Map<String,Object> operationResults=new HashMap<>();
         //初始化数组长度
         double[] totalQIn= new double[forecastEndTime] ,totalQOut=new double[forecastEndTime];
         double[] stageError= new double[forecastEndTime];
@@ -376,7 +355,7 @@ public class Operation {
     //计算总入湖水量，总出湖水量，反算入湖水量--总量值，注意单位换算
     //实测期:
     //预报期:
-    public Map<String, Object> Characteristic(){
+    public Map<String, Object> characteristic(){
         Map<String,Object> CharacteristicValue=new HashMap<>();
         double sumZ=0;
         double obsMaxStage,obsMaxStageT,calMaxStage,calMaxStageT,calMaxfStage,calMaxfStageT;
@@ -413,17 +392,26 @@ public class Operation {
         calMaxStageT=maxIndex(calStage,forecastEndTime);
         stageAbsError=obsMaxStage-calMaxStage;
         //任务编号，方案号
-        CharacteristicValue.put("总入湖水量",totalInW);
-        CharacteristicValue.put("总出湖水量",totalOutW);
-        CharacteristicValue.put("反算入湖水量",inverseTotalInW);
+        characteristicValue.put("总入湖水量",totalInW);
+        characteristicValue.put("总出湖水量",totalOutW);
+        characteristicValue.put("反算入湖水量",inverseTotalInW);
 
-        CharacteristicValue.put("实测最高水位",obsMaxStage);
-        CharacteristicValue.put("实测最高水位出现时间",obsMaxStageT);
-        CharacteristicValue.put("预报最高水位",calMaxStage);
-        CharacteristicValue.put("预报最高水位出现时间",calMaxStageT);
-        CharacteristicValue.put("洪峰水位绝对误差",stageAbsError);
-        CharacteristicValue.put("确定性系数",dc);
-        return CharacteristicValue;
+        characteristicValue.put("实测最高水位",obsMaxStage);
+        characteristicValue.put("实测最高水位出现时间",obsMaxStageT);
+        characteristicValue.put("预报最高水位",calMaxStage);
+        characteristicValue.put("预报最高水位出现时间",calMaxStageT);
+        characteristicValue.put("洪峰水位绝对误差",stageAbsError);
+        characteristicValue.put("确定性系数",dc);
+        return characteristicValue;
+    }
+
+    //输出建议放水表
+    public Map<String, Object> adviseQ(){
+        adviseDischarge.put("三河闸",gate3Q);
+        adviseDischarge.put("二河闸",gate2Q);
+        adviseDischarge.put("高良涧闸",gateGQ);
+        adviseDischarge.put("高良涧水电站",hydropowerQ);
+        return adviseDischarge;
     }
     //求数组最大值
     public double max(double[] A,int endTime) {
@@ -451,24 +439,42 @@ public class Operation {
         }
         return index;
     }
+    public int getDayIndex(String startDay,String endDay){
+        int endDayIndex=0;
+        try {
+            Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDay);
+            Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(endDay);
+            long dayIndex = (endDate.getTime()-startDate.getTime())/(24*60*60*1000);
+            //从startIndex开始计算,覆盖预报期之后的值
+            endDayIndex= Integer.parseInt(String.valueOf(dayIndex));
+            return endDayIndex;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return endDayIndex;
+    }
 
 }
 
 
 class DischargeCapacity extends Operation{
-    public DischargeCapacity(int lakeArea, double slantedQ, double breakStage, int ti, int timeInterval, int taskNo, double stage, double deltaStorage, double initialZ, int obsEndTime, int forecastEndTime, double safe3Q, double safe2Q, double safeGQ, double er, double sumEwater, boolean updateIndex, boolean storageIndex, Map<String, Object> characteristicValue, Map<String, Object> operationResults, double[] reStorage, double[] obsStorage, double[] calStorage, double[] calStage, double[] lakeStage, double[] waterLevelR, double[] error, double[] averageP, double[] MSQ, double[] totalOutQ, double[] totalQ, double[] eWater, double[] gate3Q, double[] gate2Q, double[] gateGQ, double[] hydropowerQ, double[] surroundQ, double[] correctStage, double[] waterLevelG, double[] gateCurve2, double[] gateCurve3, double[] gateCurveG, boolean[] breakPolder, boolean[] slantedStorage, double[][] rStorage, double[][] reservoirStorage) {
-        super(lakeArea, slantedQ, breakStage, ti, timeInterval, taskNo, stage, deltaStorage, initialZ, obsEndTime, forecastEndTime, safe3Q, safe2Q, safeGQ, er, sumEwater, updateIndex, storageIndex, characteristicValue, operationResults, reStorage, obsStorage, calStorage, calStage, lakeStage, waterLevelR, error, averageP, MSQ, totalOutQ, totalQ, eWater, gate3Q, gate2Q, gateGQ, hydropowerQ, surroundQ, correctStage, waterLevelG, gateCurve2, gateCurve3, gateCurveG, breakPolder, slantedStorage, rStorage, reservoirStorage);
+
+    public  DischargeCapacity(){};
+
+    public DischargeCapacity(Map<String, Object> dispatchInput) {
+        super(dispatchInput);
     }
 }
 
 
 class CurrentOperation extends Operation{
-    public CurrentOperation(int lakeArea, double slantedQ, double breakStage, int ti, int timeInterval, int taskNo, double stage, double deltaStorage, double initialZ, int obsEndTime, int forecastEndTime, double safe3Q, double safe2Q, double safeGQ, double er, double sumEwater, boolean updateIndex, boolean storageIndex, Map<String, Object> characteristicValue, Map<String, Object> operationResults, double[] reStorage, double[] obsStorage, double[] calStorage, double[] calStage, double[] lakeStage, double[] waterLevelR, double[] error, double[] averageP, double[] MSQ, double[] totalOutQ, double[] totalQ, double[] eWater, double[] gate3Q, double[] gate2Q, double[] gateGQ, double[] hydropowerQ, double[] surroundQ, double[] correctStage, double[] waterLevelG, double[] gateCurve2, double[] gateCurve3, double[] gateCurveG, boolean[] breakPolder, boolean[] slantedStorage, double[][] rStorage, double[][] reservoirStorage) {
-        super(lakeArea, slantedQ, breakStage, ti, timeInterval, taskNo, stage, deltaStorage, initialZ, obsEndTime, forecastEndTime, safe3Q, safe2Q, safeGQ, er, sumEwater, updateIndex, storageIndex, characteristicValue, operationResults, reStorage, obsStorage, calStorage, calStage, lakeStage, waterLevelR, error, averageP, MSQ, totalOutQ, totalQ, eWater, gate3Q, gate2Q, gateGQ, hydropowerQ, surroundQ, correctStage, waterLevelG, gateCurve2, gateCurve3, gateCurveG, breakPolder, slantedStorage, rStorage, reservoirStorage);
+    public CurrentOperation(Map<String, Object> dispatchInput) {
+        super(dispatchInput);
     }
-
     /*对于现状调度，需要把实测期结束的最近一次放水赋值给预报期每一天*/
     public Map<String, Object> inputFutureWater(){
+        obsEndTime=getDayIndex(obsStartDay,forecastStartDay);
+        forecastEndTime=getDayIndex(obsStartDay,forecastEndDay)+1;
         Map<String,Object> fWater=new HashMap<>();
         double k,m,n,p;
         k= futureWater(gate3Q);
@@ -489,6 +495,7 @@ class CurrentOperation extends Operation{
         fWater.put("水电站放水",hydropowerQ);
         return fWater;
     }
+
     public double futureWater(double[] gateQ){
         double GatefQ=0;
         for (int j=1;j<8;j++){  //设置读取最近几天的未来放水？
@@ -562,9 +569,13 @@ class CurrentOperation extends Operation{
 
 
 class ManualSetting extends Operation{
-    public ManualSetting(int lakeArea, double slantedQ, double breakStage, int ti, int timeInterval, int taskNo, double stage, double deltaStorage, double initialZ, int obsEndTime, int forecastEndTime, double safe3Q, double safe2Q, double safeGQ, double er, double sumEwater, boolean updateIndex, boolean storageIndex, Map<String, Object> characteristicValue, Map<String, Object> operationResults, double[] reStorage, double[] obsStorage, double[] calStorage, double[] calStage, double[] lakeStage, double[] waterLevelR, double[] error, double[] averageP, double[] MSQ, double[] totalOutQ, double[] totalQ, double[] eWater, double[] gate3Q, double[] gate2Q, double[] gateGQ, double[] hydropowerQ, double[] surroundQ, double[] correctStage, double[] waterLevelG, double[] gateCurve2, double[] gateCurve3, double[] gateCurveG, boolean[] breakPolder, boolean[] slantedStorage, double[][] rStorage, double[][] reservoirStorage, double[] correctQ) {
-        super(lakeArea, slantedQ, breakStage, ti, timeInterval, taskNo, stage, deltaStorage, initialZ, obsEndTime, forecastEndTime, safe3Q, safe2Q, safeGQ, er, sumEwater, updateIndex, storageIndex, characteristicValue, operationResults, reStorage, obsStorage, calStorage, calStage, lakeStage, waterLevelR, error, averageP, MSQ, totalOutQ, totalQ, eWater, gate3Q, gate2Q, gateGQ, hydropowerQ, surroundQ, correctStage, waterLevelG, gateCurve2, gateCurve3, gateCurveG, breakPolder, slantedStorage, rStorage, reservoirStorage);
-        this.correctQ = correctQ;
+    public ManualSetting(Map<String, Object> dispatchInput) {
+        super(dispatchInput);
+    }
+
+    public ManualSetting(Map<String, Object> dispatchInput, double[] correctQ) {
+            super(dispatchInput);
+            this.correctQ = correctQ;
     }
     //只能从前往后修改，修改的值要小于建议放水值
     //初始计算与设计方案一致
@@ -573,20 +584,21 @@ class ManualSetting extends Operation{
 
     double[] correctQ;//三个闸门和水电站修改后的值
     //String startDay,correctDay;
-    public int getDayIndex(String startDay,String correctDay){
-        int correctDayIndex=0;
-        try {
-            Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDay);
-            Date correctDate = new SimpleDateFormat("yyyy-MM-dd").parse(correctDay);
-            long dayIndex = (correctDate.getTime()-startDate.getTime())/(24*60*60*1000);
-            //从dayIndex开始计算,覆盖预报期之后的值
-            correctDayIndex= Integer.parseInt(String.valueOf(dayIndex));
-            return correctDayIndex;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return correctDayIndex;
-    }
+
+//    public int getDayIndex(String startDay,String correctDay){
+//        int correctDayIndex=0;
+//        try {
+//            Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDay);
+//            Date correctDate = new SimpleDateFormat("yyyy-MM-dd").parse(correctDay);
+//            long dayIndex = (correctDate.getTime()-startDate.getTime())/(24*60*60*1000);
+//            //从dayIndex开始计算,覆盖预报期之后的值
+//            correctDayIndex= Integer.parseInt(String.valueOf(dayIndex));
+//            return correctDayIndex;
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return correctDayIndex;
+//    }
     //方案三预报期计算修改,方法的重载
     public void operationMainForecast(int msStartTime,double[] MQ) {
         /*预报期开始到预报期结束*/
