@@ -78,18 +78,15 @@ public class DispatchAdapterService extends Controller {
         boolean  updateIndex = forecastC.getFLD()==1?true:false;//实时校正选择
         // int taskNo = .//方案号
         int forecastLength= getDayIndex(obsStartDay,forecastEndDay)+1;
-        int observeLength=getDayIndex(obsStartDay,forcastStartDay)+1;
-        System.out.println(observeLength);
+        int observeLength=getDayIndex(obsStartDay,forcastStartDay);
+        System.out.println(forecastLength);
         //读取蒋坝水位
         List<RiverH> listStage=(List<RiverH>)dispatchMap.get("listjiangBaDailyWaterLevel");
         double[] lakeStage=new double[forecastLength];
-        for(int i=0;i<forecastLength;i++){
-            if (i< observeLength) {
+        for(int i=0;i < observeLength;i++){
                 lakeStage[i]=Double.parseDouble(String.valueOf(listStage.get(i).getZ()));
-            }
 
         }
-        System.out.println(lakeStage[4]);
         //读取放水资料
         List<CtrOtq> outQ=(List<CtrOtq>)dispatchMap.get("listdispatchWaterReleaseInfo");
 
@@ -101,7 +98,7 @@ public class DispatchAdapterService extends Controller {
             averageP[i]=Double.parseDouble(String.valueOf(forecastResult.get(i).getDRN()));
             totalQ[i]=Double.parseDouble(String.valueOf(forecastResult.get(i).getQ()));
         }
-
+        System.out.println(totalQ[63]);
 
         dispatchInput.put("waterlevelR",waterLevelR);
         dispatchInput.put("reservoirStorage",reservoirStorage);
