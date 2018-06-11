@@ -1,4 +1,4 @@
-package service.forecastService;
+package service.forecastService.jyCalculate;
 
 import util.DateUtil;
 import util.TimeTranport;
@@ -7,12 +7,24 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-class Calinial {
+public class Calinial {
     float kk;//判断使用K1还是K2
     float[] ppa,paa;//
     float[][] pa;//经验模型初始土壤湿度
     String[] timeseries;
     int[] series;//取时间序列的月日，并将字符串型的时间序列转化为整型与531比较
+
+    /**
+     *
+     * @param pp           十六块面平均雨量
+     * @param IM           产流参数1
+     * @param K1           产流参数2
+     * @param K2           产流参数3
+     * @param initialtime 初始化时间
+     * @param starttime    实测开始时间
+     * @return
+     * @throws ParseException
+     */
     public Map<String, float[][]> jySoil(float[][] pp, float[] IM, float[] K1, float[] K2, String initialtime, String starttime) throws ParseException {
         List a;
         a = DateUtil.getBetweenDates(initialtime, starttime);
@@ -50,10 +62,10 @@ class Calinial {
         }
         paa=new float[16];
         for (int i = 0; i < pa[0].length; i++) {
-            paa[i] = pa[pa.length-2][i];
+                paa[i] = pa[pa.length-2][i];
         }
         for (int i = 0; i < paa.length; i++) {
-            paa[i] = (float) (Math.floor(paa[i] * 100)) / 100;
+                paa[i] = (float) (Math.floor(paa[i] * 100)) / 100;
         }
         HashMap map = new HashMap();
         map.put("initialSoil", paa);//初始土壤湿度

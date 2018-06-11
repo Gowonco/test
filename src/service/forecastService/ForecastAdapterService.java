@@ -12,6 +12,9 @@ import model.viewmodel.jymodel.JYChildRainStation;
 import model.viewmodel.jymodel.JYConfig;
 import model.viewmodel.xajmodel.*;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import service.forecastService.jyCalculate.Calinial;
+import service.forecastService.jyCalculate.JyRainCalcu;
+import service.forecastService.xajCalculate.RainCalcu;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -675,7 +678,7 @@ public class ForecastAdapterService extends Controller {
     public float[][] getZdylp() throws ParseException {
         RainCalcu rainCalcu = new RainCalcu();
         try {
-            mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime(),getXAJTree());
+            mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -1132,7 +1135,7 @@ public class ForecastAdapterService extends Controller {
         Map mapp = new HashMap();
         RainCalcu rainCalcu = new RainCalcu();
         try {
-            mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime(),getXAJTree());
+            mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }

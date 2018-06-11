@@ -1,4 +1,4 @@
-package service.forecastService;
+package service.forecastService.xajCalculate;
 
 import util.DateUtil;
 
@@ -6,7 +6,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-class CalculationLake {
+public class CalculationLake {
     float kk;
     float xx;
     int nn;
@@ -15,6 +15,16 @@ class CalculationLake {
     float[] qcal;
     float[][]qrr;
     String[]  timeSeries,im;
+
+    /**
+     *
+     * @param pj           每个断面平均雨量
+     * @param qr           断面预报流量
+     * @param starttime   实测开始时间
+     * @param endtime      预报结束时间
+     * @return
+     * @throws ParseException
+     */
     public Map<String, Object> ruLake(float[][] pj,float[][]qr,String starttime,String endtime)throws ParseException {
         float[] k = {24, 24, 24, 12};
         float[] x = {(-0.1f), (-0.1f), (-0.1f), (-0.1f)};
@@ -32,7 +42,7 @@ class CalculationLake {
         }
         qc=musking(qin,kk,xx,nn).get("muskingFlow");
         for(int i=0;i<m;i++){
-            qr[i][0]=qc[i];
+                qr[i][0]=qc[i];
             qcal[i] = qcal[i] + qc[i];
         }
         //以上是蚌埠断面的马斯京根汇流演算过程
@@ -91,22 +101,21 @@ class CalculationLake {
             timeSeries[i]=(String) (a.get(i));
         }
         int tt=24;
-        ww=new float[6];
-        qm=new float[6];
-        im=new String[6];
+         ww=new float[6];
+         qm=new float[6];
+         im=new String[6];
         for(int i=0;i<6;i++){
-            float rqo=0;
-            for(int j=0;j<m;j++){
-                rqo=rqo+qrr[j][i];
-            }
+          float rqo=0;
+          for(int j=0;j<m;j++){
+              rqo=rqo+qrr[j][i];
+          }
             ww[i] = (float) (rqo * 0.36 * tt / 10000);
             qm[i] = qrr[1][i];
             for(int j=0;j<m;j++)
                 if (qrr[j][i] > qm[i]) {
                     qm[i] = qrr[j][i];
                     im[i] = timeSeries[j]; }
-            if(im[i]==null)
-            {im[i]=timeSeries[0];}
+                if(im[i]==null){im[i]=timeSeries[0];}
         }
         //统计洪峰流量和峰现时间
         float ppj=0;
@@ -159,13 +168,12 @@ class CalculationLake {
             }
             if(i<nn){for(int j=0;j<qin.length;j++){
                 qoxs[j] = qc[j];}
-            }
+                }
         }
         HashMap map=new HashMap();
         map.put("muskingFlow",qc);//马斯京根演算流量
         return map;
     }
-}
-
+    }
 
 
