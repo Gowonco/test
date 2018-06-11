@@ -17,7 +17,7 @@ public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
 		// Composite Primary Key order: ID,NO
-		arp.addMapping("f_ inflow_xajt", "ID,NO",  inflowXajt.class);
+
 		arp.addMapping("f_area_dis", "ID", AreaDis.class);
 		// Composite Primary Key order: DBCD,IL,NO
 		arp.addMapping("f_cf_bb", "DBCD,IL,NO", CfBb.class);
