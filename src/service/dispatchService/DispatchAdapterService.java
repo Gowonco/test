@@ -44,7 +44,7 @@ public class DispatchAdapterService extends Controller {
             reservoirStorage[k][5]=Double.parseDouble(String.valueOf(storageCurve.get(i+5).getS())) ;
             reservoirStorage[k][6]=Double.parseDouble(String.valueOf(storageCurve.get(i+6).getS())) ;
             reservoirStorage[k][7]=Double.parseDouble(String.valueOf(storageCurve.get(i+7).getS())) ;
-            System.out.println(reservoirStorage[k][0]);
+           // System.out.println(reservoirStorage[k][0]);
 
         }
         //读取闸门泄流曲线数组
@@ -59,12 +59,11 @@ public class DispatchAdapterService extends Controller {
             gateCurveG[k]=Double.parseDouble(String.valueOf(gateCurve.get(i).getSFTQ()));
             gateCurve3[k]=Double.parseDouble(String.valueOf(gateCurve.get(i+1).getSFTQ()));
             gateCurve2[k]=Double.parseDouble(String.valueOf(gateCurve.get(i+2).getSFTQ()));
-            System.out.println(gateCurve3[k]);
+            //System.out.println(gateCurve3[k]);
         }
-
         //读取调度参数
         String obsStartDay = sdf.format(forecastC.getBASEDTM());//实测开始时间
-        System.out.println(obsStartDay);
+       // System.out.println(obsStartDay);
         String forcastStartDay = sdf.format(forecastC.getSTARTTM());//预报开始时间
         String forecastEndDay = sdf.format(forecastC.getENDTM());//预报结束时间
         double slantedQ = forecastC.getQ().doubleValue();//斜蓄起始流量
@@ -79,7 +78,7 @@ public class DispatchAdapterService extends Controller {
         // int taskNo = .//方案号
         int forecastLength= getDayIndex(obsStartDay,forecastEndDay)+1;
         int observeLength=getDayIndex(obsStartDay,forcastStartDay);
-        System.out.println(forecastLength);
+       // System.out.println(forecastLength);
         //读取蒋坝水位
         List<RiverH> listStage=(List<RiverH>)dispatchMap.get("listjiangBaDailyWaterLevel");
         double[] lakeStage=new double[forecastLength];
@@ -87,9 +86,21 @@ public class DispatchAdapterService extends Controller {
                 lakeStage[i]=Double.parseDouble(String.valueOf(listStage.get(i).getZ()));
 
         }
+       // System.out.println(lakeStage[4]);
         //读取放水资料
         List<CtrOtq> outQ=(List<CtrOtq>)dispatchMap.get("listdispatchWaterReleaseInfo");
-
+        double[] gate2Q = new double[outQ.size()];
+        double[] gate3Q = new double[outQ.size()];
+        double[] gateGQ = new double[outQ.size()];
+        double[] hydropowerQ = new double[outQ.size()];
+        double[] surroundQ  = new double[outQ.size()];
+        for(int i=0;i<observeLength;i++){
+            gate2Q[i] = outQ.get(i).getEHZQ().floatValue();
+            gate3Q[i] = outQ.get(i).getSHZQ().floatValue();
+            gateGQ[i] = outQ.get(i).getGLZQ().floatValue();
+            hydropowerQ[i] = outQ.get(i).getGLDZQ().floatValue();
+            surroundQ[i] = outQ.get(i).getARQ().floatValue();
+        }
         //读取面平均雨量.总入流
         List<InflowXajr> forecastResult=(List<InflowXajr>)dispatchMap.get("listForecastResult");
         double[] averageP=new double[forecastLength];
@@ -98,7 +109,7 @@ public class DispatchAdapterService extends Controller {
             averageP[i]=Double.parseDouble(String.valueOf(forecastResult.get(i).getDRN()));
             totalQ[i]=Double.parseDouble(String.valueOf(forecastResult.get(i).getQ()));
         }
-        System.out.println(totalQ[63]);
+       // System.out.println(totalQ[63]);
 
         dispatchInput.put("waterlevelR",waterLevelR);
         dispatchInput.put("reservoirStorage",reservoirStorage);
@@ -106,10 +117,16 @@ public class DispatchAdapterService extends Controller {
         dispatchInput.put("gateCurveG",gateCurveG);
         dispatchInput.put("gateCurve2",gateCurve2);
         dispatchInput.put("gateCurve3",gateCurve3);
+
         dispatchInput.put("obsStartDay",obsStartDay);
+        dispatchInput.put("forcastStartDay",forcastStartDay);
+        dispatchInput.put("forecastEndDay",forecastEndDay);
 
-
-
+        dispatchInput.put("gate2Q",gate2Q);
+        dispatchInput.put("gate3Q",gate3Q);
+        dispatchInput.put("gateGQ",gateGQ);
+        dispatchInput.put("hydropowerQ",hydropowerQ);
+        dispatchInput.put("surroundQ",surroundQ);
 
         return dispatchInput;
     }
