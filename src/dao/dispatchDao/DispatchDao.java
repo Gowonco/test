@@ -93,6 +93,7 @@ public class DispatchDao extends Controller {
         List<CtrOtq> listCtrOtq = CtrOtq.dao.find("select * from f_ctr_otq where NO = ?",taskId);
         JSONArray jsonArrayWaterReleaseData=(JSONArray) JSONArray.parse(waterReleaseData);
         List<WasR> listWasR = WasR.dao.find("select YMDHM,TGTQ,YMC,STCD from f_was_r where STCD in (?,?,?) and YMC between ? and ?","51001750","51002650","51110300", YMC1,YMC2);
+
         for(int i=0;i<jsonArrayWaterReleaseData.size();i++) {
             JSONObject jsonObjectWaterReleaseData=(JSONObject) jsonArrayWaterReleaseData.get(i);
             String ymdhm=jsonObjectWaterReleaseData.getString("date")+" 00:00:00";
@@ -100,17 +101,65 @@ public class DispatchDao extends Controller {
                 Db.update("insert into f_ctr_otq(NO,YMDHM,YMC,GLDZQ,ARQ) values(?,?,UNIX_TIMESTAMP(?),?,?)", taskId, ymdhm, ymdhm, jsonObjectWaterReleaseData.getDouble("tgtq"), jsonObjectWaterReleaseData.getDouble("arq"));
                 //jsonObjectwaterReleaseData.getString("date");
             }else {
-               //Db.update("update f_ctr_otq set")
+                Db.update("update f_ctr_otq set YMC = UNIX_TIMESTAMP(?) ,GLDZQ = ? ,ARQ = ? where NO = ? and YMDHM = ?",ymdhm,jsonObjectWaterReleaseData.getDouble("tgtq"), jsonObjectWaterReleaseData.getDouble("arq"),taskId,ymdhm);
             }
         }
-        /*for (WasR wasR:listWasR){
-            if (){
-                Db.update("update f_ctr_otq set GLDZQ = ? where ymc = ?",wasR.getTGTQ(),wasR.getYMC());
+        for (WasR wasR:listWasR) {
+            if (wasR.getSTCD() == "51001750") {
+                //String ymdhm=sdf.format(wasR.getYMDHM());
+                if (listCtrOtq.size() == 0) {
+                    Db.update("insert into f_ctr_otq(NO,YMDHM,YMC,GLZQ) values(?,?,?,?)", taskId, wasR.getYMDHM(), wasR.getYMC(), wasR.getTGTQ());
+                } else {
+                    Db.update("update f_ctr_otq set GLZQ = ?, YMC = ? where NO = ? and YMDHM = ?", wasR.getTGTQ(),  wasR.getYMC(), taskId,wasR.getYMDHM());
+                }
             }
-        }*/
+            if (wasR.getSTCD() == "51002650") {
+                //String ymdhm=sdf.format(wasR.getYMDHM());
+                if (listCtrOtq.size() == 0) {
+                    Db.update("insert into f_ctr_otq(NO,YMDHM,YMC,SHZQ) values(?,?,?,?)", taskId, wasR.getYMDHM(), wasR.getYMC(), wasR.getTGTQ());
+                } else {
+                    Db.update("update f_ctr_otq set SHZQ = ?, YMC = ? where NO = ? and YMDHM = ?", wasR.getTGTQ(),  wasR.getYMC(), taskId,wasR.getYMDHM());
+                }
+            }
+            if (wasR.getSTCD() == "51110300") {
+                //String ymdhm=sdf.format(wasR.getYMDHM());
+                if (listCtrOtq.size() == 0) {
+                    Db.update("insert into f_ctr_otq(NO,YMDHM,YMC,EHZQ) values(?,?,?,?)", taskId, wasR.getYMDHM(), wasR.getYMC(), wasR.getTGTQ());
+                } else {
+                    Db.update("update f_ctr_otq set EHZQ = ?, YMC = ? where NO = ? and YMDHM = ?", wasR.getTGTQ(),  wasR.getYMC(), taskId,wasR.getYMDHM());
+                }
+            }
+        }
 
 
+    }//调度参数保存
+
+    public Map getDispatchZResult(String taskId){
+        List<CtrR> listCtrR = CtrR.dao.find("select no,YMDHM,`MOD`,OBZ,FOZ from f_ctr_r where NO = ?",taskId);
+        List<CtrR> listCtrR1=new ArrayList<CtrR>();
+        List<CtrR> listCtrR2=new ArrayList<CtrR>();
+        List<CtrR> listCtrR3=new ArrayList<CtrR>();
+        Map ctrMap=new HashMap();
+
+        for(CtrR ctrR :listCtrR){
+            if(ctrR.getMOD()==1){
+                listCtrR1.add(ctrR);
+            }
+            if(ctrR.getMOD()==2){
+                listCtrR2.add(ctrR);
+            }
+            if(ctrR.getMOD()==3){
+                listCtrR3.add(ctrR);
+            }
+        }
+
+        ctrMap.put("mod1",listCtrR1);
+        ctrMap.put("mod2",listCtrR2);
+        ctrMap.put("mod3",listCtrR3);
+
+        return ctrMap;
     }
+    //调度水位结果读取
 
 
 }

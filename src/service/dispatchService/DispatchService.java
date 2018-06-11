@@ -103,5 +103,9 @@ public class DispatchService extends Controller {
 
         dispatchDao.waterReleaseDataSave(forecastC.getNO(),forecastC.getYMC1(), forecastC.getYMC2(),waterReleaseData);
     }
+
+    public Map getDispatchZResult(){
+        return dispatchDao.getDispatchZResult(forecastC.getNO());
+    }//调度水位结果读取
 }
 
