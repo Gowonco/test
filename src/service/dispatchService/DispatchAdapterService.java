@@ -60,7 +60,8 @@ public class DispatchAdapterService extends Controller {
             System.out.println(gateCurve3[k]);
         }
 
-        //读取调度参数  还有三个时间
+        //读取调度参数
+        ForecastC operationPara=(ForecastC)dispatchMap.get("forecastC");
         String obsStartDay = sdf.format(forecastC.getBASEDTM());//实测开始时间
         String forcastStartDay = sdf.format(forecastC.getSTARTTM());//预报开始时间
         String forecastEndDay = sdf.format(forecastC.getENDTM());//预报结束时间
@@ -76,19 +77,20 @@ public class DispatchAdapterService extends Controller {
         // int taskNo = .//方案号
         List<InflowXajr> listInflowXajr = (List<InflowXajr>) dispatchMap.get("listForecastResult");
 
-        //读取面平均雨量
-        //读取总入流
+
 
         //读取蒋坝水位
-//        List<RiverH> lakeStage=(List<RiverH>)dispatchMap.get("listjiangBaDailyWaterLevel");
-//        for(int i=0;i<;i=i+3){
-//            int k=i/3;
-//        }
+        List<RiverH> lakeStage=(List<RiverH>)dispatchMap.get("listjiangBaDailyWaterLevel");
+        for(int i=0;i<7;i=i+3){
+            int k=i/3;
+        }
 
         //读取放水资料
-//        List<Tree> outQ=(List<Tree>)dispatchMap.get("listdispatchWaterReleaseInfo");
+        List<CtrOtq> outQ=(List<CtrOtq>)dispatchMap.get("listdispatchWaterReleaseInfo");
 
-
+        //读取面平均雨量
+        List<InflowXajr> forecastResult=(List<InflowXajr>)dispatchMap.get("listForecastResult");
+        //读取总入流
 
 
 
