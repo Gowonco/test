@@ -1483,7 +1483,7 @@ public class ForecastAdapterService extends Controller {
         for(int i=0;i<fenKuai.length;i++){
             for(int j=0;j<fenKuai[0].length;j++){
                 fenKuai[i][j] = pP[i][j];
-            }
+               }
         }
         return fenKuai;
     }
