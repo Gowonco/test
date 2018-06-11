@@ -4,14 +4,14 @@ import com.jfinal.core.Controller;
 import model.dbmodel.ForecastC;
 import model.dbmodel.*;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public class DispatchAdapterService extends Controller {
-
-
     public ForecastC forecastC;
     public Map dispatchMap=new HashMap();
     public Map temMap=new HashMap();
@@ -20,14 +20,15 @@ public class DispatchAdapterService extends Controller {
         this.forecastC=forecastC;
         this.dispatchMap=dispatchMap;
     }
-
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     //在这里写list转数组 或 数组转list
+
+
     public String test(){
         List<CurveHs> storageCurve=(List<CurveHs>)dispatchMap.get("listStorageCurve");
         //读取库容曲线数组
         double[] waterLevelR=new double[10];
         double[][] reservoirStorage = new double[10][8];
-
         for(int i=0;i<80;i=i+8){
             int k=i/8;
             waterLevelR[k]=Double.parseDouble(String.valueOf(storageCurve.get(i).getZ())) ;
@@ -60,6 +61,23 @@ public class DispatchAdapterService extends Controller {
         }
 
         //读取调度参数  还有三个时间
+        String obsStartDay = sdf.format(forecastC.getBASEDTM());//实测开始时间
+        String forcastStartDay = sdf.format(forecastC.getSTARTTM());//预报开始时间
+        String forecastEndDay = sdf.format(forecastC.getENDTM());//预报结束时间
+        double slantedQ = forecastC.getQ().doubleValue();//斜蓄起始流量
+        double breakStage = forecastC.getZ().doubleValue();//破圩水位
+        //新老选择
+        double evapor = forecastC.getWE().doubleValue();//水面蒸发值
+        double safe2Q = forecastC.getELQ().doubleValue();//二河闸下游安全泄量
+        double safe3Q = forecastC.getTLQ().doubleValue();//三河闸下游安全泄量
+        double safeGQ = forecastC.getHLQ().doubleValue();//高良涧闸下游安全泄量
+        double initialZ = forecastC.getSTZ().doubleValue();//起始水位;
+        boolean  updateIndex = forecastC.getFLD()==1?true:false;//实时校正选择
+        // int taskNo = .//方案号
+        List<InflowXajr> listInflowXajr = (List<InflowXajr>) dispatchMap.get("listForecastResult");
+
+        //读取面平均雨量
+        //读取总入流
 
         //读取蒋坝水位
 //        List<RiverH> lakeStage=(List<RiverH>)dispatchMap.get("listjiangBaDailyWaterLevel");
@@ -70,9 +88,9 @@ public class DispatchAdapterService extends Controller {
         //读取放水资料
 //        List<Tree> outQ=(List<Tree>)dispatchMap.get("listdispatchWaterReleaseInfo");
 
-        //读取面平均雨量
 
-        //读取总入流
+
+
 
         return "kk";
     }
