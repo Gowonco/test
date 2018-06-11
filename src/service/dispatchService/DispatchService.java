@@ -40,10 +40,6 @@ public class DispatchService extends Controller {
         dispatchMap.put("forecastC",getDispatchPara());
         dispatchMap.put("listForecastResult",getForecastResult());
 
-
-
-
-
         DispatchCalculateService fc=new DispatchCalculateService(forecastC,dispatchMap);
         fc.initialOperation();
         return true;
