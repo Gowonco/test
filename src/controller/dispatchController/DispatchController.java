@@ -133,5 +133,6 @@ public class DispatchController extends Controller {
     public void doManualAdviceQFix(){
         String taskId=getPara("taskId");
         dispatchService.setTaskSetting(taskId);
+        renderJson();
     }//人工方案干预
 }

@@ -164,6 +164,6 @@ public class DispatchDao extends Controller {
         String ymdhm=time+" 00:00:00";
         List<RcmR> listRcmR = RcmR.dao.find("select * from f_rcm_r where NO = ? and YMC = UNIX_TIMESTAMP(?)",taskId,ymdhm);
         return listRcmR;
-    }
+    }//
 
 }

@@ -117,7 +117,7 @@ public class DispatchService extends Controller {
 
     public List<RcmR> getManualAdviceQ(String time){
         return dispatchDao.getManualAdviceQ(forecastC.getNO(),time);
-    }//建议放水读取
+    }//建议放水读取的
 
     public void operationResultSave(){
 
