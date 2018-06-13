@@ -70,7 +70,7 @@ public class ForecastCalculateService extends Controller {
         fAS.saveHuiLiu();
         //-----------------------------断面流量计算---------------------------
         //新安江土壤含水量map\水库汇流结果需要先准备----在适配器里面★★★★★★★★★★★★★★★★★★★
-        //鲁台子
+        //鲁台子 d
 
         Map mapDayev=fAS.getOtherDayev();
         Map mapStateData=fAS.getStateData();
