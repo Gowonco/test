@@ -3,6 +3,7 @@ package service.forecastService;
 import com.jfinal.core.Controller;
 import model.dbmodel.*;
 import model.viewmodel.xajmodel.XAJFractureChild;
+import service.forecastService.xajCalculate.CalculationLake;
 import service.forecastService.xajCalculate.RainCalcu;
 import service.forecastService.xajCalculate.ReservoirConfluence;
 import service.forecastService.xajCalculate.SoilMoiCalcu;
@@ -83,16 +84,17 @@ public class ForecastCalculateService extends Controller {
         Map mapLsFractureFlow=luTaiZiCal.charactLuTaiZi();//返回结果的
         //其他断面
         SectionGeneral sectionGeneral=new SectionGeneral(fAS.getStToEnd(),fAS.getStToEnd2(),(float[])mapDayev.get("LTZ"),(float[])mapDayev.get("SHZ"),fAS.getEvap(),fAS.getOtherQobs(),fAS.getOtherZdylp(),fAS.getOtherppfu(),fAS.getOtherQinflow(),fAS.getTimeSeries(),fAS.getroutOption(),forecastC.getFL());
-//        Map mapBbFractureFlow=sectionGeneral.calculationBengBu("bb",);
-        Map mapMgFractureFlow=new HashMap();
-        Map mapByFractureFlow=new HashMap();
-        Map mapHbractureFlow=new HashMap();
-        Map mapHmFractureFlow=new HashMap();
-
-
+        Map mapBbFractureFlow=sectionGeneral.calculationBengBu("bb",(float[][]) mapStateData.get("bbState"),(float[])(mapParaScetion.get("bengBu")),(float[][])mapParaInflow.get("bengBu"),fAS.getChildPara(4,9));
+        Map mapMgFractureFlow=sectionGeneral.calculationHuaiNan("mg",(float[][]) mapStateData.get("mgState"),(float[])(mapParaScetion.get("huaiNan")),(float[][])mapParaInflow.get("huaiNan"),fAS.getChildPara(1,13));
+        Map mapByFractureFlow=sectionGeneral.calculationHuaiBei("by",(float[][]) mapStateData.get("byState"),(float[])(mapParaScetion.get("huaiBei")),(float[][])mapParaInflow.get("huaiBei"),fAS.getChildPara(6,14));
+        Map mapHbractureFlow=sectionGeneral.calculationBengBu("hb",(float[][]) mapStateData.get("hbState"),(float[])(mapParaScetion.get("huBing")),(float[][])mapParaInflow.get("huBing"),fAS.getChildPara(2,20));
+        Map mapHmFractureFlow=sectionGeneral.charactLake("hu",(float[])(mapParaScetion.get("huMian")),(float[][])mapParaInflow.get("huMian"));
+        fAS.saveFractureFlow();
 
         //-----------------------------入湖预报计算--------------------------
-
+        CalculationLake calculationLake=new CalculationLake();
+        Map mapruLake=calculationLake.ruLake(fAS.getPj(),fAS.getQr(),fAS.getStartTime(),fAS.getEndTime());
+        fAS.saveRuLake(mapruLake);
         //-----------------  经验 -----------------
         //面平均雨量计算
         //初始土壤湿度

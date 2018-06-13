@@ -1271,7 +1271,9 @@ public class ForecastAdapterService extends Controller {
     public float[] getroutOption(){
         return new float[5];
     }
+    public void saveFractureFlow(){
 
+    }
     //-----------------------------------------新安江模型入湖流量计算---------------------------
     //获取各断面雨量
     public float[][] getPj(){
@@ -1286,7 +1288,7 @@ public class ForecastAdapterService extends Controller {
         }
         return pJ;
     }
-    //获取各断面预报流量
+    //获取各断面预报流量   //-------------中间数据 待修改
     public float[][] getQr(){
         List<XAJForecastXajr> listXajForecastXajr = (List<XAJForecastXajr>) xajMap.get("listXAJForecastXajr");
         int size = listXajForecastXajr.get(0).getListForecastXajr().size();
@@ -1354,6 +1356,9 @@ public class ForecastAdapterService extends Controller {
         inflowXajt.setFOPT(sdf.parse(im[0]+" 00:00:00"));
         listInflowXajt.add(inflowXajt);
         return listInflowXajt;
+    }
+    public void saveRuLake(Map mapruLake){
+
     }
     //---------------------------------------------------------经验模型面平均雨量-----------------------------------
     //获取经验模型 子流域-雨量站级联关系表
