@@ -339,18 +339,22 @@ public class ForecastAdapterService extends Controller {
     }
     //-------------------------------------------新安江土壤含水量计算---------------------------------
     //实测流量（从预热期开始到实测开始前一天)(阜阳闸、鲁台子、明光、蚌埠闸、金锁镇、峰山、泗洪老、泗洪新、团结闸)
-    //list需要改一下
-    //从河道水情表中取出，但是有取得不全
+    //从河道水情表和闸坝放水表，没有团结闸
     public float[][] getXAJSTQ(){
         List<XAJHydrologicFlow> listXAJHydrologicFlow = (List<XAJHydrologicFlow>) xajMap.get("listHydrologicFlow");
-        float[][] qobs = new float[listXAJHydrologicFlow.size()][];
+        List<ViewFlow> listViewFlow = (List<ViewFlow>) xajMap.get("listStrobeFlow");
+        float[][] qobs = new float[listXAJHydrologicFlow.size()-getStToEnd()][9];
         for(int i=0;i<qobs.length;i++){
-            qobs[i] = new float[9];
+            for(int k=0;k<listViewFlow.get(i).getListWasR().size();k++){
+                if(listViewFlow.get(i).getListWasR().get(k).getSTCD().equals("50601930")){//阜阳闸
+                    qobs[i][0] = listViewFlow.get(i).getListWasR().get(k).getTGTQ().floatValue();
+                }
+                if(listViewFlow.get(i).getListWasR().get(k).getSTCD().equals("50908300")){//团结闸
+                    qobs[i][8] = listViewFlow.get(i).getListWasR().get(k).getTGTQ().floatValue();
+                }
+            }
             for(int j=0;j<listXAJHydrologicFlow.get(i).getListRiverH().size();j++){
                 RiverH viewFlow = listXAJHydrologicFlow.get(i).getListRiverH().get(j);
-                if(viewFlow.getSTCD().equals("50601930")){//阜阳闸
-                    qobs[i][0] = viewFlow.getQ().floatValue();
-                }
                 if(viewFlow.getSTCD().equals("50103100")){//鲁台子
                     qobs[i][1] = viewFlow.getQ().floatValue();
                 }
@@ -371,9 +375,6 @@ public class ForecastAdapterService extends Controller {
                 }
                 if(viewFlow.getSTCD().equals("50912900")){//泗洪新
                     qobs[i][7] = viewFlow.getQ().floatValue();
-                }
-                if(viewFlow.getSTCD().equals("50908300")){//团结闸
-                    qobs[i][8] = viewFlow.getQ().floatValue();
                 }
             }
         }
@@ -439,10 +440,166 @@ public class ForecastAdapterService extends Controller {
         }
         return state;
     }
+    //返回时间序列 （预热期到实测期前一天）
+    public String[] getFrontTimeSeries(){
+        String[] timeSeries =new String[getWtmtoBas()];
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(forecastC.getWUTM());
+        for(int i=0;i<timeSeries.length;i++){
+            timeSeries[i] = sdf.format(calendar.getTime());
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+        }
+        return timeSeries;
+    }
+    //返回土壤含水量表（F_SOIL_W）
+    public List<SoilW> getSoilW(Map mapLsSoil,Map mapBbSoil,Map mapMgSoil,Map mapBySoil,Map mapHbSoil) throws ParseException {
+        List<SoilW> listSoilW = new ArrayList<>();
+        List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
+        float[][] epej = (float[][]) mapLsSoil.get("e");
+        float[][] plpj = (float[][]) mapLsSoil.get("p");
+        float[][] wpj = (float[][]) mapLsSoil.get("w");
+        float[][] wupj = (float[][]) mapLsSoil.get("wu");
+        float[][] wlpj = (float[][]) mapLsSoil.get("wl");
+        float[][] wdpj = (float[][]) mapLsSoil.get("wd");
+        float[][] qcalj = (float[][]) mapLsSoil.get("q");
+        float[][] spj = (float[][]) mapLsSoil.get("s");
+        float[][] frpj = (float[][]) mapLsSoil.get("fr");
+
+        float[][] epej1 = (float[][]) mapBbSoil.get("e");
+        float[][] plpj1 = (float[][]) mapBbSoil.get("p");
+        float[][] wpj1 = (float[][]) mapBbSoil.get("w");
+        float[][] wupj1 = (float[][]) mapBbSoil.get("wu");
+        float[][] wlpj1 = (float[][]) mapBbSoil.get("wl");
+        float[][] wdpj1 = (float[][]) mapBbSoil.get("wd");
+        float[][] qcalj1 = (float[][]) mapBbSoil.get("q");
+        float[][] spj1 = (float[][]) mapBbSoil.get("s");
+        float[][] frpj1 = (float[][]) mapBbSoil.get("fr");
+
+        float[][] epej2 = (float[][]) mapMgSoil.get("e");
+        float[][] plpj2 = (float[][]) mapMgSoil.get("p");
+        float[][] wpj2 = (float[][]) mapMgSoil.get("w");
+        float[][] wupj2 = (float[][]) mapMgSoil.get("wu");
+        float[][] wlpj2 = (float[][]) mapMgSoil.get("wl");
+        float[][] wdpj2 = (float[][]) mapMgSoil.get("wd");
+        float[][] qcalj2 = (float[][]) mapMgSoil.get("q");
+        float[][] spj2 = (float[][]) mapMgSoil.get("s");
+        float[][] frpj2 = (float[][]) mapMgSoil.get("fr");
+
+        float[][] epej3 = (float[][]) mapBySoil.get("e");
+        float[][] plpj3 = (float[][]) mapBySoil.get("p");
+        float[][] wpj3 = (float[][]) mapBySoil.get("w");
+        float[][] wupj3 = (float[][]) mapBySoil.get("wu");
+        float[][] wlpj3 = (float[][]) mapBySoil.get("wl");
+        float[][] wdpj3 = (float[][]) mapBySoil.get("wd");
+        float[][] qcalj3 = (float[][]) mapBySoil.get("q");
+        float[][] spj3 = (float[][]) mapBySoil.get("s");
+        float[][] frpj3 = (float[][]) mapBySoil.get("fr");
+
+        float[][] epej4 = (float[][]) mapHbSoil.get("e");
+        float[][] plpj4 = (float[][]) mapHbSoil.get("p");
+        float[][] wpj4 = (float[][]) mapHbSoil.get("w");
+        float[][] wupj4 = (float[][]) mapHbSoil.get("wu");
+        float[][] wlpj4 = (float[][]) mapHbSoil.get("wl");
+        float[][] wdpj4 = (float[][]) mapHbSoil.get("wd");
+        float[][] qcalj4 = (float[][]) mapHbSoil.get("q");
+        float[][] spj4 = (float[][]) mapHbSoil.get("s");
+        float[][] frpj4 = (float[][]) mapHbSoil.get("fr");
+
+        String[] timeSeries = getFrontTimeSeries();
+        for(int t=0;t<epej.length;t++){
+            for(int i =0;i<epej[0].length;i++){//鲁台子
+                SoilW soilW = new SoilW();
+                soilW.setDMCD("00101000");
+                soilW.setARCD(listXAJChildRainStation.get(i).getChildId());
+                soilW.setNO(forecastC.getNO());
+                soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
+                soilW.setE(new BigDecimal(Float.toString(epej[t][i])));
+                soilW.setP(new BigDecimal(Float.toString(plpj[t][i])));
+                soilW.setW(new BigDecimal(Float.toString(wpj[t][i])));
+                soilW.setWu(new BigDecimal(Float.toString(wupj[t][i])));
+                soilW.setWl(new BigDecimal(Float.toString(wlpj[t][i])));
+                soilW.setWd(new BigDecimal(Float.toString(wdpj[t][i])));
+                soilW.setQ(new BigDecimal(Float.toString(qcalj[t][i])));
+                soilW.setS(new BigDecimal(Float.toString(spj[t][i])));
+                soilW.setFr(new BigDecimal(Float.toString(frpj[t][i])));
+                listSoilW.add(soilW);
+            }
+            for(int i =0;i<epej1[0].length;i++){//蚌埠
+                SoilW soilW = new SoilW();
+                soilW.setDMCD("00102000");
+                soilW.setARCD(listXAJChildRainStation.get(i+epej[0].length).getChildId());
+                soilW.setNO(forecastC.getNO());
+                soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
+                soilW.setE(new BigDecimal(Float.toString(epej1[t][i])));
+                soilW.setP(new BigDecimal(Float.toString(plpj1[t][i])));
+                soilW.setW(new BigDecimal(Float.toString(wpj1[t][i])));
+                soilW.setWu(new BigDecimal(Float.toString(wupj1[t][i])));
+                soilW.setWl(new BigDecimal(Float.toString(wlpj1[t][i])));
+                soilW.setWd(new BigDecimal(Float.toString(wdpj1[t][i])));
+                soilW.setQ(new BigDecimal(Float.toString(qcalj1[t][i])));
+                soilW.setS(new BigDecimal(Float.toString(spj1[t][i])));
+                soilW.setFr(new BigDecimal(Float.toString(frpj1[t][i])));
+                listSoilW.add(soilW);
+            }
+            for(int i =0;i<epej2[0].length;i++){//淮南
+                SoilW soilW = new SoilW();
+                soilW.setDMCD("00103000");
+                soilW.setARCD(listXAJChildRainStation.get(i+epej[0].length+epej1[0].length).getChildId());
+                soilW.setNO(forecastC.getNO());
+                soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
+                soilW.setE(new BigDecimal(Float.toString(epej2[t][i])));
+                soilW.setP(new BigDecimal(Float.toString(plpj2[t][i])));
+                soilW.setW(new BigDecimal(Float.toString(wpj2[t][i])));
+                soilW.setWu(new BigDecimal(Float.toString(wupj2[t][i])));
+                soilW.setWl(new BigDecimal(Float.toString(wlpj2[t][i])));
+                soilW.setWd(new BigDecimal(Float.toString(wdpj2[t][i])));
+                soilW.setQ(new BigDecimal(Float.toString(qcalj2[t][i])));
+                soilW.setS(new BigDecimal(Float.toString(spj2[t][i])));
+                soilW.setFr(new BigDecimal(Float.toString(frpj2[t][i])));
+                listSoilW.add(soilW);
+            }
+            for(int i =0;i<epej3[0].length;i++){//淮北
+                SoilW soilW = new SoilW();
+                soilW.setDMCD("00104000");
+                soilW.setARCD(listXAJChildRainStation.get(i+epej[0].length+epej1[0].length+epej2[0].length).getChildId());
+                soilW.setNO(forecastC.getNO());
+                soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
+                soilW.setE(new BigDecimal(Float.toString(epej3[t][i])));
+                soilW.setP(new BigDecimal(Float.toString(plpj3[t][i])));
+                soilW.setW(new BigDecimal(Float.toString(wpj3[t][i])));
+                soilW.setWu(new BigDecimal(Float.toString(wupj3[t][i])));
+                soilW.setWl(new BigDecimal(Float.toString(wlpj3[t][i])));
+                soilW.setWd(new BigDecimal(Float.toString(wdpj3[t][i])));
+                soilW.setQ(new BigDecimal(Float.toString(qcalj3[t][i])));
+                soilW.setS(new BigDecimal(Float.toString(spj3[t][i])));
+                soilW.setFr(new BigDecimal(Float.toString(frpj3[t][i])));
+                listSoilW.add(soilW);
+            }
+            for(int i =0;i<epej4[0].length;i++){//胡兵
+                SoilW soilW = new SoilW();
+                soilW.setDMCD("00105000");
+                soilW.setARCD(listXAJChildRainStation.get(i+epej[0].length+epej1[0].length+epej2[0].length+epej3[0].length).getChildId());
+                soilW.setNO(forecastC.getNO());
+                soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
+                soilW.setE(new BigDecimal(Float.toString(epej4[t][i])));
+                soilW.setP(new BigDecimal(Float.toString(plpj4[t][i])));
+                soilW.setW(new BigDecimal(Float.toString(wpj4[t][i])));
+                soilW.setWu(new BigDecimal(Float.toString(wupj4[t][i])));
+                soilW.setWl(new BigDecimal(Float.toString(wlpj4[t][i])));
+                soilW.setWd(new BigDecimal(Float.toString(wdpj4[t][i])));
+                soilW.setQ(new BigDecimal(Float.toString(qcalj4[t][i])));
+                soilW.setS(new BigDecimal(Float.toString(spj4[t][i])));
+                soilW.setFr(new BigDecimal(Float.toString(frpj4[t][i])));
+                listSoilW.add(soilW);
+            }
+
+        }
+
+        return listSoilW;
+    }
     //
     public void saveSoil(){}
     //
-
 
 
     //----------------------------------新安江模型水库汇流选择------------------------------
@@ -489,7 +646,7 @@ public class ForecastAdapterService extends Controller {
         List<ViewReservoir> listViewReservoir = (List<ViewReservoir>) xajMap.get("listViewReservoir");
         List<ViewFlow> listViewFlow = (List<ViewFlow>) xajMap.get("listStrobeFlow");
         List<XAJFutureWater> listXAJFutureWater = (List<XAJFutureWater>) xajMap.get("listXAJFutureWater");
-        double readQ[][] = new double[listViewReservoir.size()+listXAJFutureWater.size()][];
+        double readQ[][] = new double[listViewReservoir.size()+listXAJFutureWater.size()-1][];
         int size = listViewReservoir.get(0).getListRsvrOtq().size();
         for(int i=0;i<listViewReservoir.size();i++){//---------实测期
             readQ[i] = new double[size+3];
@@ -519,6 +676,37 @@ public class ForecastAdapterService extends Controller {
         }
         return readQ;
     }
+    //返回汇流时间选择表（F_CF_T）
+    public List<CfT> getCfT(Map mapYbbenhn) throws ParseException {
+        List<CfT> listCfT = new ArrayList<>();
+        String[] note = (String[]) mapYbbenhn.get("项目");
+        String [] startTime = (String[]) mapYbbenhn.get("起始时间");
+        String [] endTime = (String[]) mapYbbenhn.get("结束时间");
+        for(int i=0;i<note.length;i++){
+            CfT cft = new CfT();
+            cft.setDBCD("00100000");
+            cft.setNO(forecastC.getNO());
+            cft.setITEM(note[i]);
+            cft.setSTARTTM(sdf.parse(startTime[i]+" 00:00:00"));
+            cft.setENDTM(sdf.parse(endTime[i]+" 00:00:00"));
+            listCfT.add(cft);
+        }
+        return listCfT;
+    }
+    //返回蚌埠汇流选择表（F_CF_BB）
+    public List<CfBb> getCfBb(Map mapYbbensk1){
+        List<CfBb> listCfBb = new ArrayList<>();
+        String[] note = (String[]) mapYbbensk1.get("说明");
+        float [] isOpen= (float[]) mapYbbensk1.get("是否汇流到蚌埠");
+        double[] totalW= (double[]) mapYbbensk1.get("来水总量");
+        return listCfBb;
+    }
+    //返回新安江模型水库汇流结果表（F_CF_R）
+    public List<CfR> getCfr(Map mapYbbensk){
+        List<CfR> listCfr = new ArrayList<>();
+
+        return listCfr;
+    }
     //
     public void saveHuiLiu(){}
     //
@@ -531,14 +719,14 @@ public class ForecastAdapterService extends Controller {
         Date  startTime = forecastC.getBASEDTM();
         Date rainTime = forecastC.getSTARTTM();
         int days = (int) ((rainTime.getTime()-startTime.getTime())/(1000*24*3600));
-        return days;
+        return days+1;
     }
     //时间长（从实测开始到预报结束）
     public int getStToEnd2(){
         Date  startTime = forecastC.getBASEDTM();
         Date rainTime = forecastC.getENDTM();
         int days = (int) ((rainTime.getTime()-startTime.getTime())/(1000*24*3600));
-        return days;
+        return days+1;
     }
     //断面参数（包括时段，流域面积，流域分块数，入流个数）存入map里见getParaScetion() "luTaiZi"
     //断面的入流马斯京根参数存入map 见getParaInflow() 取“luTaiZi”
@@ -547,15 +735,15 @@ public class ForecastAdapterService extends Controller {
     //鲁台子和上桥闸的实测流量（从实测开始到实测结束）
     public float[][] getQobs(){
         List<ViewFlow> listViewFlow = (List<ViewFlow>) xajMap.get("listStrobeFlow");
-        float[][] qobs = new float[listViewFlow.size()][];
+        float[][] qobs = new float[getStToEnd()][];
         for(int i=0;i<qobs.length;i++){
             qobs[i] = new float[2];
             for(int j=0;j<listViewFlow.get(i).getListWasR().size();j++){
-                if(listViewFlow.get(i).getListWasR().get(j).getSTCD().equals("50103100")){//鲁台子
-                    qobs[i][0] = listViewFlow.get(i).getListWasR().get(j).getTGTQ().floatValue();
+                if(listViewFlow.get(i+getWtmtoBas()).getListWasR().get(j).getSTCD().equals("50103100")){//鲁台子
+                    qobs[i][0] = listViewFlow.get(i+getWtmtoBas()).getListWasR().get(j).getTGTQ().floatValue();
                 }
-                if(listViewFlow.get(i).getListWasR().get(j).getSTCD().equals("50404000")){//上桥闸
-                    qobs[i][1] = listViewFlow.get(i).getListWasR().get(j).getTGTQ().floatValue();
+                if(listViewFlow.get(i+getWtmtoBas()).getListWasR().get(j).getSTCD().equals("50404000")){//上桥闸
+                    qobs[i][1] = listViewFlow.get(i+getWtmtoBas()).getListWasR().get(j).getTGTQ().floatValue();
                 }
             }
         }
@@ -599,7 +787,7 @@ public class ForecastAdapterService extends Controller {
     //汇流结束时间?
     //时间序列（从实测开始到预报结束）
     public String[] getTimeSeries(){
-        String[] timeSeries =new String[getStToEnd2()+1];
+        String[] timeSeries =new String[getStToEnd2()];
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(forecastC.getBASEDTM());
         for(int i=0;i<timeSeries.length;i++){
@@ -1148,8 +1336,8 @@ public class ForecastAdapterService extends Controller {
         float[]  ltZevaDay = new float[getStToEnd()];
         float[]  shZevaDay = new float[getStToEnd()];
         for(int i=0;i<getStToEnd();i++){
-            ltZevaDay[i] = listXAJDayevH.get(0).getListDayevH().get(i).getDYE().floatValue();
-            shZevaDay[i] = listXAJDayevH.get(1).getListDayevH().get(i).getDYE().floatValue();
+            ltZevaDay[i] = listXAJDayevH.get(0).getListDayevH().get(i+getWtmtoBas()).getDYE().floatValue();
+            shZevaDay[i] = listXAJDayevH.get(1).getListDayevH().get(i+getWtmtoBas()).getDYE().floatValue();
         }
         map.put("LTZ",ltZevaDay);
         map.put("SHZ",shZevaDay);
@@ -1210,9 +1398,9 @@ public class ForecastAdapterService extends Controller {
         String[] timeseries=(String [])mapp.get("timeSeries");
         List<DayrnflAvg> listDayrnflAvg = getXAJDayrnflAvg(pp,timeseries);
         float[][] endpP = new float[ALLPP.length-getWtmtoBas()][];
-//        System.out.println(ALLPP.length);
-//        System.out.println(getWtmtoBas());
-//        System.out.println(endpP.length);
+        System.out.println(ALLPP.length);
+        System.out.println(getWtmtoBas());
+        System.out.println(endpP.length);
         for(int i=0;i<endpP.length;i++){
             endpP[i] = new float[14];
             for(int j=0;j<14;j++){

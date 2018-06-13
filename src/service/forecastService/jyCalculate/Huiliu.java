@@ -140,8 +140,8 @@ public class Huiliu {
 		List m = DateUtil.getBetweenDates(initialtime, starttime);
 		int n = m.size();
 		paver = new double[glnn][16];
-		for (int i = n - 1; i < paver.length; i++) {
-			for (int j = 0; j < paver[0].length; j++) {
+		for (int i = n - 1; i < app.length; i++) {
+			for (int j = 0; j < 16; j++) {
 				paver[i - n + 1][j] = app[i][j];
 			}
 		}
@@ -199,8 +199,8 @@ public class Huiliu {
 		double[] by = {3, 5, 10, 15, 20, 25, 30, 35};
 		double[] mg = {10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90};
 		//输出VB中表jybresuno格式：时间、蚌埠、淮北、淮南,数组长度需做修改*/
-		qqobc = new double[Longtime][4];
-		qbbg = new double[Longtime][11];
+		qqobc = new double[Longtime][4];//Longtime12
+		qbbg = new double[Longtime][11];System.out.println(qbb.length);//62
 		for (int i = 0; i < qbb.length; i++) {
 			for (int j = 0; j < qbb[i].length; j++) {
 				qbbg[i][j] = qbb[i][j];
@@ -308,7 +308,7 @@ public class Huiliu {
 //		输入三张表格水库汇流结果，是否汇到蚌埠，考虑流量是否大于500
 		/*------水库汇流------*/
 		q = new double[Longtime];//qrc q考虑是否汇流到蚌埠的流量
-//		itc = new String[2][3];
+//		itc = new String[2][2];
 		qcsum = new double[Longtime];
 		qrcsum = new double[Longtime];
 		q1g = new double[Longtime][7];
@@ -318,8 +318,8 @@ public class Huiliu {
 			}
 		}
 //	对itc进行赋值，要传递String类型
-//		itc[0][1] = "2000-06-17";
-//		itc[0][2] = "2000-08-19";
+		itc[0][0] = "2000-06-17";
+		itc[0][1] = "2000-08-19";
 		//int startTime=0;
 		/*经过马斯京根演算后水库汇流*/
 		//考虑大于500的流量进行汇流计算有误
@@ -458,7 +458,7 @@ public class Huiliu {
 				dmaver[i][1] = ppby[i];
 				dmaver[i][2] = ppmg[i];
 				dmaver[i][3] = pphm[i];
-				dmaver[i][4] = ppbb[i];
+				dmaver[i][4] = pphz[i];
 				
 			}
 		
@@ -593,6 +593,7 @@ public class Huiliu {
 		jpAverage(app, initialtime, starttime);
 		UA(w, qbb, qby, qmg);
 		bbShuiku(q1, idc,itc);
+//		bbShuiku(q1, idc);
 		Dqtui(qbboto);
 		hui();
 		obsHui(dmobs);
@@ -602,7 +603,7 @@ public class Huiliu {
 			ppbb[i]= (double) (Math.round(ppbb[i] * 100)) / 100;
 			ppby[i]= (double) (Math.round(ppby[i] * 100)) / 100;
 			ppmg[i]= (double) (Math.round(ppmg[i] * 100)) / 100;
-			ppbb[i]= (double) (Math.round(pphm[i] * 100)) / 100;
+			pphm[i]= (double) (Math.round(pphm[i] * 100)) / 100;
 		}
 //		预报保留两位小数
 		for(int i=0;i<Longtime;i++){

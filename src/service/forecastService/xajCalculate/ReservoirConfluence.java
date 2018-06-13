@@ -230,7 +230,9 @@ public class ReservoirConfluence {
         String [] startTime=new String[2];
         String [] endTime=new String[2];
         startTime[0]=beginTime;
+        startTime[1]=beginTime;
         endTime[0]=indexToDate(forecastEndTime,obsStartDay);
+        endTime[1]=indexToDate(forecastEndTime,obsStartDay);
         //建议考虑汇流的时间可以修改
         confluenceTime.put("项目",note);
         confluenceTime.put("起始时间",startTime);

@@ -31,15 +31,6 @@ public class Shuiku {
 	String endtime;
 	String[] timeseries;
 	int glnn;
-
-	/**
-	 *
-	 * @param qshuiku      9个水库的放水资料
-	 * @param musk          五类水库汇流计算马斯京根参数
-	 * @param starttime     实测开始时间
-	 * @param middletime    实测结束时间
-	 * @param endtime        预报结束时间
-	 */
 	public Shuiku(double[][] qshuiku,double[][] musk, String starttime,String middletime, String endtime){
 		this.qshuiku=qshuiku;
 		this.musk=musk;
@@ -189,34 +180,35 @@ public class Shuiku {
 		wchu=new double[3][4];
 		id=new double[3][4];
 		for(int j=0;j<3;j++){
-			wchu[j][2]=0;
+			wchu[j][0]=0;
 			for(int i=0;i<glnn;i++){
-				wchu[j][2]=wchu[j][2]+qc[i][j];
+				wchu[j][0]=wchu[j][0]+qc[i][j];
 			}
-			id[j][2]=wchu[j][2]*24*3600/100000000;
+			id[j][0]=wchu[j][0]*24*3600/100000000;
 		}
 	}
 	
 	public void huiTime() {
 //计算流量大于500的时间；
 //建议考虑汇流时间
-		
-			it1 = new double[3][3];
-			it = new String[3][3];
-			it[0][2] = timeseries[Longtime-1];
-			it[1][2] = timeseries[Longtime -1];
-			for (int i = 0; i < Longtime; i++) {
-				if (qc[i][2] >= 500) {
-					it[0][1] = timeseries[i];//进行时间转换，将时刻点转换为某年某月某日20000623
-					break;
-				}
+
+		it1 = new double[3][3];
+		it = new String[2][2];
+		it[0][1] = timeseries[Longtime-1];
+		it[1][1] = timeseries[Longtime -1];
+		for (int i = 0; i < Longtime; i++) {
+			if (qc[i][2] >= 500) {
+				it[0][0] = timeseries[i];//进行时间转换，将时刻点转换为某年某月某日20000623
+				break;
 			}
-			it[1][1] = it[0][1];
-	
+		}
+		it[1][0] = it[0][0];
+
 	}
-	
-	
-			// beginTime=indexToDate(i,startDate);//将数组下标转化为日期
+
+
+
+	// beginTime=indexToDate(i,startDate);//将数组下标转化为日期
 			/*输出水库放水、马斯京根汇流水库水量*/
 	public Map<String, Object> outputShuiKu () {
 		prTime( starttime, endtime);
@@ -238,14 +230,14 @@ public class Shuiku {
 				}
 				
 		for (int j = 0; j < 3; j++) {
-					id[j][2] = (double) (Math.round(id[j][2] * 10000)) / 10000;
+					id[j][0] = (double) (Math.round(id[j][0] * 10000)) / 10000;
 			}
 				
 		Map<String, Object> shuiKuHui = new HashMap<>();
-				shuiKuHui.put("qc", qc);//水库放水
-				shuiKuHui.put("qrc", qrc);//水库马法演算
-				shuiKuHui.put("id", id);//来水总量
-				shuiKuHui.put("it", it);//流量大于500
+				shuiKuHui.put("水库放水", qc);
+				shuiKuHui.put("水库马法演算", qrc);
+				shuiKuHui.put("来水总量", id);
+				shuiKuHui.put("流量大于500", it);
 				
 				return shuiKuHui;
 			}
