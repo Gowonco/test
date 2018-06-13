@@ -9,6 +9,7 @@ import model.viewmodel.jymodel.JYChildPara;
 import model.viewmodel.jymodel.JYChildRainStation;
 import model.viewmodel.jymodel.JYConfig;
 import model.viewmodel.xajmodel.*;
+import service.forecastService.jyCalculate.Calculation;
 import service.forecastService.jyCalculate.Calinial;
 import service.forecastService.jyCalculate.JyRainCalcu;
 import service.forecastService.jyCalculate.Shuiku;
@@ -380,7 +381,7 @@ public class ForecastAdapterService extends Controller {
     public float[][] getXAJZdylp() throws ParseException {
         RainCalcu rainCalcu = new RainCalcu();
         try {
-            mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime(),getXAJTree());
+            mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
