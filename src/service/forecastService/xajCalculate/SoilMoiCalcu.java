@@ -59,12 +59,14 @@ public class SoilMoiCalcu {
                 qobsAll[i][j]=((qobsAll[i][j]>0)?qobsAll[i][j]:0);
             }
         }
-
+        qobs=new float[qobsAll.length];
         if (dyly=="ls"){
+
             for (int i=0;i<longtimed;i++){
                 qobs[i]=qobsAll[i][0]+qobsAll[i][1];
             }
             /*降雨资料顺序调整*/
+            this.zdylp=new float[zdylp.length][9];
             for (int i=0;i<longtimed;i++){
                 this.zdylp[i][0]=zdylp[i][0];
                 this.zdylp[i][1]=zdylp[i][2];
@@ -288,8 +290,8 @@ public class SoilMoiCalcu {
         rip=new float[lp];rgp=new float[lp];rgp=new float[lp];wdp=new float[lp];frp=new float[lp];
         sp=new float[lp];
         for (int i=0;i<lp;i++){
-            fp[i]=para2[0][i];
-            mp[i]=(int)para2[1][i];//河段数
+            fp[i]=para2[i][0];
+            mp[i]=(int)para2[i][1];//河段数
         }
         for(int i=0;i<lp;i++){
             cp[i]=fp[i]*f/tt/(3.6f);
@@ -319,12 +321,12 @@ public class SoilMoiCalcu {
         qcal[0]=qobs[0];//实测初值
 
         for (int i=0;i<lp;i++){
-            wp[i]=state[i][1];
-            wup[i]=state[i][2];
-            wlp[i]=state[i][3];
+            wp[i]=state[i][0];
+            wup[i]=state[i][1];
+            wlp[i]=state[i][2];
             wdp[i]=wp[i]-wup[i]-wlp[i];
-            sp[i]=state[i][6];
-            frp[i]=state[i][4];
+            sp[i]=state[i][5];
+            frp[i]=state[i][3];
             qsp[i]=qcal[0]/lp/3;
             qip[i]=qcal[0]/lp/3;
             qgp[i]=qcal[0]/lp/3;
@@ -356,7 +358,7 @@ public class SoilMoiCalcu {
         float[]cci=(float[])subParameter.get("CI");
         float[]xxx=(float[])subParameter.get("X");
         float[]ccs=(float[])subParameter.get("CS");
-        int []llag=(int [])subParameter.get("L");
+        float []llag=(float [])subParameter.get("L");
         for (int i=0;i<lp;i++){
 
             k=kkk[i];
@@ -374,7 +376,7 @@ public class SoilMoiCalcu {
             ci=cci[i];
             x=xxx[i];
             cs=ccs[i];
-            lag=llag[i];
+            lag= ((int) llag[i]);
             /*
              *
              * */
