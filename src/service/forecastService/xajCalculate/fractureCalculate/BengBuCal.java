@@ -242,26 +242,26 @@ public class BengBuCal extends DchyubasH{
         eqm=(qcm-qom)/(qom+min1)*100;
         iem=icm-iom;
         Map<String,Object>charactBengbu=new HashMap<>();
-        charactBengbu.put("总降雨量",pp);
-        charactBengbu.put("产流总水量",rrrr);
-        charactBengbu.put("来水总量",rcali);
-        charactBengbu.put("实测洪量",robsy);
-        charactBengbu.put("预报洪量",rcaly);
-        charactBengbu.put("洪量相对误差",ce);
-        charactBengbu.put("实测洪峰",qom);
-        charactBengbu.put("预报洪峰",qcm);
-        charactBengbu.put("洪峰相对误差",eqm);
-        charactBengbu.put("实测峰现时间",timeSeries[(int)iom]);
-        charactBengbu.put("预报峰现时间",timeSeries[(int)icm]);
-        charactBengbu.put("峰现时间误差",iem);
-        charactBengbu.put("确定性系数",dc);
-        charactBengbu.put("面平均雨量",pj);
-        charactBengbu.put("土壤含水量",wj);
-        charactBengbu.put("流域平均产流深",rr);
-        charactBengbu.put("上游来水演算流量",qinh);
-        charactBengbu.put("降水产流流量",qjy);
-        charactBengbu.put("实测流量",qObs);
-        charactBengbu.put("预报流量",qcal);
+        charactBengbu.put("rainfall",pp);//总降雨量
+        charactBengbu.put("totalFlow",rrrr);//产流总水量
+        charactBengbu.put("totalWater",rcali);//来水总量
+        charactBengbu.put("measuredFlood",robsy);//实测洪量
+        charactBengbu.put("forecastFlood",rcaly);//预报洪量
+        charactBengbu.put("ErrorFlood",ce);//洪量相对误差
+        charactBengbu.put("measuredPeak",qom);//实测洪峰
+        charactBengbu.put("forecastPeak",qcm);//预报洪峰
+        charactBengbu.put("ErrorPeak",eqm);//洪峰相对误差
+        charactBengbu.put("measuredPeakTime",timeSeries[(int)iom]);//实测峰现时间
+        charactBengbu.put("forecastPeakTime",timeSeries[(int)icm]);//预报峰现时间
+        charactBengbu.put("ErrorPeakTime",iem);//峰现时间误差
+        charactBengbu.put("dc",dc);//确定性系数
+        charactBengbu.put("averageP",pj);//面平均雨量
+        charactBengbu.put("soilWater",wj);//土壤含水量
+        charactBengbu.put("runoffDepth",rr);//流域平均产流深
+        charactBengbu.put("upstreamWater",qinh);//上游来水演算流量
+        charactBengbu.put("runoffYield",qjy);//降水产流流量
+        charactBengbu.put("measuredQ",qObs);//实测流量
+        charactBengbu.put("forecastQ",qcal);//预报流量
         return charactBengbu;
     }
 }

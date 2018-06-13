@@ -12,18 +12,18 @@ public class SectionGeneral{
 
     /**
      *
-     * @param longtime        实测期长度  实测开始到实测结束 例如：3-24  3-28 算5天
-     * @param longtimePre     实测开始到预报结束 天数
-     * @param evapLu           鲁台子蒸发资料
-     * @param evapSan          三河闸蒸发资料
-     * @param evap              界面输入的蒸发值
-     * @param qobs              实测流量
-     * @param zdylp             实测日雨量
-     * @param ppfu              未来雨量
-     * @param qInflow           入流（包括鲁台子的预报流量+上桥闸的实测流量）
-     * @param timeSeries        时间序列（实测开始到预报结束）
-     * @param routOption        汇流选择
-     * @param realTimeIndex     实时校正的标志
+     * @param longtime   时间长度（天数）从实测开始到实测结束
+     * @param longtimePre   时间长度（天数）从实测开始到预报结束
+     * @param evapLu     鲁台子的蒸发资料（从实测开始到实测结束）
+     * @param evapSan    三河闸的蒸发资料（从实测开始到实测结束）
+     * @param evap      界面输入蒸发zhi
+     * @param qobs       实测流量资料（蚌埠，明光，金锁镇，峰山，泗洪老，泗洪新，团结闸）
+     * @param zdylp     面平均降雨量（10-23）
+     * @param ppfu      未来降雨（10-23）
+     * @param qInflow    鲁台子预报流量（从实测开始到预报结束）上桥闸实测流量（从实测开始到实测结束）
+     * @param timeSeries  时间序列（从实测开始到预报结束）
+     * @param routOption  汇流选择
+     * @param realTimeIndex   实时校正标识（1或0）
      */
     public SectionGeneral(int longtime,int longtimePre,float[]evapLu,float[]evapSan,float evap,float[][]qobs,float[][]zdylp,
                           float[][]ppfu,float[][]qInflow,String[]timeSeries,float[]routOption,int realTimeIndex){
@@ -46,6 +46,17 @@ public class SectionGeneral{
         qobsAll=preprocessing(qobsAll);
         ppAll=unite(this.zdylp,this.ppfu);
     }
+
+    /**
+     *
+     * @param dyly         蚌埠断面标识（“bb”）
+     * @param stateBeng    蚌埠的土壤含水量
+     * @param paraSection  蚌埠断面参数
+     * @param paraInflow   蚌埠断面入流参数
+     * @param subParameter  蚌埠断面的子流域参数（10-13）
+     * @return
+     * @throws Exception
+     */
     public Map<String,Object> calculationBengBu(String dyly,float[][]stateBeng,float[]paraSection,float[][]paraInflow,Map<String,Object>subParameter) throws Exception {
         this.dyly=dyly;
         float csb;
@@ -63,7 +74,7 @@ public class SectionGeneral{
         }
         float []qobsBb=new float[longtimePre];
         for (int i=0;i<longtimePre;i++){
-            qobsBb[i]=qobsAll[i][8];/*蚌埠*/
+            qobsBb[i]=qobsAll[i][0];/*蚌埠*/
         }
         /*降雨4块*/
         float[][] ppBeng=new float[ppAll.length][4];
@@ -75,7 +86,7 @@ public class SectionGeneral{
             BengBuCal bengBuCal=new BengBuCal(dyly,longtime,longtimePre,paraSection,paraInflow,qInflow,evapDay,qobsBb,zdylp
                     ,state,routOption,realTimeIndex,timeSeries,subParameter);
             bengBuCal.bengBuGeneral();
-            float floodpeak= (float) bengBuCal.charactBengbu().get("预报洪峰");
+            float floodpeak= (float) bengBuCal.charactBengbu().get("forecastPeak");
             if (floodpeak>=10000){
                 csb=0.98f;
                 BengBuCal bengBu=new BengBuCal(dyly,longtime,longtimePre,paraSection,paraInflow,qInflow,evapDay,qobsBb,zdylp
@@ -96,6 +107,17 @@ public class SectionGeneral{
         }
         return BengBuChar;
     }
+
+    /**
+     *
+     * @param dyly      淮南断面标识（“mg”）
+     * @param stateHuaiNan   淮南的土壤含水量
+     * @param paraSection    淮南断面参数
+     * @param paraInflow     淮南断面入流参数
+     * @param subParameter    淮南的子流域参数（14）
+     * @return
+     * @throws Exception
+     */
     public Map<String,Object>calculationHuaiNan(String dyly,float[][]stateHuaiNan,float[]paraSection,float[][]paraInflow,Map<String,Object>subParameter) throws Exception {
         float[]evapDay=new float[longtimePre];
         this.dyly=dyly;
@@ -112,7 +134,7 @@ public class SectionGeneral{
         }
         float []qobsHuaiNan=new float[longtimePre];
         for (int i=0;i<longtimePre;i++){
-            qobsHuaiNan[i]=qobsAll[i][8];/*明光*/
+            qobsHuaiNan[i]=qobsAll[i][1];/*明光*/
         }
         /*降雨1块*/
         float[][] ppHuaiNan=new float[ppAll.length][1];
@@ -123,6 +145,17 @@ public class SectionGeneral{
         huaiNanCal.huaiNanGeneral();
         return huaiNanCal.charactHuaiNan();
     }
+
+    /**
+     *
+     * @param dyly          淮北的断面标识（“by”）
+     * @param stateHuaiBei  淮北的土壤含水量
+     * @param paraSection    淮北的断面参数
+     * @param paraInflow     淮北的断面入流参数
+     * @param subParameter   子流域参数（15-20）
+     * @return
+     * @throws Exception
+     */
     public Map<String,Object>calculationHuaiBei(String dyly,float[][]stateHuaiBei,float[]paraSection,float[][]paraInflow,Map<String,Object>subParameter) throws Exception {
         float[]evapDay=new float[longtimePre];
         this.dyly=dyly;
@@ -139,7 +172,9 @@ public class SectionGeneral{
         }
         float []qobsHuaiBei=new float[longtimePre];
         for (int i=0;i<longtimePre;i++){
-            qobsHuaiBei[i]=qobsAll[i][8];/*金锁镇，峰山，泗洪老，泗洪新，团结闸*/
+            for (int j=2;j<qobsAll.length;j++){
+                qobsHuaiBei[i]=qobsHuaiBei[i]+qobsAll[i][j];/*金锁镇，峰山，泗洪老，泗洪新，团结闸*/
+            }
         }
         /*降雨6块*/
         float[][] ppHuaiBei=new float[ppAll.length][6];
@@ -150,6 +185,17 @@ public class SectionGeneral{
         huaiBeiCal.huaiBeiGeneral();
         return huaiBeiCal.charactHuaiBei();
     }
+
+    /**
+     *
+     * @param dyly        湖滨的断面标识（“hb”）
+     * @param stateHuBin  湖滨的土壤含水量
+     * @param paraSection  湖滨的断面参数
+     * @param paraInflow   湖滨的断面入流参数
+     * @param subParameter 子流域参数（21,22）
+     * @return
+     * @throws Exception
+     */
     public Map<String,Object>calculationHubin(String dyly,float[][]stateHuBin,float[]paraSection,float[][]paraInflow,Map<String,Object>subParameter) throws Exception {
         float[]evapDay=new float[longtimePre];
         this.dyly=dyly;
@@ -177,6 +223,14 @@ public class SectionGeneral{
         huBinCal.huBinGeneral();
         return huBinCal.charactHuBin();
     }
+
+    /**
+     *
+     * @param dyly     湖面断面标识（“hu”）
+     * @param paraSection  湖面断面参数
+     * @param paraInflow   湖面的断面入流参数
+     * @return
+     */
     public Map<String, Object> charactLake(String dyly,float[]paraSection,float[][]paraInflow){
         /*降雨1块*/
         float[][] ppLake=new float[ppAll.length][1];

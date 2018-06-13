@@ -140,26 +140,26 @@ public class HuaiBeiCal extends DchyubasH {
         eqm=(qcm-qom)/(qom+min1)*100;
         iem=icm-iom;
         Map<String,Object>charactHuaiBei=new HashMap<>();
-        charactHuaiBei.put("总降雨量",pp);
-        charactHuaiBei.put("产流总水量",rrrr);
-        charactHuaiBei.put("来水总量",rcali);
-        charactHuaiBei.put("实测洪量",robsy);
-        charactHuaiBei.put("预报洪量",rcaly);
-        charactHuaiBei.put("洪量相对误差",ce);
-        charactHuaiBei.put("实测洪峰",qom);
-        charactHuaiBei.put("预报洪峰",qcm);
-        charactHuaiBei.put("洪峰相对误差",eqm);
-        charactHuaiBei.put("实测峰现时间",timeSeries[(int)iom]);
-        charactHuaiBei.put("预报峰现时间",timeSeries[(int)icm]);
-        charactHuaiBei.put("峰现时间误差",iem);
-        charactHuaiBei.put("确定性系数",dc);
-        charactHuaiBei.put("面平均雨量",pj);
-        charactHuaiBei.put("土壤含水量",wj);
-        charactHuaiBei.put("流域平均产流深",rr);
-        charactHuaiBei.put("上游来水演算流量",qinh);
-        charactHuaiBei.put("降水产流流量",qjy);
-        charactHuaiBei.put("实测流量",qObs);
-        charactHuaiBei.put("预报流量",qcal);
+        charactHuaiBei.put("rainfall",pp);//总降雨量
+        charactHuaiBei.put("totalFlow",rrrr);//产流总水量
+        charactHuaiBei.put("totalWater",rcali);//来水总量
+        charactHuaiBei.put("measuredFlood",robsy);//实测洪量
+        charactHuaiBei.put("forecastFlood",rcaly);//预报洪量
+        charactHuaiBei.put("ErrorFlood",ce);//洪量相对误差
+        charactHuaiBei.put("measuredPeak",qom);//实测洪峰
+        charactHuaiBei.put("forecastPeak",qcm);//预报洪峰
+        charactHuaiBei.put("ErrorPeak",eqm);//洪峰相对误差
+        charactHuaiBei.put("measuredPeakTime",timeSeries[(int)iom]);//实测峰现时间
+        charactHuaiBei.put("forecastPeakTime",timeSeries[(int)icm]);//预报峰现时间
+        charactHuaiBei.put("ErrorPeakTime",iem);//峰现时间误差
+        charactHuaiBei.put("dc",dc);//确定性系数
+        charactHuaiBei.put("averageP",pj);//面平均雨量
+        charactHuaiBei.put("soilWater",wj);//土壤含水量
+        charactHuaiBei.put("runoffDepth",rr);//流域平均产流深
+        charactHuaiBei.put("upstreamWater",qinh);//上游来水演算流量
+        charactHuaiBei.put("runoffYield",qjy);//降水产流流量
+        charactHuaiBei.put("measuredQ",qObs);//实测流量
+        charactHuaiBei.put("forecastQ",qcal);//预报流量
         return charactHuaiBei;
     }
     private void realTimeCorrection(int realTimeIndex){

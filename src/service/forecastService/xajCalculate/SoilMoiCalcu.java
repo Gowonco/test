@@ -14,36 +14,263 @@ public class SoilMoiCalcu {
     private float w,wu,wl,wd,e,eu,el,ed,fr,s,r,rs,ri,rg,qqs,qqi,qqg;
     private float []rd,ped,pedf,qx,pp,para1,evap;
     private float[]qobs;
-    private float[][]state,qcalj,zdylp;
+    private float[][]state,qcalj,zdylp,para2;
     private float pe,qss,qii,qgg,rq,qsz,qiz,qgz,em,ek,irs,bb1,bb2,ct;
     private int nd,mp1,mpmax,jj;
     private int []mp;
     private String dyly;
-    /*输出*/
     float[]pj,rr,wj;
     float emy,eky,eey;
-    private int ia;
+    private int ia,longtimed;
     private Map<String,Object>subParameter;
 
     /**
      *
-     * @param dyly        断面表识
-     * @param longtimed   预热期长度
-     * @param para1        断面参数---时段 、面积、分块数、入流个数。。。。。
-     * @param para2        断面入流参数
-     * @param evap         蒸发值
-     * @param qobs         实测流量
-     * @param zdylp        日雨量
-     * @param state        土壤初始值
-     * @param subParameter 子流域参数
+     * @param dyly 断面标识(目前鲁台子“ls”蚌埠“bb”淮南”mg“淮北“by”湖滨“hb”)
+     * @param longtimed 预热期的时间长度（天数）
+     * @param paraSection  断面参数（时段、面积、分块个数、入流个数，）与断面挂钩
+     * @param paraInflow   断面入流参数
+     * @param evap     界面输入蒸发值
+     * @param evapDay  鲁台子或三河闸的蒸发资料（从预热期开始到实测开始前一天）（鲁台子和蚌埠用鲁台子的蒸发资料，其余断面用三河闸的蒸发资料）
+     * @param qobsAll  实测流量（从预热期开始到实测开始前一天）
+     * @param zdylp    面平均降雨量（从预热期开始到实测开始前一天）
+     * @param state    土壤含水量初始值(与断面挂钩)
+     * @param subParameter  子流域参数（与断面挂钩；断面不同，子流域不同）
      * @throws Exception
      */
-    public SoilMoiCalcu(String dyly,int longtimed,float[] para1,float[][]para2,
-                   float[]evap,float[]qobs,float[][]zdylp,float[][]state,Map<String,Object>subParameter) throws Exception {
-        this.qobs=qobs;this.state=state;
-        this.dyly=dyly;this.para1=para1;
-        this.zdylp=zdylp;this.evap=evap;
+    public SoilMoiCalcu(String dyly,int longtimed,float[] paraSection,float[][]paraInflow,float evap,
+                   float[]evapDay,float[][]qobsAll,float[][]zdylp,float[][]state,Map<String,Object>subParameter) throws Exception {
+        this.state=state;
+        this.longtimed=longtimed;
+        this.para2=paraInflow;
+        this.dyly=dyly;this.para1=paraSection;
+
         this.subParameter=subParameter;
+
+        if (evapDay.length==0){
+            for (int i=0;i<longtimed;i++){
+                this.evap[i]=evap;
+            }
+        }else {
+           this.evap=evapDay;
+        }
+        for (int i=0;i<qobsAll.length;i++){
+            for (int j=0;j<qobsAll[0].length;j++){
+                qobsAll[i][j]=((qobsAll[i][j]>0)?qobsAll[i][j]:0);
+            }
+        }
+
+        if (dyly=="ls"){
+            for (int i=0;i<longtimed;i++){
+                qobs[i]=qobsAll[i][0]+qobsAll[i][1];
+            }
+            /*降雨资料顺序调整*/
+            for (int i=0;i<longtimed;i++){
+                this.zdylp[i][0]=zdylp[i][0];
+                this.zdylp[i][1]=zdylp[i][2];
+                this.zdylp[i][2]=zdylp[i][3];
+                this.zdylp[i][3]=zdylp[i][4];
+                this.zdylp[i][4]=zdylp[i][5];
+                this.zdylp[i][5]=zdylp[i][1];
+                this.zdylp[i][6]=zdylp[i][6];
+                this.zdylp[i][7]=zdylp[i][7];
+                this.zdylp[i][8]=zdylp[i][8];
+            }
+        }else if (dyly=="bb"){
+            float[][]ppSection=new float[zdylp.length][4];
+            for (int i=0;i<longtimed;i++){
+                qobs[i]=qobsAll[i][2];
+
+                for (int ii=0;ii<zdylp.length;ii++){
+                    System.arraycopy(zdylp[ii],9,ppSection[ii],0,4);
+                }
+            }
+            this.zdylp=ppSection;
+        }else if (dyly=="mg"){
+            float[][]ppSection=new float[zdylp.length][1];
+            for (int i=0;i<longtimed;i++){
+                qobs[i]=((qobsAll[i][3]>0.0001)?qobsAll[i][3]:0);
+                for (int ii=0;ii<zdylp.length;ii++){
+                    System.arraycopy(zdylp[ii],13,ppSection[ii],0,1);
+                }
+            }
+            this.zdylp=ppSection;
+        }else if (dyly=="by"){
+            float[][]ppSection=new float[zdylp.length][6];
+            for (int i=0;i<longtimed;i++){
+                for (int j=4;j<9;j++){
+                    qobs[i]+=qobsAll[i][j];
+                }
+                for (int ii=0;ii<zdylp.length;ii++){
+                    System.arraycopy(zdylp[ii],14,ppSection[ii],0,6);
+                }
+            }
+            this.zdylp=ppSection;
+        }else{
+            float[][]ppSection=new float[zdylp.length][2];
+            for (int i=0;i<longtimed;i++){
+                    qobs[i]=0;
+                for (int ii=0;ii<zdylp.length;ii++){
+                    System.arraycopy(zdylp[ii],20,ppSection[ii],0,2);
+                }
+            }
+            this.zdylp=ppSection;
+        }
+    }
+    private void yield(float c, float b,float div,float iia,float inn,float ifc,float imf,
+                       float ef,float ib){
+        float a,peds,rri,fi,minn;
+        minn=0.0001f;
+        if (pe<=div){
+            nd=1;
+            ped=new float[nd];pedf=new float[nd];
+            ped[0]=pe;
+        }else {
+            nd=(int)(pe/div)+1;
+            ped=new float[nd];pedf=new float[nd];
+            for (int ii=0;ii<nd-1;ii++){
+                ped[ii]=div;
+            }
+            ped[nd-1]=pe-(nd-1)*div+minn;
+        }
+        rd=new float[nd];
+        if (pe<=0){
+            r=0;
+            if ((wu+pe)<0){
+                eu=wu+ek+pe;wu=0;el=(ek-eu)*wl/wlm;
+                if(wl<(c*wlm)){
+                    el= (float) (Math.round(c*(ek-eu)*Math.pow(10,7))/(Math.pow(10,7)));
+                }
+                if ((wl-el)<0){
+                    ed=el-wl;el=wl;wl=0;wd=wd-ed;
+                    w = wu + wl + wd;
+                    e = eu + el + ed;
+                }else{
+                    ed=0;wl=wl-el;
+                    w = wu + wl + wd;
+                    e = eu + el + ed;
+                }
+            }else {
+                eu=ek;ed=0;el=0;wu=wu+pe;
+                w = wu + wl + wd;
+                e = eu + el + ed;
+            }
+        }else {
+            a=(float)(wmm*(1d-(Math.pow((1d-w/wm),(1d/(1d+b))))));
+            r=0;
+            peds=0;
+            for (int ii=0;ii<nd;ii++){
+                a=a+ped[ii];
+                peds=peds+ped[ii];
+                rri=r;
+                r=peds-wm+w;
+                if (a<wmm){
+                    r= (float) (r+wm*(Math.pow((1d-a/wmm),(1d+b))));//稍微不同
+                }
+                rd[ii]=r-rri;
+            }
+            fi= (float) ((iia*(Math.pow(wm-w,inn))+ifc)*(ef+1));
+            if (pe>=fi){
+                irs=(pe-fi)*(1-r/pe)*imf;
+            }else {
+                irs= (float) ((pe-fi/(ef+1)*(1-Math.pow(1-pe/fi,ef+1)))*(1-r/pe)*imf);
+            }
+            for(int ii=0;ii<nd;ii++){
+                pedf[ii]=irs/nd*ib;
+            }
+            eu=ek;el=0;ed=0;
+            if ((wu+pe-r)<wum){
+                wu=wu+pe-r;
+                w=wu+wl+wd;//有点奇怪
+                e=eu+el+ed;
+            }else if((wu+wl+pe-r-wum)>=wlm){
+                wu=wum;wl=wlm;wd=w+peds-r-wu-wl;
+                if (wd>wdm){wd=wdm;}
+                w=wu+wl+wd;
+                e=eu+el+ed;
+            }else{
+                wl = wu + wl + pe - r - wum;
+                wu = wum;
+                w=wu+wl+wd;
+                e=eu+el+ed;
+            }
+        }
+    }
+    private void diviThree(float ib){
+        float rb,rr,kgd,kid,td,xx,au,ff;
+        if (pe<=0){
+            rs=0;
+            rg=s*kg*fr;
+            ri=s*ki*fr;
+            s=s*(1-kg-ki);
+            qqg=qqg*cg+rg*(1-cg)*ct;
+            qqi=qqi*ci+ri*(1-ci)*ct;
+            qqs=rs*ct;
+        }else {
+            rb=im*pe;
+            kid= (float) ((1d-Math.pow((1d-(kg+ki)),(1d/nd)))/(kg+ki));
+            kgd=kid*kg;
+            kid=kid*ki;
+            rs=0;
+            ri=0;rg=0;
+            for (int ii=0;ii<nd;ii++){
+                td=rd[ii]-im*ped[ii];
+                xx=fr;
+                fr=td/ped[ii];
+                s=xx*s/fr;
+                //s=xx*s*ped[ii]*(rd[ii]+im*ped[ii])/(rd[ii]*rd[ii]+im*ped[ii]*(im*ped[ii]));
+                if (s>=sm){
+                    rr=(ped[ii]+pedf[ii]/fr*ib+s-sm)*fr;
+                    rs=rr+rs;
+                    s=ped[ii]+pedf[ii]/fr*ib-rr/fr+s;
+                    rg=s*kgd*fr+rg;
+                    ri=s*kid*fr+ri;
+                    s=s*(1-kid-kgd);
+                }else {
+                    au= (float) (smm*(1d-(Math.pow((1.0d-s/sm),(1.0d/(1d+ex))))));//加d
+                    ff=au+ped[ii]+pedf[ii]/fr*ib;
+                    if(ff<smm){
+                        ff= (float) Math.pow((1-(ped[ii]+pedf[ii]/fr*ib+au)/smm),(1+ex));
+                        rr=(ped[ii]+pedf[ii]/fr*ib-sm+s+sm*ff)*fr;
+                        rs=rr+rs;
+                        s=ped[ii]+pedf[ii]/fr*ib-rr/fr+s;
+                        rg=s*kgd*fr+rg;
+                        ri=s*kid*fr+ri;
+                        s=s*(1-kid-kgd);
+                    }else {
+                        rr=(ped[ii]+pedf[ii]/fr*ib+s-sm)*fr;
+                        rs=rr+rs;
+                        s=ped[ii]+pedf[ii]/fr*ib-rr/fr+s;
+                        rg=s*kgd*fr+rg;
+                        ri=s*kid*fr+ri;
+                        s=s*(1-kid-kgd);
+                    }
+                }
+            }
+            rs=rs+rb;
+            qqg=qqg*cg+rg*(1f-cg)*ct;
+            qqi=qqi*ci+ri*(1f-ci)*ct;
+            qqs=rs*ct;
+        }
+    }
+    private void musk(int mt,float c0,float c1,float c2){
+        float q1,q2,q3;
+        int lm;
+        lm=mt+1;
+        if (lm==1){
+            qx[0]=rq;
+        }else {
+            for (int jj=1;jj<lm;jj++){
+                q1=rq;
+                q2=qx[jj-1];
+                q3=qx[jj];
+                qx[jj-1]=rq;
+                rq=c0*q1+c1*q2+c2*q3;
+            }
+            qx[lm-1]=rq;
+        }
+    }
+    public Map<String,Object> soilOutPut(){
         lagg=15;
         div=8;
         minn=0.0001f;
@@ -90,6 +317,7 @@ public class SoilMoiCalcu {
         ffrj=new float[m];wwdj=new float[m];
         qcalj=new float[m][lp];qipj=new float[m][lp];
         qcal[0]=qobs[0];//实测初值
+
         for (int i=0;i<lp;i++){
             wp[i]=state[i][1];
             wup[i]=state[i][2];
@@ -320,161 +548,8 @@ public class SoilMoiCalcu {
             }
             eey=eey+epj[j];
         }
-    }
-    private void yield(float c, float b,float div,float iia,float inn,float ifc,float imf,
-                       float ef,float ib){
-        float a,peds,rri,fi,minn;
-        minn=0.0001f;
-        if (pe<=div){
-            nd=1;
-            ped=new float[nd];pedf=new float[nd];
-            ped[0]=pe;
-        }else {
-            nd=(int)(pe/div)+1;
-            ped=new float[nd];pedf=new float[nd];
-            for (int ii=0;ii<nd-1;ii++){
-                ped[ii]=div;
-            }
-            ped[nd-1]=pe-(nd-1)*div+minn;
-        }
-        rd=new float[nd];
-        if (pe<=0){
-            r=0;
-            if ((wu+pe)<0){
-                eu=wu+ek+pe;wu=0;el=(ek-eu)*wl/wlm;
-                if(wl<(c*wlm)){
-                    el= (float) (Math.round(c*(ek-eu)*Math.pow(10,7))/(Math.pow(10,7)));
-                }
-                if ((wl-el)<0){
-                    ed=el-wl;el=wl;wl=0;wd=wd-ed;
-                    w = wu + wl + wd;
-                    e = eu + el + ed;
-                }else{
-                    ed=0;wl=wl-el;
-                    w = wu + wl + wd;
-                    e = eu + el + ed;
-                }
-            }else {
-                eu=ek;ed=0;el=0;wu=wu+pe;
-                w = wu + wl + wd;
-                e = eu + el + ed;
-            }
-        }else {
-            a=(float)(wmm*(1d-(Math.pow((1d-w/wm),(1d/(1d+b))))));
-            r=0;
-            peds=0;
-            for (int ii=0;ii<nd;ii++){
-                a=a+ped[ii];
-                peds=peds+ped[ii];
-                rri=r;
-                r=peds-wm+w;
-                if (a<wmm){
-                    r= (float) (r+wm*(Math.pow((1d-a/wmm),(1d+b))));//稍微不同
-                }
-                rd[ii]=r-rri;
-            }
-            fi= (float) ((iia*(Math.pow(wm-w,inn))+ifc)*(ef+1));
-            if (pe>=fi){
-                irs=(pe-fi)*(1-r/pe)*imf;
-            }else {
-                irs= (float) ((pe-fi/(ef+1)*(1-Math.pow(1-pe/fi,ef+1)))*(1-r/pe)*imf);
-            }
-            for(int ii=0;ii<nd;ii++){
-                pedf[ii]=irs/nd*ib;
-            }
-            eu=ek;el=0;ed=0;
-            if ((wu+pe-r)<wum){
-                wu=wu+pe-r;
-                w=wu+wl+wd;//有点奇怪
-                e=eu+el+ed;
-            }else if((wu+wl+pe-r-wum)>=wlm){
-                wu=wum;wl=wlm;wd=w+peds-r-wu-wl;
-                if (wd>wdm){wd=wdm;}
-                w=wu+wl+wd;
-                e=eu+el+ed;
-            }else{
-                wl = wu + wl + pe - r - wum;
-                wu = wum;
-                w=wu+wl+wd;
-                e=eu+el+ed;
-            }
-        }
-    }
-    private void diviThree(float ib){
-        float rb,rr,kgd,kid,td,xx,au,ff;
-        if (pe<=0){
-            rs=0;
-            rg=s*kg*fr;
-            ri=s*ki*fr;
-            s=s*(1-kg-ki);
-            qqg=qqg*cg+rg*(1-cg)*ct;
-            qqi=qqi*ci+ri*(1-ci)*ct;
-            qqs=rs*ct;
-        }else {
-            rb=im*pe;
-            kid= (float) ((1d-Math.pow((1d-(kg+ki)),(1d/nd)))/(kg+ki));
-            kgd=kid*kg;
-            kid=kid*ki;
-            rs=0;
-            ri=0;rg=0;
-            for (int ii=0;ii<nd;ii++){
-                td=rd[ii]-im*ped[ii];
-                xx=fr;
-                fr=td/ped[ii];
-                s=xx*s/fr;
-                //s=xx*s*ped[ii]*(rd[ii]+im*ped[ii])/(rd[ii]*rd[ii]+im*ped[ii]*(im*ped[ii]));
-                if (s>=sm){
-                    rr=(ped[ii]+pedf[ii]/fr*ib+s-sm)*fr;
-                    rs=rr+rs;
-                    s=ped[ii]+pedf[ii]/fr*ib-rr/fr+s;
-                    rg=s*kgd*fr+rg;
-                    ri=s*kid*fr+ri;
-                    s=s*(1-kid-kgd);
-                }else {
-                    au= (float) (smm*(1d-(Math.pow((1.0d-s/sm),(1.0d/(1d+ex))))));//加d
-                    ff=au+ped[ii]+pedf[ii]/fr*ib;
-                    if(ff<smm){
-                        ff= (float) Math.pow((1-(ped[ii]+pedf[ii]/fr*ib+au)/smm),(1+ex));
-                        rr=(ped[ii]+pedf[ii]/fr*ib-sm+s+sm*ff)*fr;
-                        rs=rr+rs;
-                        s=ped[ii]+pedf[ii]/fr*ib-rr/fr+s;
-                        rg=s*kgd*fr+rg;
-                        ri=s*kid*fr+ri;
-                        s=s*(1-kid-kgd);
-                    }else {
-                        rr=(ped[ii]+pedf[ii]/fr*ib+s-sm)*fr;
-                        rs=rr+rs;
-                        s=ped[ii]+pedf[ii]/fr*ib-rr/fr+s;
-                        rg=s*kgd*fr+rg;
-                        ri=s*kid*fr+ri;
-                        s=s*(1-kid-kgd);
-                    }
-                }
-            }
-            rs=rs+rb;
-            qqg=qqg*cg+rg*(1f-cg)*ct;
-            qqi=qqi*ci+ri*(1f-ci)*ct;
-            qqs=rs*ct;
-        }
-    }
-    private void musk(int mt,float c0,float c1,float c2){
-        float q1,q2,q3;
-        int lm;
-        lm=mt+1;
-        if (lm==1){
-            qx[0]=rq;
-        }else {
-            for (int jj=1;jj<lm;jj++){
-                q1=rq;
-                q2=qx[jj-1];
-                q3=qx[jj];
-                qx[jj-1]=rq;
-                rq=c0*q1+c1*q2+c2*q3;
-            }
-            qx[lm-1]=rq;
-        }
-    }
-    public Map<String,Object> soilOutPut(){
+
+
         Map<String,Object> soil=new HashMap<>();
         int []num=new int[lp];
         for (int i=0;i<lp;i++){

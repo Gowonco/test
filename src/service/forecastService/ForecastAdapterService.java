@@ -9,6 +9,7 @@ import model.viewmodel.jymodel.JYChildPara;
 import model.viewmodel.jymodel.JYChildRainStation;
 import model.viewmodel.jymodel.JYConfig;
 import model.viewmodel.xajmodel.*;
+import service.forecastService.jyCalculate.Calculation;
 import service.forecastService.jyCalculate.Calinial;
 import service.forecastService.jyCalculate.JyRainCalcu;
 import service.forecastService.jyCalculate.Shuiku;
@@ -28,15 +29,17 @@ public class ForecastAdapterService extends Controller {
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static float[][] behindpP;//记录前9块子流域面平均雨量
-    public static float[][] ALLPP;//记录新安江模型1到23块子流域面平均雨量
-    public static float[] pP;//记录经验模型各块累计雨量
-    public static float[][] pPM;//记录经验模型面平均雨量
-    public static float[] W;//记录经验模型计算后的土壤湿度
-    public static double[][] RP;//记录产流结果修正数据
-    public static  double[][] FL;//记录水库汇流选择
-    public static double[][] CFQ;//记录水库来水及汇流
-    public static  String[][] TM;//记录考虑淮干与淮南水库汇流时间
+
+    public  float[][] behindpP;//记录前9块子流域面平均雨量
+    public  float[][] ALLPP;//记录新安江模型1到23块子流域面平均雨量
+    public  float[] pP;//记录经验模型各块累计雨量
+    public  float[][] pPM;//记录经验模型面平均雨量
+    public  float[] W;//记录经验模型计算后的土壤湿度
+    public  double[][] RP;//记录产流结果修正数据
+    public   double[][] FL;//记录水库汇流选择
+    public  double[][] CFQ;//记录水库来水及汇流
+    public   String[][] TM;//记录考虑淮干与淮南水库汇流时间
+
     public void setAdapterConfig(ForecastC forecastC,Map xajMap,Map jyMap){
         this.forecastC=forecastC;
         this.xajMap=xajMap;
@@ -380,7 +383,7 @@ public class ForecastAdapterService extends Controller {
     public float[][] getXAJZdylp() throws ParseException {
         RainCalcu rainCalcu = new RainCalcu();
         try {
-            mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime(),getXAJTree());
+            mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -436,6 +439,12 @@ public class ForecastAdapterService extends Controller {
         }
         return state;
     }
+    //
+    public void saveSoil(){}
+    //
+
+
+
     //----------------------------------新安江模型水库汇流选择------------------------------
     //实测开始时间getStartTime(),预报开始时间getRainTime(),预报结束时间getEndTime()
     //获取入流个数
@@ -510,6 +519,10 @@ public class ForecastAdapterService extends Controller {
         }
         return readQ;
     }
+    //
+    public void saveHuiLiu(){}
+    //
+
     //----------------------------------新安江模型断面流量计算------------------------------
     //----------------------------------------------------------鲁台子输入----------------------------------
     //断面编号"00101000"
@@ -597,6 +610,7 @@ public class ForecastAdapterService extends Controller {
     }
     //汇流选择?
     //鲁台子的子流域参数 n=9,num=0
+    // 子流域参数见getChildPara()函数，鲁台子（9，0），蚌埠（4，9），淮南（1，13），淮北（6，14），湖滨（2，20），湖面没有
     public Map<String,Object> getChildPara(int n,int num){
         List<XAJChildPara> listXAJChildPara = (List<XAJChildPara>) xajMap.get("listXAJChildPara");
         HashMap map = new HashMap();
@@ -677,7 +691,7 @@ public class ForecastAdapterService extends Controller {
         return map;
     }
     //------------------------蚌埠，淮南，淮北，湖滨，湖面输入------------------------------------------------------
-    //断面编号蚌埠00102000，淮南00103000，淮北00104000，湖滨00105000，湖面00106000
+    //断面标识(目前鲁台子“ls”蚌埠“bb”淮南”mg“淮北“by”湖滨“hb”)
     //时间长（从实测开始到实测结束）、时间长（从实测开始到预报结束）—同鲁台子
     //断面参数（包括时段，流域面积，流域分块数，入流个数）
     public Map<String,Object> getParaScetion(){
@@ -1240,6 +1254,24 @@ public class ForecastAdapterService extends Controller {
     //时间序列（从实测开始到预报结束）——同上getTimeSeries()
     //汇流选择?
     //(10-23)子流域参数，可以写一个大map（module）蚌埠（4，9），淮南（1，13），淮北（6，14），湖滨（2，20），湖面没有
+
+    //
+    public Map getStateData(){
+        return new HashMap();
+    }
+    public float[][] getqReservoir(){
+        return new float[2][];
+    }
+    public String getroutBeginTime(){
+        return "haha";
+    }
+    public String getroutEndTime(){
+        return "heihei";
+    }
+    public float[] getroutOption(){
+        return new float[5];
+    }
+
     //-----------------------------------------新安江模型入湖流量计算---------------------------
     //获取各断面雨量
     public float[][] getPj(){

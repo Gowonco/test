@@ -165,26 +165,26 @@ public class HuBinCal extends DchyubasH {
         eqm=(qcm-qom)/(qom+min1)*100;
         iem=icm-iom;
         Map<String,Object>charactHuBin=new HashMap<>();
-        charactHuBin.put("总降雨量",pp);
-        charactHuBin.put("产流总水量",rrrr);
-        charactHuBin.put("来水总量",rcali);
-        charactHuBin.put("实测洪量",robsy);
-        charactHuBin.put("预报洪量",rcaly);
-        charactHuBin.put("洪量相对误差",ce);
-        charactHuBin.put("实测洪峰",qom);
-        charactHuBin.put("预报洪峰",qcm);
-        charactHuBin.put("洪峰相对误差",eqm);
-        charactHuBin.put("实测峰现时间",timeSeries[(int)iom]);
-        charactHuBin.put("预报峰现时间",timeSeries[(int)icm]);
-        charactHuBin.put("峰现时间误差",iem);
-        charactHuBin.put("确定性系数",dc);
-        charactHuBin.put("面平均雨量",pj);
-        charactHuBin.put("土壤含水量",wj);
-        charactHuBin.put("流域平均产流深",rr);
-        charactHuBin.put("上游来水演算流量",qinh);
-        charactHuBin.put("降水产流流量",qjy);
-        charactHuBin.put("实测流量",qObs);
-        charactHuBin.put("预报流量",qcal);
+        charactHuBin.put("rainfall",pp);//总降雨量
+        charactHuBin.put("totalFlow",rrrr);//产流总水量
+        charactHuBin.put("totalWater",rcali);//来水总量
+        charactHuBin.put("measuredFlood",robsy);//实测洪量
+        charactHuBin.put("forecastFlood",rcaly);//预报洪量
+        charactHuBin.put("ErrorFlood",ce);//洪量相对误差
+        charactHuBin.put("measuredPeak",qom);//实测洪峰
+        charactHuBin.put("forecastPeak",qcm);//预报洪峰
+        charactHuBin.put("ErrorPeak",eqm);//洪峰相对误差
+        charactHuBin.put("measuredPeakTime",timeSeries[(int)iom]);//实测峰现时间
+        charactHuBin.put("forecastPeakTime",timeSeries[(int)icm]);//预报峰现时间
+        charactHuBin.put("ErrorPeakTime",iem);//峰现时间误差
+        charactHuBin.put("dc",dc);//确定性系数
+        charactHuBin.put("averageP",pj);//面平均雨量
+        charactHuBin.put("soilWater",wj);//土壤含水量
+        charactHuBin.put("runoffDepth",rr);//流域平均产流深
+        charactHuBin.put("upstreamWater",qinh);//上游来水演算流量
+        charactHuBin.put("runoffYield",qjy);//降水产流流量
+        charactHuBin.put("measuredQ",qObs);//实测流量
+        charactHuBin.put("forecastQ",qcal);//预报流量
         return charactHuBin;
     }
 }
