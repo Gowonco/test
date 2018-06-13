@@ -253,7 +253,7 @@ public class ReservoirConfluence {
     }
     public Map<String, Object> ybbensk1(){
         Map<String,Object> totalInflow=new HashMap<>();
-        double [] isOpen={1,1,1,1,1};
+        float [] isOpen={1,1,1,1,1};
         double[] totalW=new double[5];
         for(int i=0;i<3;i++){
             totalW[i]=w[i];

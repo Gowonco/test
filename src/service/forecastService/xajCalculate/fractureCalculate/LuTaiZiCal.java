@@ -43,6 +43,29 @@ public class LuTaiZiCal {
     private String[]timeSeries;
     private float[]id;
     private Map<String,Object>subParameter;
+
+    /**
+     *
+     * @param dyly 断面标识(目前鲁台子“ls”蚌埠“bb”淮南”mg“淮北“by”湖滨“hb”)
+     * @param longtime  时间长（天数）（从实测开始到实测结束）
+     * @param longtimePre 时间长（天数）（从实测开始到预报结束）
+     * @param paraScetion  断面参数（与断面挂钩）
+     * @param paraInflow    断面入流参数（与断面挂钩）
+     * @param evapLu    鲁台子蒸发资料（从实测开始到实测结束）
+     * @param evap     界面输入蒸发值
+     * @param qobs     上桥闸和鲁台子的实测流量
+     * @param zdylp    面平均降雨量（1-9）
+     * @param ppfu      未来降雨（1-9）
+     * @param state    鲁台子的土壤含水量
+     * @param qReservoir  水库汇流结果
+     * @param routBeginTime  汇流开始时间
+     * @param routEndTime    汇流结束时间
+     * @param realtimeindex   实时校正标识
+     * @param timeSeries     时间序列（从实测开始到预报结束）
+     * @param routOption    汇流选择
+     * @param subLuParameter   子流域参数（1-9）
+     * @throws Exception
+     */
     public LuTaiZiCal(String dyly,int longtime,int longtimePre, float[] paraScetion, float[][] paraInflow,
                       float[] evapLu,float evap, float[][]qobs, float[][] zdylp, float[][]ppfu,float[][] state,
                       float[][]qReservoir,String routBeginTime,String routEndTime,int realtimeindex,String[]timeSeries,float[]routOption,Map<String,Object>subLuParameter) throws Exception {
@@ -60,7 +83,22 @@ public class LuTaiZiCal {
         }
         this.para1=paraScetion;this.para2=paraInflow;
         this.zdylp=unite(zdylp,ppfu);
-        this.state=state;
+        /*降雨资料顺序调整*/
+        float[][]ppSec=new float[longtimePre][zdylp.length];
+        for (int i=0;i<longtimePre;i++){
+            ppSec[i][0]=this.zdylp[i][0];
+            ppSec[i][1]=this.zdylp[i][2];
+            ppSec[i][2]=this.zdylp[i][3];
+            ppSec[i][3]=this.zdylp[i][4];
+            ppSec[i][4]=this.zdylp[i][5];
+            ppSec[i][5]=this.zdylp[i][1];
+            ppSec[i][6]=this.zdylp[i][6];
+            ppSec[i][7]=this.zdylp[i][7];
+            ppSec[i][8]=this.zdylp[i][8];
+        }
+        this.zdylp=ppSec;
+
+        this.state=preprocessing(state);
 
         complement=new float[longtimePre-longtime][qobs[0].length];
         for (int i=0;i<complement.length;i++){
@@ -68,7 +106,9 @@ public class LuTaiZiCal {
                 complement[i][j]=0;
             }
         }
+
         qobsLu=preprocessing(qobs);
+        qobsLu=unite(qobsLu,complement);
         for (int i=0;i<qobsLu.length;i++){
             for (int j=0;j<qobsLu[0].length;j++){
                 this.qobs[i]+=qobsLu[i][j];
@@ -80,7 +120,7 @@ public class LuTaiZiCal {
         this.timeSeries=timeSeries;
         id=routOption;
     }
-    void dchyubas() throws Exception {
+    public void dchyubas() throws Exception {
         /*汇流时间指数*/
         int routBeginIndex=0,routEndIndex=0;
         for (int i=0;i<timeSeries.length;i++){
@@ -652,26 +692,26 @@ public class LuTaiZiCal {
         eqm=(qcm-qom)/(qom+min1)*100;
         iem=icm-iom;
         Map<String,Object>charactLtz=new HashMap<>();
-        charactLtz.put("总降雨量",pp);
-        charactLtz.put("产流总水量",rrrr);
-        charactLtz.put("来水总量",rcali);
-        charactLtz.put("实测洪量",robsy);
-        charactLtz.put("预报洪量",rcaly);
-        charactLtz.put("洪量相对误差",ce);
-        charactLtz.put("实测洪峰",qom);
-        charactLtz.put("预报洪峰",qcm);
-        charactLtz.put("洪峰相对误差",eqm);
-        charactLtz.put("实测峰现时间",timeSeries[(int)iom]);
-        charactLtz.put("预报峰现时间",timeSeries[(int)icm]);
-        charactLtz.put("峰现时间误差",iem);
-        charactLtz.put("确定性系数",dc);
-        charactLtz.put("面平均雨量",pj);
-        charactLtz.put("土壤含水量",wj);
-        charactLtz.put("流域平均产流深",rr);
-        charactLtz.put("上游来水演算流量",qinh);
-        charactLtz.put("降水产流流量",qjy);
-        charactLtz.put("实测流量",qObs);
-        charactLtz.put("预报流量",qcal);
+        charactLtz.put("rainfall",pp);//总降雨量
+        charactLtz.put("totalFlow",rrrr);//产流总水量
+        charactLtz.put("totalWater",rcali);//来水总量
+        charactLtz.put("measuredFlood",robsy);//实测洪量
+        charactLtz.put("forecastFlood",rcaly);//预报洪量
+        charactLtz.put("ErrorFlood",ce);//洪量相对误差
+        charactLtz.put("measuredPeak",qom);//实测洪峰
+        charactLtz.put("forecastPeak",qcm);//预报洪峰
+        charactLtz.put("ErrorPeak",eqm);//洪峰相对误差
+        charactLtz.put("measuredPeakTime",timeSeries[(int)iom]);//实测峰现时间
+        charactLtz.put("forecastPeakTime",timeSeries[(int)icm]);//预报峰现时间
+        charactLtz.put("ErrorPeakTime",iem);//峰现时间误差
+        charactLtz.put("dc",dc);//确定性系数
+        charactLtz.put("averageP",pj);//面平均雨量
+        charactLtz.put("soilWater",wj);//土壤含水量
+        charactLtz.put("runoffDepth",rr);//流域平均产流深
+        charactLtz.put("upstreamWater",qinh);//上游来水演算流量
+        charactLtz.put("runoffYield",qjy);//降水产流流量
+        charactLtz.put("measuredQ",qObs);//实测流量
+        charactLtz.put("forecastQ",qcal);//预报流量
         return charactLtz;
     }
     private static float[][] unite(float[][] os1, float[][] os2) {

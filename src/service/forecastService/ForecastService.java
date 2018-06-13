@@ -109,7 +109,7 @@ public class ForecastService extends Controller {
      * @return
      */
     public List<XAJDayevH> getDayevH(){
-        return forecastDao.getDayevH(forecastC.getYMC1(),forecastC.getYMC2());
+        return forecastDao.getDayevH(forecastC.getYMC4(),forecastC.getYMC2());
     }
     /**
      * 获取土壤含水量初值
@@ -159,14 +159,14 @@ public class ForecastService extends Controller {
      * @return
      * @throws ParseException
      */
-    public List<ViewFlow> getStrobeFlow()throws ParseException { return forecastDao.getStrobeFlow(sdf.format(forecastC.getBASEDTM()),sdf.format(forecastC.getSTARTTM()));}
+    public List<ViewFlow> getStrobeFlow()throws ParseException { return forecastDao.getStrobeFlow(sdf.format(forecastC.getWUTM()),sdf.format(forecastC.getSTARTTM()));}
     /**
      * 新安江--7个河道水文站流量
 
      * @return
      * @throws ParseException
      */
-    public List<XAJHydrologicFlow> getHydrologicFlow()throws ParseException { return forecastDao.getHydrologicFlow(sdf.format(forecastC.getBASEDTM()),sdf.format(forecastC.getSTARTTM()));}
+    public List<XAJHydrologicFlow> getHydrologicFlow()throws ParseException { return forecastDao.getHydrologicFlow(sdf.format(forecastC.getWUTM()),sdf.format(forecastC.getSTARTTM()));}
 
     /**
      * 新安江模型--各断面马斯京根参数
