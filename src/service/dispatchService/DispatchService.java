@@ -48,6 +48,13 @@ public class DispatchService extends Controller {
     public boolean doFixMS(String correctDay,List<RcmR> correctData){
         DispatchCalculateService fc=new DispatchCalculateService(forecastC,dispatchMap);
         //todo: list转array
+
+        //以下是list转array
+        //double [] correctData1 = new double[10];
+        //correctData1[0] = Double.parseDouble(String.valueOf(correctData.get(0).getEHZQ()));
+        //correctData1[1] = Double.parseDouble(String.valueOf(correctData.get(0).getSHZQ()));
+        //correctData1[2] = Double.parseDouble(String.valueOf(correctData.get(0).getGLZQ()));
+        //correctData1[3] = Double.parseDouble(String.valueOf(correctData.get(0).getGLDZQ()));
         double [] correctData1={100,200,50,50};
         fc.taskMSFix(correctDay,correctData1);
         return true;
@@ -93,19 +100,28 @@ public class DispatchService extends Controller {
     public List<DispatchWaterRelease> getWaterRelease() throws ParseException {
 
         return dispatchDao.getWaterRelease(forecastC.getYMC1(), forecastC.getYMC2(),sdf.format(forecastC.getSTARTTM()),sdf.format(forecastC.getENDTM()));
-    }
+    }//调度放水情况读取
 
     public void doDispatchParaSave(String taskId,String curve,int FLD,String Z,String Q,String WE,String STZ,String ELQ,String TLQ,String HLQ){
         dispatchDao.doDispatchParaSave(taskId,curve,FLD,Z,Q,WE,STZ,ELQ,TLQ,HLQ);
-    }
+    }//调度参数保存
 
     public void waterReleaseDataSave(String waterReleaseData){
 
         dispatchDao.waterReleaseDataSave(forecastC.getNO(),forecastC.getYMC1(), forecastC.getYMC2(),waterReleaseData);
-    }
+    }//调度参数保存
 
     public Map getDispatchZResult(){
         return dispatchDao.getDispatchZResult(forecastC.getNO());
     }//调度水位结果读取
+
+    public List<RcmR> getManualAdviceQ(String time){
+        return dispatchDao.getManualAdviceQ(forecastC.getNO(),time);
+    }//建议放水读取
+
+    public void operationResultSave(){
+
+    }
+
 }
 

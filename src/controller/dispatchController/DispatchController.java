@@ -19,7 +19,7 @@ public class DispatchController extends Controller {
 
     public void getWaterRelease() throws ParseException {
         String taskId=getPara("taskId");
-        System.out.println(taskId);
+        //System.out.println(taskId);
         //String taskId = "0010201805181230";
         dispatchService.setTaskSetting(taskId);
         setAttr("listWasR",dispatchService.getWaterRelease());
@@ -119,4 +119,19 @@ public class DispatchController extends Controller {
         renderJson();
     }
     //调度放水情况读取
+
+    public void getManualAdviceQ(){
+        //String taskId=getPara("taskId");
+        String taskId = "0010201805181230";
+        //String time = getPara("time");
+        String time = "2018-03-17";
+        dispatchService.setTaskSetting(taskId);
+        setAttr("listRcmR",dispatchService.getManualAdviceQ(time));
+        renderJson();
+    }//建议放水读取
+
+    public void doManualAdviceQFix(){
+        String taskId=getPara("taskId");
+        dispatchService.setTaskSetting(taskId);
+    }//人工方案干预
 }

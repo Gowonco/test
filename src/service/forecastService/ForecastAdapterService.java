@@ -380,7 +380,7 @@ public class ForecastAdapterService extends Controller {
         return qobs;
     }
     //面平均降雨量（从预热期开始到实测开始前一天）按照面平均雨量结果是预热期到实测结束
-    public float[][] getXAJZdylp() throws ParseException {
+   /*public float[][] getXAJZdylp() throws ParseException {
         RainCalcu rainCalcu = new RainCalcu();
         try {
             mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime());
@@ -398,7 +398,7 @@ public class ForecastAdapterService extends Controller {
             }
         }
         return zdylp;
-    }
+    }*/
     //界面输入蒸发值
    public float getEvap(){
        double evap = (double) xajMap.get("e");
@@ -1712,14 +1712,14 @@ public class ForecastAdapterService extends Controller {
         return fenKuai;
     }
     //断面修正产水量
-    public double[][] getRP() throws ParseException {
+    /*public double[][] getRP() throws ParseException {
         double[][] ppaInt = getFKCL();
         Calculation inPut = new Calculation(ppaInt);
         double[] wwd=(double[])inPut.outputChanliu().get("断面产水量");
         double[] wwdc=(double[])inPut.outputChanliu().get("修正断面产水量");
         List<RpCr> listRpCr = getRpCr(wwd,wwdc);
         return RP;
-    }
+    }*/
     //水库汇流选择
     public double[][] getFL(){
         //调用测试水库汇流选择的方法

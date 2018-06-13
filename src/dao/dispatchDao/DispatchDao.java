@@ -160,6 +160,10 @@ public class DispatchDao extends Controller {
         return ctrMap;
     }
     //调度水位结果读取
-
+    public List<RcmR> getManualAdviceQ(String taskId,String time){
+        String ymdhm=time+" 00:00:00";
+        List<RcmR> listRcmR = RcmR.dao.find("select * from f_rcm_r where NO = ? and YMC = UNIX_TIMESTAMP(?)",taskId,ymdhm);
+        return listRcmR;
+    }
 
 }
