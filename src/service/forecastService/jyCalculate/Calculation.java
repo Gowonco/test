@@ -13,11 +13,7 @@ public class Calculation {
 	private double[] ww;
 	private double[] wwd;
 	private double[] wwdc;
-
-	/**
-	 *
-	 * @param ppa   输入数据初始土壤湿度和各块累计雨量
-	 */
+	
 	public Calculation(double[][] ppa) {
 		this.ppa = ppa;
 	}
@@ -35,9 +31,9 @@ public class Calculation {
 		if (ppa[0][2] > 0) {
 			if (pp[0] <= 75) {
 				rr[0] = 0.01 * Math.pow(pp[0], 1.69);
-			} else if (ppa[0][2] > 75 && ppa[0][2] < 150) {
+			} else if (pp[0] > 75 && pp[0] < 150) {
 				rr[0] = 0.0006 * Math.pow(pp[0], 2.327);
-			} else if (ppa[0][2] >= 150) {
+			} else if (pp[0]>= 150) {
 				rr[0] = pp[0] - 80;
 			}
 		}
@@ -48,7 +44,7 @@ public class Calculation {
 		if (ppa[1][2] > 0) {
 			if (pp[1] < 31) {
 				rr[1] = 0;
-			} else if (ppa[1][2] >= 31) {
+			} else if (pp[1] >= 31) {
 				rr[1] = 0.765 * (pp[1] - 31);
 			}
 		}
@@ -57,11 +53,11 @@ public class Calculation {
 			pp[2] = ppa[2][1] + ppa[2][2];
 		}
 		if (ppa[2][2] > 0) {
-			if (pp[2] <= 100) {
-				rr[2] = 0.0013 * Math.pow(pp[2], 2.7);
-			} else if (ppa[2][2] > 100 && ppa[2][2] < 200) {
+			if (pp[2]<= 100) {
+				rr[2] = 0.00013 * Math.pow(pp[2], 2.7);
+			} else if (pp[2] > 100 && pp[2] <= 200) {
 				rr[2] = 0.0125 * Math.pow(pp[2], 1.708);
-			} else if (ppa[2][2] >= 200) {
+			} else if (pp[2] > 200) {
 				rr[2] = pp[2] - 94;
 			}
 		}
@@ -72,7 +68,7 @@ public class Calculation {
 		if (ppa[3][2] > 0) {
 			if (pp[3] < 200) {
 				rr[3] = 0.0013 * Math.pow(pp[3], 2.129);
-			} else if (ppa[3][2] >= 200) {
+			} else if (pp[3] >= 200) {
 				rr[3] = pp[3] - 100;
 			}
 		}
@@ -83,7 +79,7 @@ public class Calculation {
 		if (ppa[4][2] > 0) {
 			if (pp[4] < 200) {
 				rr[4] = 0.0038 * Math.pow(pp[4], 1.935);
-			} else if (ppa[4][2] >= 200) {
+			} else if (pp[4]>= 200) {
 				rr[4] = pp[4] - 90;
 			}
 		}
@@ -94,7 +90,7 @@ public class Calculation {
 		if (ppa[5][2] > 0) {
 			if (pp[5] < 150) {
 				rr[5] = 0.00205 * Math.pow(pp[5], 2.113);
-			} else if (ppa[5][2] >= 150) {
+			} else if (pp[5] >= 150) {
 				rr[5] = pp[5] - 67;
 			}
 		}
@@ -105,7 +101,7 @@ public class Calculation {
 		if (ppa[6][2] > 0) {
 			if (pp[6] < 150) {
 				rr[6] = 0.00487 * Math.pow(pp[6], 1.978);
-			} else if (ppa[6][2] >= 150) {
+			} else if (pp[6]>= 150) {
 				rr[6] = pp[6] - 57;
 			}
 		}
@@ -131,7 +127,7 @@ public class Calculation {
 		if (ppa[9][2] > 0) {
 			if (pp[9] < 100) {
 				rr[9] = 0.00309 * Math.pow(pp[9], 1.776);
-			} else if (ppa[9][2] >= 100) {
+			} else if (pp[9] >= 100) {
 				rr[9] = 0.000153 * Math.pow(pp[9], 2.396);
 			}
 		}
@@ -142,7 +138,7 @@ public class Calculation {
 		if (ppa[10][2] > 0) {
 			if (pp[10] < 92) {
 				rr[10] = 0;
-			} else if (ppa[6][2] >= 92) {
+			} else if (pp[10] >= 92) {
 				rr[10] = 0.383 * Math.pow(pp[10] - 92, 1.16) + 10;
 			}
 		}
@@ -152,9 +148,9 @@ public class Calculation {
 			pp[11] = ppa[11][1] + ppa[11][2];
 		}
 		if (ppa[11][2] > 0) {
-			if (ppa[11][2] < 130) {
+			if (pp[11]< 130) {
 				rr[11] = 0.0438 * Math.pow(pp[11] - 35, 1.539) + 4;
-			} else if (ppa[12][2] >= 130) {
+			} else if (pp[12] >= 130) {
 				rr[11] = pp[11] - 75;
 			}
 		}
@@ -166,7 +162,7 @@ public class Calculation {
 		if (ppa[12][2] > 0) {
 			if (pp[12] <= 205) {
 				rr[12] = 0.0007 * Math.pow(pp[12], 2.23);
-			} else if (ppa[12][2] >= 205) {
+			} else if (pp[12]>= 205) {
 				rr[12] = pp[12] - 105;
 			}
 		}
@@ -177,7 +173,7 @@ public class Calculation {
 		if (ppa[13][2] > 0) {
 			if (pp[13] < 215) {
 				rr[13] = 0.000348 * Math.pow(pp[13], 2.34);
-			} else if (ppa[13][2] >= 215) {
+			} else if (pp[13] >= 215) {
 				rr[13] = pp[13] - 113;
 			}
 		}
@@ -188,7 +184,7 @@ public class Calculation {
 		if (ppa[14][2] > 0) {
 			if (pp[14] < 225) {
 				rr[14] = 0.000123 * Math.pow(pp[14], 2.52);
-			} else if (ppa[14][2] >= 225) {
+			} else if (pp[14] >= 225) {
 				rr[14] = pp[14] - 123;
 			}
 		}
@@ -268,7 +264,7 @@ public class Calculation {
 	}
 	
 	/*输出径流深、分块产水量，断面产水量*/
-	public Map<String, Object> OutputChanliu() {
+	public Map<String, Object> outputChanliu() {
 		fenPian(ppa);
 		ChanShuiLiang();
 		dmChanShuiLiang();
