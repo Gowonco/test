@@ -54,8 +54,8 @@ class DchyubasH {
         sp=new float[lp];
 
         for (int i=0;i<lp;i++){
-            fp[i]=para2[0][i];
-            mp[i]=(int)para2[1][i];//河段数
+            fp[i]=para2[i][0];
+            mp[i]=(int)para2[i][1];//河段数
         }
         for(int i=0;i<lp;i++){
             cp[i]=fp[i]*f/tt/(3.6f);
@@ -87,12 +87,12 @@ class DchyubasH {
         }
 
         for (int i=0;i<lp;i++){
-            wp[i]=state[i+1][0];
-            wup[i]=state[i+1][1];
-            wlp[i]=state[i+1][2];
+            wp[i]=state[i][0];
+            wup[i]=state[i][1];
+            wlp[i]=state[i][2];
             wdp[i]=wp[i]-wup[i]-wlp[i];
-            sp[i]=state[i+1][5];
-            frp[i]=state[i+1][6];
+            sp[i]=state[i][5];
+            frp[i]=state[i][6];
             float n= (float) ((Math.round(Math.pow(10,7)*qcal[0]/lp/3))/Math.pow(10,7));
             qsp[i]=n;
             qip[i]=n;
@@ -124,7 +124,7 @@ class DchyubasH {
         float[]cci=(float[])this.subParameter.get("CI");
         float[]xxx=(float[])this.subParameter.get("X");
         float[]ccs=(float[])this.subParameter.get("CS");
-        int []llag=(int [])this.subParameter.get("L");
+        float []llag=(float [])this.subParameter.get("L");
         for (int i=0;i<lp;i++){
             k=kkk[i];
             b=bb[i];
@@ -141,7 +141,7 @@ class DchyubasH {
             ci=cci[i];
             x=xxx[i];
             cs=ccs[i];
-            lag=llag[i];
+            lag= (int) llag[i];
             /*
              *
              * */

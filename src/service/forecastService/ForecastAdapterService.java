@@ -16,8 +16,11 @@ import service.forecastService.jyCalculate.Shuiku;
 import service.forecastService.xajCalculate.RainCalcu;
 import service.forecastService.xajCalculate.ReservoirConfluence;
 import service.forecastService.xajCalculate.SoilMoiCalcu;
+import service.forecastService.xajCalculate.fractureCalculate.LuTaiZiCal;
+import service.forecastService.xajCalculate.fractureCalculate.SectionGeneral;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -30,8 +33,9 @@ public class ForecastAdapterService extends Controller {
     Map mapp = new HashMap();
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-
-
+    DecimalFormat df0 = new DecimalFormat("#.00");
+    DecimalFormat df = new DecimalFormat("#.000");
+    DecimalFormat df1 = new DecimalFormat("#.000");
     public  float[][] behindpP;//记录前9块子流域面平均雨量
     public  float[][] ALLPP;//记录新安江模型1到23块子流域面平均雨量
     public float[] pP;//记录经验模型各块累计雨量
@@ -42,6 +46,7 @@ public class ForecastAdapterService extends Controller {
     public  double[][] CFQ;//记录水库来水及汇流
     public   String[][] TM;//记录考虑淮干与淮南水库汇流时间
     public Map stateMap;//记录新安江土壤含水量计算后的结果
+    public float[][] dMQ;//记录新安江各断面预报流量
 
     public double[][] qReservoir;//记录水库汇流结果
     public String routStartTime;//记录汇流开始时间
@@ -702,7 +707,7 @@ public class ForecastAdapterService extends Controller {
         double para[][] = new double[paraInflow.length][2];
         for(int i=0;i<para.length;i++){
             for(int j=0;j<2;j++){
-                para[i][j] = paraInflow[i][j];
+                para[i][j] = Double.parseDouble(String.valueOf(paraInflow[i][j]));
             }
         }
         return para;
@@ -773,7 +778,7 @@ public class ForecastAdapterService extends Controller {
             cfBb.setNO(forecastC.getNO());
             cfBb.setDBCD("00100000");
             cfBb.setIL(note[i]);
-            cfBb.setW(new BigDecimal(Double.toString(totalW[i])));//位数过长
+            cfBb.setW(new BigDecimal(df.format(totalW[i])));//位数过长
             cfBb.setFL((int) isOpen[i]);
             listCfBb.add(cfBb);
         }
@@ -807,7 +812,7 @@ public class ForecastAdapterService extends Controller {
             cfR1.setID("001");
             cfR1.setNAME("昭平台");
             cfR1.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR1.setQ(new BigDecimal(Double.toString(sumQ1[i])));//位数可能过多
+            cfR1.setQ(new BigDecimal(df.format(sumQ1[i])));//位数可能过多
 
             CfR cfR2 = new CfR();
             cfR2.setNO(forecastC.getNO());//洪汝河
@@ -815,7 +820,7 @@ public class ForecastAdapterService extends Controller {
             cfR2.setID("002");
             cfR2.setNAME("洪汝河");
             cfR2.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR2.setQ(new BigDecimal(Double.toString(sumQ2[i])));
+            cfR2.setQ(new BigDecimal(df.format(sumQ2[i])));
 
             CfR cfR3 = new CfR();
             cfR3.setNO(forecastC.getNO());//淮南
@@ -823,7 +828,7 @@ public class ForecastAdapterService extends Controller {
             cfR3.setID("003");
             cfR3.setNAME("淮南");
             cfR3.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR3.setQ(new BigDecimal(Double.toString(sumQ3[i])));
+            cfR3.setQ(new BigDecimal(df.format(sumQ3[i])));
 
             CfR cfR4 = new CfR();
             cfR4.setNO(forecastC.getNO());//上桥闸
@@ -831,7 +836,7 @@ public class ForecastAdapterService extends Controller {
             cfR4.setID("004");
             cfR4.setNAME("上桥闸");
             cfR4.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR4.setQ(new BigDecimal(Double.toString(sumQ4[i])));
+            cfR4.setQ(new BigDecimal(df.format(sumQ4[i])));
 
             CfR cfR5 = new CfR();
             cfR5.setNO(forecastC.getNO());//昭平台汇流
@@ -839,7 +844,7 @@ public class ForecastAdapterService extends Controller {
             cfR5.setID("101");
             cfR5.setNAME("昭平台汇流");
             cfR5.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR5.setQ(new BigDecimal(Double.toString(routeQ1[i])));
+            cfR5.setQ(new BigDecimal(df.format(routeQ1[i])));
 
             CfR cfR6 = new CfR();
             cfR6.setNO(forecastC.getNO());//洪汝河汇流
@@ -847,7 +852,7 @@ public class ForecastAdapterService extends Controller {
             cfR6.setID("202");
             cfR6.setNAME("洪汝河汇流");
             cfR6.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR6.setQ(new BigDecimal(Double.toString(routeQ2[i])));
+            cfR6.setQ(new BigDecimal(df.format(routeQ2[i])));
 
             CfR cfR7 = new CfR();
             cfR7.setNO(forecastC.getNO());//淮南汇流
@@ -855,7 +860,7 @@ public class ForecastAdapterService extends Controller {
             cfR7.setID("303");
             cfR7.setNAME("淮南汇流");
             cfR7.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR7.setQ(new BigDecimal(Double.toString(routeQ3[i])));
+            cfR7.setQ(new BigDecimal(df.format(routeQ3[i])));
 
             CfR cfR8 = new CfR();
             cfR8.setNO(forecastC.getNO());//上桥闸汇流
@@ -863,7 +868,7 @@ public class ForecastAdapterService extends Controller {
             cfR8.setID("404");
             cfR8.setNAME("上桥闸汇流");
             cfR8.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR8.setQ(new BigDecimal(Double.toString(routeQ4[i])));
+            cfR8.setQ(new BigDecimal(df.format(routeQ4[i])));
             listCfr.add(cfR1);
             listCfr.add(cfR2);
             listCfr.add(cfR3);
@@ -1669,14 +1674,14 @@ public class ForecastAdapterService extends Controller {
     public float[][] getOtherQinflow(){
         List<XAJForecastXajr> listXAJForecastXajr = (List<XAJForecastXajr>) xajMap.get("listXAJForecastXajr");
         List<ViewFlow> listViewFlow = (List<ViewFlow>) xajMap.get("listStrobeFlow");
-        float[][] qinflow = new float[listXAJForecastXajr.get(0).getListForecastXajr().size()][2];
+        float[][] qinflow = new float[getStToEnd2()][2];
         for(int i=0;i<qinflow.length;i++){///鲁台子预报结果（从实测开始到预报结束）
             qinflow[i][0] = listXAJForecastXajr.get(0).getListForecastXajr().get(i).getPQ().floatValue();
         }
-        for(int i=0;i<listViewFlow.size();i++){//上桥闸实测流量（从实测开始到实测结束）-其他赋值为0
-            for(int j=0;j<listViewFlow.get(i).getListWasR().size();j++){
-                if(listViewFlow.get(i).getListWasR().get(j).getSTCD().equals("50404000")){
-                    qinflow[i][1] = listViewFlow.get(i).getListWasR().get(j).getTGTQ().floatValue();
+        for(int i=0;i<getStToEnd();i++){//上桥闸实测流量（从实测开始到实测结束）-其他赋值为0
+            for(int j=0;j<listViewFlow.get(i+getWtmtoBas()).getListWasR().size();j++){
+                if(listViewFlow.get(i+getWtmtoBas()).getListWasR().get(j).getSTCD().equals("50404000")){
+                    qinflow[i][1] = listViewFlow.get(i+getWtmtoBas()).getListWasR().get(j).getTGTQ().floatValue();
                 }
             }
         }
@@ -1729,8 +1734,13 @@ public class ForecastAdapterService extends Controller {
         float[] qjyhb =  (float[]) mapHbractureFlow.get("runoffYield");//降水产流流量
         float[] qObshb =  (float[]) mapHbractureFlow.get("measuredQ");//实测流量
         float[] qcalhb =  (float[]) mapHbractureFlow.get("forecastQ");//预报流量
-
+        dMQ = new float[timeSeries.length][5];
         for(int i=0;i<ppj.length;i++){
+            dMQ[i][0] = qcal[i];
+            dMQ[i][1] = qcalbb[i];
+            dMQ[i][2] = qcalmg[i];
+            dMQ[i][3] = qcalby[i];
+            dMQ[i][4] = qcalhb[i];
             ForecastXajr forecastXajr = new ForecastXajr();//鲁台子
             ForecastXajr forecastXajr1 = new ForecastXajr();//蚌埠
             ForecastXajr forecastXajr2 = new ForecastXajr();//淮南
@@ -1739,57 +1749,57 @@ public class ForecastAdapterService extends Controller {
             forecastXajr.setNO(forecastC.getNO());
             forecastXajr.setDMCD("00101000");
             forecastXajr.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            forecastXajr.setDRN(new BigDecimal(Float.toString(ppj[i])));
-            forecastXajr.setW(new BigDecimal(Float.toString(wj[i])));
-            forecastXajr.setRR(new BigDecimal(Float.toString(rr[i])));
-            forecastXajr.setINQ(new BigDecimal(Float.toString(qinh[i])));
-            forecastXajr.setPPQ(new BigDecimal(Float.toString(qjy[i])));
-            forecastXajr.setQ(new BigDecimal(Float.toString(qObs[i])));
-            forecastXajr.setPQ(new BigDecimal(Float.toString(qcal[i])));
+            forecastXajr.setDRN(new BigDecimal(df0.format(ppj[i])));
+            forecastXajr.setW(new BigDecimal(df0.format(wj[i])));
+            forecastXajr.setRR(new BigDecimal(df0.format(rr[i])));
+            forecastXajr.setINQ(new BigDecimal(df.format(qinh[i])));
+            forecastXajr.setPPQ(new BigDecimal(df.format(qjy[i])));
+            forecastXajr.setQ(new BigDecimal(df.format(qObs[i])));
+            forecastXajr.setPQ(new BigDecimal(df.format(qcal[i])));
 
             forecastXajr1.setNO(forecastC.getNO());
             forecastXajr1.setDMCD("00102000");
             forecastXajr1.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            forecastXajr1.setDRN(new BigDecimal(Float.toString(ppjbb[i])));
-            forecastXajr1.setW(new BigDecimal(Float.toString(wjbb[i])));
-            forecastXajr1.setRR(new BigDecimal(Float.toString(rrbb[i])));
-            forecastXajr1.setINQ(new BigDecimal(Float.toString(qinhbb[i])));
-            forecastXajr1.setPPQ(new BigDecimal(Float.toString(qjybb[i])));
-            forecastXajr1.setQ(new BigDecimal(Float.toString(qObsbb[i])));
-            forecastXajr1.setPQ(new BigDecimal(Float.toString(qcalbb[i])));
+            forecastXajr1.setDRN(new BigDecimal(df0.format(ppjbb[i])));
+            forecastXajr1.setW(new BigDecimal(df0.format(wjbb[i])));
+            forecastXajr1.setRR(new BigDecimal(df0.format(rrbb[i])));
+            forecastXajr1.setINQ(new BigDecimal(df.format(qinhbb[i])));
+            forecastXajr1.setPPQ(new BigDecimal(df.format(qjybb[i])));
+            forecastXajr1.setQ(new BigDecimal(df.format(qObsbb[i])));
+            forecastXajr1.setPQ(new BigDecimal(df.format(qcalbb[i])));
 
             forecastXajr2.setNO(forecastC.getNO());
             forecastXajr2.setDMCD("00103000");
             forecastXajr2.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            forecastXajr2.setDRN(new BigDecimal(Float.toString(ppjmg[i])));
-            forecastXajr2.setW(new BigDecimal(Float.toString(wjmg[i])));
-            forecastXajr2.setRR(new BigDecimal(Float.toString(rrmg[i])));
-            forecastXajr2.setINQ(new BigDecimal(Float.toString(qinhmg[i])));
-            forecastXajr2.setPPQ(new BigDecimal(Float.toString(qjymg[i])));
-            forecastXajr2.setQ(new BigDecimal(Float.toString(qObsmg[i])));
-            forecastXajr2.setPQ(new BigDecimal(Float.toString(qcalmg[i])));
+            forecastXajr2.setDRN(new BigDecimal(df0.format(ppjmg[i])));
+            forecastXajr2.setW(new BigDecimal(df0.format(wjmg[i])));
+            forecastXajr2.setRR(new BigDecimal(df0.format(rrmg[i])));
+            forecastXajr2.setINQ(new BigDecimal(df.format(qinhmg[i])));
+            forecastXajr2.setPPQ(new BigDecimal(df.format(qjymg[i])));
+            forecastXajr2.setQ(new BigDecimal(df.format(qObsmg[i])));
+            forecastXajr2.setPQ(new BigDecimal(df.format(qcalmg[i])));
 
             forecastXajr3.setNO(forecastC.getNO());
             forecastXajr3.setDMCD("00104000");
             forecastXajr3.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            forecastXajr3.setDRN(new BigDecimal(Float.toString(ppjby[i])));
-            forecastXajr3.setW(new BigDecimal(Float.toString(wjby[i])));
-            forecastXajr3.setRR(new BigDecimal(Float.toString(rrby[i])));
-            forecastXajr3.setINQ(new BigDecimal(Float.toString(qinhby[i])));
-            forecastXajr3.setPPQ(new BigDecimal(Float.toString(qjyby[i])));
-            forecastXajr3.setQ(new BigDecimal(Float.toString(qObsby[i])));
-            forecastXajr3.setPQ(new BigDecimal(Float.toString(qcalby[i])));
+            forecastXajr3.setDRN(new BigDecimal(df0.format(ppjby[i])));
+            forecastXajr3.setW(new BigDecimal(df0.format(wjby[i])));
+            forecastXajr3.setRR(new BigDecimal(df0.format(rrby[i])));
+            forecastXajr3.setINQ(new BigDecimal(df.format(qinhby[i])));
+            forecastXajr3.setPPQ(new BigDecimal(df.format(qjyby[i])));
+            forecastXajr3.setQ(new BigDecimal(df.format(qObsby[i])));
+            forecastXajr3.setPQ(new BigDecimal(df.format(qcalby[i])));
 
             forecastXajr4.setNO(forecastC.getNO());
             forecastXajr4.setDMCD("00105000");
             forecastXajr4.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            forecastXajr4.setDRN(new BigDecimal(Float.toString(ppjhb[i])));
-            forecastXajr4.setW(new BigDecimal(Float.toString(wjhb[i])));
-            forecastXajr4.setRR(new BigDecimal(Float.toString(rrhb[i])));
-            forecastXajr4.setINQ(new BigDecimal(Float.toString(qinhhb[i])));
-            forecastXajr4.setPPQ(new BigDecimal(Float.toString(qjyhb[i])));
-            forecastXajr4.setQ(new BigDecimal(Float.toString(qObshb[i])));
-            forecastXajr4.setPQ(new BigDecimal(Float.toString(qcalhb[i])));
+            forecastXajr4.setDRN(new BigDecimal(df0.format(ppjhb[i])));
+            forecastXajr4.setW(new BigDecimal(df0.format(wjhb[i])));
+            forecastXajr4.setRR(new BigDecimal(df0.format(rrhb[i])));
+            forecastXajr4.setINQ(new BigDecimal(df.format(qinhhb[i])));
+            forecastXajr4.setPPQ(new BigDecimal(df.format(qjyhb[i])));
+            forecastXajr4.setQ(new BigDecimal(df.format(qObshb[i])));
+            forecastXajr4.setPQ(new BigDecimal(df.format(qcalhb[i])));
             listForecastXajr.add(forecastXajr);
             listForecastXajr.add(forecastXajr1);
             listForecastXajr.add(forecastXajr2);
@@ -1805,8 +1815,8 @@ public class ForecastAdapterService extends Controller {
             forecastXajr.setNO(forecastC.getNO());
             forecastXajr.setDMCD("00106000");
             forecastXajr.setYMDHM(sdf.parse(timeSeriesHm[i]+" 00:00:00"));
-            forecastXajr.setDRN(new BigDecimal(Float.toString(ppaver[i])));
-            forecastXajr.setPQ(new BigDecimal(Float.toString(qcalhm[i])));
+            forecastXajr.setDRN(new BigDecimal(df0.format(ppaver[i])));
+            forecastXajr.setPQ(new BigDecimal(df.format(qcalhm[i])));
             listForecastXajr.add(forecastXajr);
         }
         return listForecastXajr;
@@ -1824,26 +1834,26 @@ public class ForecastAdapterService extends Controller {
         float qom = (float) mapLsFractureFlow.get("measuredPeak");//实测洪峰流量
         float qcm = (float) mapLsFractureFlow.get("forecastPeak");//预报洪峰流量
         float eqm = (float) mapLsFractureFlow.get("ErrorPeak");//洪峰相对误差
-        float sttime = (float) mapLsFractureFlow.get("measuredPeakTime");//实测峰现时间
-        float ftime = (float) mapLsFractureFlow.get("forecastPeakTime");//预报峰现时间
-        float iem = (float) mapLsFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        String sttime = (String) mapLsFractureFlow.get("measuredPeakTime");//实测峰现时间
+        String ftime = (String) mapLsFractureFlow.get("forecastPeakTime");//预报峰现时间
+        //float iem = (float) mapLsFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
         float dc = (float) mapLsFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajt = new ForecastXajt();
         forecastXajt.setNO(forecastC.getNO());
         forecastXajt.setID("00101000");
-        forecastXajt.setP(new BigDecimal(Float.toString(ppj)));
-        forecastXajt.setW(new BigDecimal(Float.toString(rrrr)));
-        forecastXajt.setPW(new BigDecimal(Float.toString(rcaly)));
-        forecastXajt.setOBW(new BigDecimal(Float.toString(robsy)));
-        forecastXajt.setDW(new BigDecimal(Float.toString(rcali)));
-        forecastXajt.setWE(new BigDecimal(Float.toString(ce)));
-        forecastXajt.setOBPD(new BigDecimal(Float.toString(qom)));
-        forecastXajt.setFOPD(new BigDecimal(Float.toString(qcm)));
-        forecastXajt.setRPE(new BigDecimal(Float.toString(eqm)));
+        forecastXajt.setP(new BigDecimal(df0.format(ppj)));
+        forecastXajt.setW(new BigDecimal(df.format(rrrr)));
+        forecastXajt.setPW(new BigDecimal(df.format(rcaly)));
+        forecastXajt.setOBW(new BigDecimal(df.format(robsy)));
+        forecastXajt.setDW(new BigDecimal(df.format(rcali)));
+        forecastXajt.setWE(new BigDecimal(df1.format(ce)));
+        forecastXajt.setOBPD(new BigDecimal(df.format(qom)));
+        forecastXajt.setFOPD(new BigDecimal(df.format(qcm)));
+        forecastXajt.setRPE(new BigDecimal(df1.format(eqm)));
         forecastXajt.setOBPT(sdf.parse(sttime+" 00:00:00"));
         forecastXajt.setFOPT(sdf.parse(ftime+" 00:00:00"));
-        forecastXajt.setFOPZ(new BigDecimal(Float.toString(iem)));
-        forecastXajt.setDY(new BigDecimal(Float.toString(dc)));
+       // forecastXajt.setFOPZ(new BigDecimal(Float.toString(iem)));
+        forecastXajt.setDY(new BigDecimal(df1.format(dc)));
         listForecastXajt.add(forecastXajt);
 
         //蚌埠
@@ -1856,26 +1866,26 @@ public class ForecastAdapterService extends Controller {
         float qombb = (float) mapBbFractureFlow.get("measuredPeak");//实测洪峰流量
         float qcmbb = (float) mapBbFractureFlow.get("forecastPeak");//预报洪峰流量
         float eqmbb = (float) mapBbFractureFlow.get("ErrorPeak");//洪峰相对误差
-        float sttimebb = (float) mapBbFractureFlow.get("measuredPeakTime");//实测峰现时间
-        float ftimebb = (float) mapBbFractureFlow.get("forecastPeakTime");//预报峰现时间
-        float iembb = (float) mapBbFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        String sttimebb = (String) mapBbFractureFlow.get("measuredPeakTime");//实测峰现时间
+        String ftimebb = (String) mapBbFractureFlow.get("forecastPeakTime");//预报峰现时间
+       // float iembb = (float) mapBbFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
         float dcbb = (float) mapBbFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtBb = new ForecastXajt();
         forecastXajtBb.setNO(forecastC.getNO());
         forecastXajtBb.setID("00102000");
-        forecastXajtBb.setP(new BigDecimal(Float.toString(ppjbb)));
-        forecastXajtBb.setW(new BigDecimal(Float.toString(rrrrbb)));
-        forecastXajtBb.setPW(new BigDecimal(Float.toString(rcalybb)));
-        forecastXajtBb.setOBW(new BigDecimal(Float.toString(robsybb)));
-        forecastXajtBb.setDW(new BigDecimal(Float.toString(rcalibb)));
-        forecastXajtBb.setWE(new BigDecimal(Float.toString(cebb)));
-        forecastXajtBb.setOBPD(new BigDecimal(Float.toString(qombb)));
-        forecastXajtBb.setFOPD(new BigDecimal(Float.toString(qcmbb)));
-        forecastXajtBb.setRPE(new BigDecimal(Float.toString(eqmbb)));
+        forecastXajtBb.setP(new BigDecimal(df0.format(ppjbb)));
+        forecastXajtBb.setW(new BigDecimal(df.format(rrrrbb)));
+        forecastXajtBb.setPW(new BigDecimal(df.format(rcalybb)));
+        forecastXajtBb.setOBW(new BigDecimal(df.format(robsybb)));
+        forecastXajtBb.setDW(new BigDecimal(df.format(rcalibb)));
+        forecastXajtBb.setWE(new BigDecimal(df1.format(cebb)));
+        forecastXajtBb.setOBPD(new BigDecimal(df.format(qombb)));
+        forecastXajtBb.setFOPD(new BigDecimal(df.format(qcmbb)));
+        forecastXajtBb.setRPE(new BigDecimal(df1.format(eqmbb)));
         forecastXajtBb.setOBPT(sdf.parse(sttimebb+" 00:00:00"));
         forecastXajtBb.setFOPT(sdf.parse(ftimebb+" 00:00:00"));
-        forecastXajtBb.setFOPZ(new BigDecimal(Float.toString(iembb)));
-        forecastXajtBb.setDY(new BigDecimal(Float.toString(dcbb)));
+      //  forecastXajtBb.setFOPZ(new BigDecimal(Float.toString(iembb)));
+        forecastXajtBb.setDY(new BigDecimal(df1.format(dcbb)));
         listForecastXajt.add(forecastXajtBb);
 
         //淮南
@@ -1888,26 +1898,26 @@ public class ForecastAdapterService extends Controller {
         float qommg  = (float) mapMgFractureFlow.get("measuredPeak");//实测洪峰流量
         float qcmmg  = (float) mapMgFractureFlow.get("forecastPeak");//预报洪峰流量
         float eqmmg  = (float) mapMgFractureFlow.get("ErrorPeak");//洪峰相对误差
-        float sttimemg  = (float) mapMgFractureFlow.get("measuredPeakTime");//实测峰现时间
-        float ftimemg  = (float) mapMgFractureFlow.get("forecastPeakTime");//预报峰现时间
-        float iemmg  = (float) mapMgFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        String sttimemg  = (String) mapMgFractureFlow.get("measuredPeakTime");//实测峰现时间
+        String ftimemg  = (String) mapMgFractureFlow.get("forecastPeakTime");//预报峰现时间
+        //float iemmg  = (float) mapMgFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
         float dcmg  = (float) mapMgFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtMg = new ForecastXajt();
         forecastXajtMg.setNO(forecastC.getNO());
         forecastXajtMg.setID("00103000");
-        forecastXajtMg.setP(new BigDecimal(Float.toString(ppjmg)));
-        forecastXajtMg.setW(new BigDecimal(Float.toString(rrrrmg)));
-        forecastXajtMg.setPW(new BigDecimal(Float.toString(rcalymg)));
-        forecastXajtMg.setOBW(new BigDecimal(Float.toString(robsymg)));
-        forecastXajtMg.setDW(new BigDecimal(Float.toString(rcalimg)));
-        forecastXajtMg.setWE(new BigDecimal(Float.toString(cemg)));
-        forecastXajtMg.setOBPD(new BigDecimal(Float.toString(qommg)));
-        forecastXajtMg.setFOPD(new BigDecimal(Float.toString(qcmmg)));
-        forecastXajtMg.setRPE(new BigDecimal(Float.toString(eqmmg)));
+        forecastXajtMg.setP(new BigDecimal(df0.format(ppjmg)));
+        forecastXajtMg.setW(new BigDecimal(df.format(rrrrmg)));
+        forecastXajtMg.setPW(new BigDecimal(df.format(rcalymg)));
+        forecastXajtMg.setOBW(new BigDecimal(df.format(robsymg)));
+        forecastXajtMg.setDW(new BigDecimal(df.format(rcalimg)));
+        forecastXajtMg.setWE(new BigDecimal(df1.format(cemg)));
+        forecastXajtMg.setOBPD(new BigDecimal(df.format(qommg)));
+        forecastXajtMg.setFOPD(new BigDecimal(df.format(qcmmg)));
+        forecastXajtMg.setRPE(new BigDecimal(df1.format(eqmmg)));
         forecastXajtMg.setOBPT(sdf.parse(sttimemg+" 00:00:00"));
         forecastXajtMg.setFOPT(sdf.parse(ftimemg+" 00:00:00"));
-        forecastXajtMg.setFOPZ(new BigDecimal(Float.toString(iemmg)));
-        forecastXajtMg.setDY(new BigDecimal(Float.toString(dcmg)));
+       // forecastXajtMg.setFOPZ(new BigDecimal(Float.toString(iemmg)));
+        forecastXajtMg.setDY(new BigDecimal(df1.format(dcmg)));
         listForecastXajt.add(forecastXajtMg);
 
         //淮北
@@ -1920,26 +1930,26 @@ public class ForecastAdapterService extends Controller {
         float qomby = (float) mapByFractureFlow.get("measuredPeak");//实测洪峰流量
         float qcmby = (float) mapByFractureFlow.get("forecastPeak");//预报洪峰流量
         float eqmby = (float) mapByFractureFlow.get("ErrorPeak");//洪峰相对误差
-        float sttimeby = (float) mapByFractureFlow.get("measuredPeakTime");//实测峰现时间
-        float ftimeby = (float) mapByFractureFlow.get("forecastPeakTime");//预报峰现时间
-        float iemby = (float) mapByFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        String sttimeby = (String) mapByFractureFlow.get("measuredPeakTime");//实测峰现时间
+        String ftimeby = (String) mapByFractureFlow.get("forecastPeakTime");//预报峰现时间
+       // float iemby = (float) mapByFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
         float dcby = (float) mapByFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtBy = new ForecastXajt();
         forecastXajtBy.setNO(forecastC.getNO());
         forecastXajtBy.setID("00104000");
-        forecastXajtBy.setP(new BigDecimal(Float.toString(ppjby)));
-        forecastXajtBy.setW(new BigDecimal(Float.toString(rrrrby)));
-        forecastXajtBy.setPW(new BigDecimal(Float.toString(rcalyby)));
-        forecastXajtBy.setOBW(new BigDecimal(Float.toString(robsyby)));
-        forecastXajtBy.setDW(new BigDecimal(Float.toString(rcaliby)));
-        forecastXajtBy.setWE(new BigDecimal(Float.toString(ceby)));
-        forecastXajtBy.setOBPD(new BigDecimal(Float.toString(qomby)));
-        forecastXajtBy.setFOPD(new BigDecimal(Float.toString(qcmby)));
-        forecastXajtBy.setRPE(new BigDecimal(Float.toString(eqmby)));
+        forecastXajtBy.setP(new BigDecimal(df0.format(ppjby)));
+        forecastXajtBy.setW(new BigDecimal(df.format(rrrrby)));
+        forecastXajtBy.setPW(new BigDecimal(df.format(rcalyby)));
+        forecastXajtBy.setOBW(new BigDecimal(df.format(robsyby)));
+        forecastXajtBy.setDW(new BigDecimal(df.format(rcaliby)));
+        forecastXajtBy.setWE(new BigDecimal(df1.format(ceby)));
+        forecastXajtBy.setOBPD(new BigDecimal(df.format(qomby)));
+        forecastXajtBy.setFOPD(new BigDecimal(df.format(qcmby)));
+        forecastXajtBy.setRPE(new BigDecimal(df1.format(eqmby)));
         forecastXajtBy.setOBPT(sdf.parse(sttimeby+" 00:00:00"));
         forecastXajtBy.setFOPT(sdf.parse(ftimeby+" 00:00:00"));
-        forecastXajtBy.setFOPZ(new BigDecimal(Float.toString(iemby)));
-        forecastXajtBy.setDY(new BigDecimal(Float.toString(dcby)));
+       // forecastXajtBy.setFOPZ(new BigDecimal(Float.toString(iemby)));
+        forecastXajtBy.setDY(new BigDecimal(df1.format(dcby)));
         listForecastXajt.add(forecastXajtBy);
 
         //湖滨
@@ -1952,26 +1962,26 @@ public class ForecastAdapterService extends Controller {
         float qomhm = (float) mapHbractureFlow.get("measuredPeak");//实测洪峰流量
         float qcmhm = (float) mapHbractureFlow.get("forecastPeak");//预报洪峰流量
         float eqmhm = (float) mapHbractureFlow.get("ErrorPeak");//洪峰相对误差
-        float sttimehm = (float) mapHbractureFlow.get("measuredPeakTime");//实测峰现时间
-        float ftimehm = (float) mapHbractureFlow.get("forecastPeakTime");//预报峰现时间
-        float iemhm = (float) mapHbractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        String sttimehm = (String) mapHbractureFlow.get("measuredPeakTime");//实测峰现时间
+        String ftimehm = (String) mapHbractureFlow.get("forecastPeakTime");//预报峰现时间
+       // float iemhm = (float) mapHbractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
         float dchm = (float) mapHbractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtHm = new ForecastXajt();
         forecastXajtHm.setNO(forecastC.getNO());
         forecastXajtHm.setID("00105000");
-        forecastXajtHm.setP(new BigDecimal(Float.toString(ppjhm)));
-        forecastXajtHm.setW(new BigDecimal(Float.toString(rrrrhm)));
-        forecastXajtHm.setPW(new BigDecimal(Float.toString(rcalyhm)));
-        forecastXajtHm.setOBW(new BigDecimal(Float.toString(robsyhm)));
-        forecastXajtHm.setDW(new BigDecimal(Float.toString(rcalihm)));
-        forecastXajtHm.setWE(new BigDecimal(Float.toString(cehm)));
-        forecastXajtHm.setOBPD(new BigDecimal(Float.toString(qomhm)));
-        forecastXajtHm.setFOPD(new BigDecimal(Float.toString(qcmhm)));
-        forecastXajtHm.setRPE(new BigDecimal(Float.toString(eqmhm)));
+        forecastXajtHm.setP(new BigDecimal(df0.format(ppjhm)));
+        forecastXajtHm.setW(new BigDecimal(df.format(rrrrhm)));
+        forecastXajtHm.setPW(new BigDecimal(df.format(rcalyhm)));
+        forecastXajtHm.setOBW(new BigDecimal(df.format(robsyhm)));
+        forecastXajtHm.setDW(new BigDecimal(df.format(rcalihm)));
+        forecastXajtHm.setWE(new BigDecimal(df1.format(cehm)));
+        forecastXajtHm.setOBPD(new BigDecimal(df.format(qomhm)));
+        forecastXajtHm.setFOPD(new BigDecimal(df.format(qcmhm)));
+        forecastXajtHm.setRPE(new BigDecimal(df1.format(eqmhm)));
         forecastXajtHm.setOBPT(sdf.parse(sttimehm+" 00:00:00"));
         forecastXajtHm.setFOPT(sdf.parse(ftimehm+" 00:00:00"));
-        forecastXajtHm.setFOPZ(new BigDecimal(Float.toString(iemhm)));
-        forecastXajtHm.setDY(new BigDecimal(Float.toString(dchm)));
+       // forecastXajtHm.setFOPZ(new BigDecimal(Float.toString(iemhm)));
+        forecastXajtHm.setDY(new BigDecimal(df1.format(dchm)));
         listForecastXajt.add(forecastXajtHm);
         return listForecastXajt;
     }
@@ -1996,18 +2006,44 @@ public class ForecastAdapterService extends Controller {
     }
     //获取各断面预报流量   //-------------中间数据 待修改
     public float[][] getQr(){
-        List<XAJForecastXajr> listXajForecastXajr = (List<XAJForecastXajr>) xajMap.get("listXAJForecastXajr");
-        int size = listXajForecastXajr.get(0).getListForecastXajr().size();
-        float[][] qr = new float[size][];
-        for(int i=0;i<qr.length;i++){
-            qr[i] = new float[listXajForecastXajr.size()-1];//5个,没有鲁台子
-            for(int j=0;j<qr[i].length;j++){
-                qr[i][j] = listXajForecastXajr.get(j+1).getListForecastXajr().get(i).getPQ().floatValue();
-            }
+        Map mapParaScetion=getParaScetion();
+        Map mapParaInflow=getParaInflow();
+        Map mapXAJDayev=getXAJDayev();
+        Map mapDayev=getOtherDayev();
+        Map mapStateData= null;
+        try {
+            mapStateData = getStateData();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return qr;
+        LuTaiZiCal luTaiZiCal= null;
+        try {
+            luTaiZiCal = new LuTaiZiCal("ls",getStToEnd(),getStToEnd2(),(float[])(mapParaScetion.get("luTaiZi")),(float[][])mapParaInflow.get("luTaiZi"),(float[])mapDayev.get("LTZ"),getEvap(),getQobs(),getZdylp(),getppfu(),(float[][])mapStateData.get("lsState"),getqReservoir(),getroutBeginTime(),getroutEndTime(),forecastC.getFL(),getTimeSeries(),getroutOption(),getChildPara(9,0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            luTaiZiCal.dchyubas();
+            float floodPeak=(float)luTaiZiCal.charactLuTaiZi().get("forecastPeak");
+            if(floodPeak>=7000){
+                luTaiZiCal.setCsl(0.75f);
+                luTaiZiCal.dchyubas();
+            }
+            Map mapLsFractureFlow=luTaiZiCal.charactLuTaiZi();//返回结果的
+            SectionGeneral sectionGeneral=new SectionGeneral(getStToEnd(),getStToEnd2(),(float[])mapDayev.get("LTZ"),(float[])mapDayev.get("SHZ"),getEvap(),getOtherQobs(),getOtherZdylp(),getOtherppfu(),getOtherQinflow(),getTimeSeries(),getroutOption(),forecastC.getFL());
+            Map mapBbFractureFlow=sectionGeneral.calculationBengBu("bb",(float[][]) mapStateData.get("bbState"),(float[])(mapParaScetion.get("bengBu")),(float[][])mapParaInflow.get("bengBu"),getChildPara(4,9));
+            Map mapMgFractureFlow=sectionGeneral.calculationHuaiNan("mg",(float[][]) mapStateData.get("mgState"),(float[])(mapParaScetion.get("huaiNan")),(float[][])mapParaInflow.get("huaiNan"),getChildPara(1,13));
+            Map mapByFractureFlow=sectionGeneral.calculationHuaiBei("by",(float[][]) mapStateData.get("byState"),(float[])(mapParaScetion.get("huaiBei")),(float[][])mapParaInflow.get("huaiBei"),getChildPara(6,14));
+            Map mapHbractureFlow=sectionGeneral.calculationHubin("hb",(float[][]) mapStateData.get("hbState"),(float[])(mapParaScetion.get("huBing")),(float[][])mapParaInflow.get("huBing"),getChildPara(2,20));
+            Map mapHmFractureFlow=sectionGeneral.charactLake("hu",(float[])(mapParaScetion.get("huMian")),(float[][])mapParaInflow.get("huMian"));
+            List<ForecastXajr> getForecastXajr = getForecastXajr(mapLsFractureFlow,mapBbFractureFlow,mapMgFractureFlow,mapByFractureFlow,mapHbractureFlow,mapHmFractureFlow);
+
+    } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dMQ;
     }
-    //返回新安江模型入湖流量过程表
+        //返回新安江模型入湖流量过程表
     public List<InflowXajr> getInflowXajr(String[] timeSeries,float pp[],float qr[][],float[] qcal) throws ParseException {
         List<InflowXajr> listInflowXajr = new ArrayList<>();
         List<XAJFractureChild> listXAJFractureChild  = (List<XAJFractureChild>) xajMap.get("listFractureChild");
@@ -2018,8 +2054,8 @@ public class ForecastAdapterService extends Controller {
                     inflowXajr.setNO(forecastC.getNO());
                     inflowXajr.setID(listXAJFractureChild.get(m+1).getFractureId());
                     inflowXajr.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
-                    inflowXajr.setDRN(new BigDecimal(Float.toString(pp[t])));
-                    inflowXajr.setQ(new BigDecimal(Float.toString(qr[t][m])));
+                    inflowXajr.setDRN(new BigDecimal(df0.format(pp[t])));
+                    inflowXajr.setQ(new BigDecimal(df.format(qr[t][m])));
                     listInflowXajr.add(inflowXajr);
                 }
             }
@@ -2030,8 +2066,8 @@ public class ForecastAdapterService extends Controller {
             inflowXajr.setID("00100000");
             inflowXajr.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
             //inflowXajr.setYMC((int) sdf2.parse(timeSeries[t]).getTime());
-            inflowXajr.setDRN(new BigDecimal(Float.toString(pp[t])));
-            inflowXajr.setQ(new BigDecimal(Float.toString(qcal[t])));
+            inflowXajr.setDRN(new BigDecimal(df0.format(pp[t])));
+            inflowXajr.setQ(new BigDecimal(df.format(qcal[t])));
             listInflowXajr.add(inflowXajr);
         }
         return listInflowXajr;
@@ -2046,8 +2082,8 @@ public class ForecastAdapterService extends Controller {
                 InflowXajt inflowXajt = new InflowXajt();
                 inflowXajt.setNO(forecastC.getNO());
                 inflowXajt.setID(listXAJFractureChild.get(m+1).getFractureId());
-                inflowXajt.setPOW(new BigDecimal(Float.toString(ww[m+1])));
-                inflowXajt.setFOPD(new BigDecimal(Float.toString(qm[m+1])) );
+                inflowXajt.setPOW(new BigDecimal(df.format(ww[m+1])));
+                inflowXajt.setFOPD(new BigDecimal(df.format(qm[m+1])) );
                 inflowXajt.setFOPT(sdf.parse(im[m+1]+" 00:00:00"));
                 listInflowXajt.add(inflowXajt);
             }
@@ -2056,9 +2092,9 @@ public class ForecastAdapterService extends Controller {
         InflowXajt inflowXajt = new InflowXajt();
         inflowXajt.setNO(forecastC.getNO());
         inflowXajt.setID("00100000");
-        inflowXajt.setP(BigDecimal.valueOf(ppj));
-        inflowXajt.setPOW(new BigDecimal(Float.toString(ww[0])));
-        inflowXajt.setFOPD(new BigDecimal(Float.toString(qm[0])));
+        inflowXajt.setP(new BigDecimal(df0.format(ppj)));
+        inflowXajt.setPOW(new BigDecimal(df.format(ww[0])));
+        inflowXajt.setFOPD(new BigDecimal(df.format(qm[0])));
         inflowXajt.setFOPT(sdf.parse(im[0]+" 00:00:00"));
         listInflowXajt.add(inflowXajt);
         return listInflowXajt;

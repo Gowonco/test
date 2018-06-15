@@ -83,20 +83,20 @@ public class SectionGeneral{
         }
         Map<String,Object>BengBuChar=new HashMap<>();
         if (dyly=="bb"){
-            BengBuCal bengBuCal=new BengBuCal(dyly,longtime,longtimePre,paraSection,paraInflow,qInflow,evapDay,qobsBb,zdylp
+            BengBuCal bengBuCal=new BengBuCal(dyly,longtime,longtimePre,paraSection,paraInflow,qInflow,evapDay,qobsBb,ppBeng
                     ,state,routOption,realTimeIndex,timeSeries,subParameter);
             bengBuCal.bengBuGeneral();
             float floodpeak= (float) bengBuCal.charactBengbu().get("forecastPeak");
             if (floodpeak>=10000){
                 csb=0.98f;
-                BengBuCal bengBu=new BengBuCal(dyly,longtime,longtimePre,paraSection,paraInflow,qInflow,evapDay,qobsBb,zdylp
+                BengBuCal bengBu=new BengBuCal(dyly,longtime,longtimePre,paraSection,paraInflow,qInflow,evapDay,qobsBb,ppBeng
                         ,state,routOption,realTimeIndex,timeSeries,subParameter);
                 bengBu.setCsb(csb);
                 bengBu.bengBuGeneral();
                 BengBuChar=bengBu.charactBengbu();
             }else if (floodpeak>=8000){
                 csb=0.95f;
-                BengBuCal bengBu=new BengBuCal(dyly,longtime,longtimePre,paraSection,paraInflow,qInflow,evapDay,qobsBb,zdylp
+                BengBuCal bengBu=new BengBuCal(dyly,longtime,longtimePre,paraSection,paraInflow,qInflow,evapDay,qobsBb,ppBeng
                         ,state,routOption,realTimeIndex,timeSeries,subParameter);
                 bengBu.setCsb(csb);
                 bengBu.bengBuGeneral();
@@ -172,7 +172,7 @@ public class SectionGeneral{
         }
         float []qobsHuaiBei=new float[longtimePre];
         for (int i=0;i<longtimePre;i++){
-            for (int j=2;j<qobsAll.length;j++){
+            for (int j=2;j<qobsAll[0].length;j++){
                 qobsHuaiBei[i]=qobsHuaiBei[i]+qobsAll[i][j];/*金锁镇，峰山，泗洪老，泗洪新，团结闸*/
             }
         }

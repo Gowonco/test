@@ -101,8 +101,8 @@ public class BengBuCal extends DchyubasH{
         int na=lp;
         inname=new String[ia];
         for (int i=na;i<na+ia;i++){
-            xx[i-na]=para2[0][i];
-            nn[i-na]= (int) para2[1][i];
+            xx[i-na]=para2[i][0];
+            nn[i-na]= (int) para2[i][1];
             kk[i-na]= (int) tt;
         }
         qoxs=new float[m];
@@ -113,7 +113,7 @@ public class BengBuCal extends DchyubasH{
             c1=(0.5f*tt+kk[k]*xx[k])/(kk[k]-kk[k]*xx[k]+0.5f*tt);
             c2=(kk[k]-0.5f*tt-kk[k]*xx[k])/(kk[k]-kk[k]*xx[k]+0.5f*tt);
             for (int j=0;j<m;j++){
-                qoxs[j]=q[k][j];
+                qoxs[j]=q[j][k];//入流上桥闸和鲁台子
                 qc[j]=0;
             }
             if (k==0){
@@ -138,7 +138,7 @@ public class BengBuCal extends DchyubasH{
         for (int j=0;j<m;j++){
             qc[j]=0;
             for (int k=0;k<ia;k++){
-                qc[j]=qc[j]+q[k][j];
+                qc[j]=qc[j]+q[j][k];//入流资料
             }
         }
         qcj=new float[m];

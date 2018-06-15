@@ -8,6 +8,7 @@ import service.forecastService.xajCalculate.RainCalcu;
 import service.forecastService.xajCalculate.ReservoirConfluence;
 import service.forecastService.xajCalculate.SoilMoiCalcu;
 import service.forecastService.xajCalculate.fractureCalculate.LuTaiZiCal;
+import service.forecastService.xajCalculate.fractureCalculate.SectionGeneral;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,11 +61,11 @@ public class ForecastCalculateService2 extends Controller {
 //        }
 
         /*测试面平均雨量表—新安江模型*/
-//        List<DayrnflAvg> list = forecastAdapterService.getXAJDayrnflAvg(pp,timeseries);
-//        System.out.println(list.size());
-//        for(int i=0;i<list.size();i++){
-//            System.out.println(list.get(i).getARCD()+" "+list.get(i).getNO()+" "+sdf.format(list.get(i).getYMDHM())+" "+list.get(i).getDRN());
-//        }
+        List<DayrnflAvg> list = fAS.saveXAJDayrnflAvg(pp,timeseries);
+        System.out.println(list.size());
+        for(int i=0;i<list.size();i++){
+            System.out.println(list.get(i).getARCD()+" "+list.get(i).getNO()+" "+sdf.format(list.get(i).getYMDHM())+" "+list.get(i).getDRN());
+        }
     }
 
     /**
@@ -105,7 +106,7 @@ public class ForecastCalculateService2 extends Controller {
    public void testHuiLIu() throws ParseException {
        ReservoirConfluence reservoirConfluence=new ReservoirConfluence(fAS.getXAJInflowNo(),fAS.getXAJSubBasinNo(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime());
        //赋初始值
-       reservoirConfluence.setPara(fAS.getPara1());
+       reservoirConfluence.setPara(fAS.getPara1());//只过长getParaInflow
        reservoirConfluence.setReadQ(fAS.getReadQ());
        //计算
        reservoirConfluence.readParameter();
@@ -166,11 +167,30 @@ public class ForecastCalculateService2 extends Controller {
                luTaiZiCal.dchyubas();
            }
            Map mapLsFractureFlow=luTaiZiCal.charactLuTaiZi();//返回结果的
+           SectionGeneral sectionGeneral=new SectionGeneral(fAS.getStToEnd(),fAS.getStToEnd2(),(float[])mapDayev.get("LTZ"),(float[])mapDayev.get("SHZ"),fAS.getEvap(),fAS.getOtherQobs(),fAS.getOtherZdylp(),fAS.getOtherppfu(),fAS.getOtherQinflow(),fAS.getTimeSeries(),fAS.getroutOption(),forecastC.getFL());
+           Map mapBbFractureFlow=sectionGeneral.calculationBengBu("bb",(float[][]) mapStateData.get("bbState"),(float[])(mapParaScetion.get("bengBu")),(float[][])mapParaInflow.get("bengBu"),fAS.getChildPara(4,9));
+           Map mapMgFractureFlow=sectionGeneral.calculationHuaiNan("mg",(float[][]) mapStateData.get("mgState"),(float[])(mapParaScetion.get("huaiNan")),(float[][])mapParaInflow.get("huaiNan"),fAS.getChildPara(1,13));
+           Map mapByFractureFlow=sectionGeneral.calculationHuaiBei("by",(float[][]) mapStateData.get("byState"),(float[])(mapParaScetion.get("huaiBei")),(float[][])mapParaInflow.get("huaiBei"),fAS.getChildPara(6,14));
+           Map mapHbractureFlow=sectionGeneral.calculationHubin("hb",(float[][]) mapStateData.get("hbState"),(float[])(mapParaScetion.get("huBing")),(float[][])mapParaInflow.get("huBing"),fAS.getChildPara(2,20));
+           Map mapHmFractureFlow=sectionGeneral.charactLake("hu",(float[])(mapParaScetion.get("huMian")),(float[][])mapParaInflow.get("huMian"));
 
+
+            //测试新安江模型断面预报结果表（F_FORECAST_XAJR）
+//           List<ForecastXajr> getForecastXajr = fAS.getForecastXajr(mapLsFractureFlow,mapBbFractureFlow,mapMgFractureFlow,mapByFractureFlow,mapHbractureFlow,mapHmFractureFlow);
+//           for(int i=0;i<getForecastXajr.size();i++){
+//               ForecastXajr forecastXajr = getForecastXajr.get(i);
+//               System.out.println(forecastXajr.getDMCD()+"  "+sdf.format(forecastXajr.getYMDHM())+"  "+forecastXajr.getPPQ());
+//           }
+
+           //测试新安江模型断面预报特征值表（F_FORECAST_XAJT）
+           List<ForecastXajt> getForecastXajt = fAS.getForecastXajt(mapLsFractureFlow,mapBbFractureFlow,mapMgFractureFlow,mapByFractureFlow,mapHbractureFlow,mapHmFractureFlow);
+           for(int i=0;i<getForecastXajt.size();i++){
+               ForecastXajt forecastXajt = getForecastXajt.get(i);
+               System.out.println(forecastXajt.getID()+"  "+forecastXajt.getFOPD());
+           }
        } catch (Exception e) {
            e.printStackTrace();
        }
-
    }
     /**
      * 新安江模型入湖流量计算测试
@@ -363,26 +383,26 @@ public class ForecastCalculateService2 extends Controller {
      * 测试经验汇流计算
      */
     public void testHuiLiuJiSuan() throws ParseException {
-        Huiliu inputHuiliu=new Huiliu(fAS.getJYMAvg(),fAS.getRP(),fAS.getCfg(0,10),fAS.getCfg(2,8),fAS.getCfg(1,12),fAS.getFL(), fAS.getBbandSqQ(),fAS.getFL(),fAS.getJYQobs(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime(),fAS.getInitialTime(), fAS.getTM());
-        double[] ppbb=(double[])inputHuiliu.outputhuiliu().get("蚌埠雨量");
-        double[] ppby=(double[])inputHuiliu.outputhuiliu().get("淮北雨量");
-        double[] ppmg=(double[])inputHuiliu.outputhuiliu().get("淮南雨量");
-        double[] pphm=(double[])inputHuiliu.outputhuiliu().get("湖面雨量");
-        double[] pphz=(double[])inputHuiliu.outputhuiliu().get("洪泽湖雨量");
-
-        double[] qbbotc=(double[])inputHuiliu.outputhuiliu().get("蚌埠预报流量");
-        double[] qbyc=(double[])inputHuiliu.outputhuiliu().get("淮北预报流量");
-        double[] qmgc=(double[])inputHuiliu.outputhuiliu().get("淮南预报流量");
-        double[] qhmc =(double[])inputHuiliu.outputhuiliu().get("湖面预报流量");
-        double[] qhzh=(double[])inputHuiliu.outputhuiliu().get("洪泽湖预报流量");
-
-        double[] qobsbb=(double[])inputHuiliu.outputhuiliu().get("蚌埠实测");
-        double[] sumdmobs=(double[])inputHuiliu.outputhuiliu().get("淮北实测");
-        double[] qobsmg=(double[])inputHuiliu.outputhuiliu().get("淮南实测");
-
-        double[][] chara=(double[][])inputHuiliu.outputhuiliu().get("特征值");
-        String[] qcaltime=(String[] )inputHuiliu.outputhuiliu().get("预报洪峰时间");
-        String[] qobstime=(String[] )inputHuiliu.outputhuiliu().get("实测洪峰时间");
+//        Huiliu inputHuiliu=new Huiliu(fAS.getJYMAvg(),fAS.getRP(),fAS.getCfg(0,10),fAS.getCfg(2,8),fAS.getCfg(1,12),fAS.getBbandSqQ(),fAS.getCFQ(),fAS.getFL() ,fAS.getJYQobs(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime(),fAS.getInitialTime(), fAS.getTM());
+//        double[] ppbb=(double[])inputHuiliu.outputhuiliu().get("蚌埠雨量");
+//        double[] ppby=(double[])inputHuiliu.outputhuiliu().get("淮北雨量");
+//        double[] ppmg=(double[])inputHuiliu.outputhuiliu().get("淮南雨量");
+//        double[] pphm=(double[])inputHuiliu.outputhuiliu().get("湖面雨量");
+//        double[] pphz=(double[])inputHuiliu.outputhuiliu().get("洪泽湖雨量");
+//
+//        double[] qbbotc=(double[])inputHuiliu.outputhuiliu().get("蚌埠预报流量");
+//        double[] qbyc=(double[])inputHuiliu.outputhuiliu().get("淮北预报流量");
+//        double[] qmgc=(double[])inputHuiliu.outputhuiliu().get("淮南预报流量");
+//        double[] qhmc =(double[])inputHuiliu.outputhuiliu().get("湖面预报流量");
+//        double[] qhzh=(double[])inputHuiliu.outputhuiliu().get("洪泽湖预报流量");
+//
+//        double[] qobsbb=(double[])inputHuiliu.outputhuiliu().get("蚌埠实测");
+//        double[] sumdmobs=(double[])inputHuiliu.outputhuiliu().get("淮北实测");
+//        double[] qobsmg=(double[])inputHuiliu.outputhuiliu().get("淮南实测");
+//
+//        double[][] chara=(double[][])inputHuiliu.outputhuiliu().get("特征值");
+//        String[] qcaltime=(String[] )inputHuiliu.outputhuiliu().get("预报洪峰时间");
+//        String[] qobstime=(String[] )inputHuiliu.outputhuiliu().get("实测洪峰时间");
 
     }
     //测试初始时间
@@ -545,6 +565,42 @@ public class ForecastCalculateService2 extends Controller {
         float[] m = (float[]) map.get("LTZ");
         for(int i=0;i<m.length;i++){
             System.out.print(m[i]+"  ");
+        }
+    }
+
+    public void testgetOtherQinflow(){
+        float[][] pp = fAS.getOtherQinflow();
+        System.out.println(pp.length);
+        System.out.println(pp[0].length);
+        for(int i=0;i<pp.length;i++){
+            for(int j=0;j<pp[i].length;j++){
+                System.out.print(pp[i][j]+" ");
+            }
+            System.out.println("\n");
+        }
+    }
+
+    public void testgetPara1(){
+        double [][] para = fAS.getPara1();
+        System.out.println(para.length);
+        System.out.println(para[0].length);
+        for(int i=0;i<para.length;i++){
+            for(int j=0;j<para[i].length;j++){
+                System.out.print(para[i][j]+" ");
+            }
+            System.out.println("\n");
+        }
+    }
+
+    public void testgetReadQ(){
+        double [][] para = fAS.getReadQ();
+        System.out.println(para.length);
+        System.out.println(para[0].length);
+        for(int i=0;i<para.length;i++){
+            for(int j=0;j<para[i].length;j++){
+                System.out.print(para[i][j]+" ");
+            }
+            System.out.println("\n");
         }
     }
 }

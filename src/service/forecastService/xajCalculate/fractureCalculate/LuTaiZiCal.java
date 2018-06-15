@@ -84,7 +84,7 @@ public class LuTaiZiCal {
         this.para1=paraScetion;this.para2=paraInflow;
         this.zdylp=unite(zdylp,ppfu);
         /*降雨资料顺序调整*/
-        float[][]ppSec=new float[longtimePre][zdylp.length];
+        float[][]ppSec=new float[longtimePre][9];
         for (int i=0;i<longtimePre;i++){
             ppSec[i][0]=this.zdylp[i][0];
             ppSec[i][1]=this.zdylp[i][2];
@@ -109,6 +109,7 @@ public class LuTaiZiCal {
 
         qobsLu=preprocessing(qobs);
         qobsLu=unite(qobsLu,complement);
+        this.qobs=new float[qobsLu.length];
         for (int i=0;i<qobsLu.length;i++){
             for (int j=0;j<qobsLu[0].length;j++){
                 this.qobs[i]+=qobsLu[i][j];
@@ -149,8 +150,8 @@ public class LuTaiZiCal {
         sp=new float[lp];
 
         for (int i=0;i<lp;i++){
-            fp[i]=para2[0][i];
-            mp[i]=(int)para2[1][i];//河段数
+            fp[i]=para2[i][0];
+            mp[i]=(int)para2[i][1];//河段数
         }
         for(int i=0;i<lp;i++){
             cp[i]=fp[i]*f/tt/(3.6f);
@@ -178,12 +179,12 @@ public class LuTaiZiCal {
         qcal[0]=qobs[0];
 
         for (int i=0;i<lp;i++){
-            wp[i]=state[i+1][0];
-            wup[i]=state[i+1][1];
-            wlp[i]=state[i+1][2];
+            wp[i]=state[i][0];
+            wup[i]=state[i][1];
+            wlp[i]=state[i][2];
             wdp[i]=wp[i]-wup[i]-wlp[i];
-            sp[i]=state[i+1][5];
-            frp[i]=state[i+1][6];
+            sp[i]=state[i][5];
+            frp[i]=state[i][6];
             qsp[i]=qcal[0]/lp/3;
             qip[i]=qcal[0]/lp/3;
             qgp[i]=qcal[0]/lp/3;
@@ -214,7 +215,7 @@ public class LuTaiZiCal {
         float[]cci=(float[])subParameter.get("CI");
         float[]xxx=(float[])subParameter.get("X");
         float[]ccs=(float[])subParameter.get("CS");
-        int []llag=(int [])subParameter.get("L");
+        float []llag=(float [])subParameter.get("L");
 
         for (int i=0;i<lp;i++){
             k=kkk[i];
@@ -232,7 +233,7 @@ public class LuTaiZiCal {
             ci=cci[i];
             x=xxx[i];
             cs=ccs[i];
-            lag=llag[i];
+            lag= (int) llag[i];
             /*
              *
              * */
