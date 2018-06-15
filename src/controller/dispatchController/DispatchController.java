@@ -48,7 +48,7 @@ public class DispatchController extends Controller {
         dispatchService.doDispatchParaSave(taskId,curve,FLD,Z,Q,WE,STZ,ELQ,TLQ,HLQ);
         dispatchService.waterReleaseDataSave(waterReleaseData);
         dispatchService.doDispatch();
-        setAttr("resultStatus","success");
+        setAttr("dispatchZResult",dispatchService.getDispatchZResult());
         renderJson();
     }
     //调度参数保存
@@ -68,7 +68,7 @@ public class DispatchController extends Controller {
         rcmR.setGLZQ(BigDecimal.valueOf(50));
         rcmR.setGLDZQ(BigDecimal.valueOf(50));
         list.add(rcmR);
-        dispatchService.doFixMS("2000-8-10",list);
+        //dispatchService.doFixMS("2000-8-10",list);
 
         setAttr("resultStatus","success");
         renderJson();
@@ -121,18 +121,30 @@ public class DispatchController extends Controller {
     //调度放水情况读取
 
     public void getManualAdviceQ(){
-        //String taskId=getPara("taskId");
-        String taskId = "0010201805181230";
-        //String time = getPara("time");
-        String time = "2018-03-17";
+        String taskId=getPara("taskId");
+        //String taskId = "0010201805181230";
+        String datetime = getPara("datetime");
+        //String datetime = "2018-03-17";
         dispatchService.setTaskSetting(taskId);
-        setAttr("listRcmR",dispatchService.getManualAdviceQ(time));
+        setAttr("listRcmR",dispatchService.getManualAdviceQ(datetime));
         renderJson();
     }//建议放水读取
 
     public void doManualAdviceQFix(){
         String taskId=getPara("taskId");
+        String datetime = getPara("datetime");
+        String fixData = getPara("fixData");
         dispatchService.setTaskSetting(taskId);
+        dispatchService.doFixMS(datetime,fixData);
+        setAttr("listCtrR",dispatchService.getMod3ForecastZ());//获取方案3预报水位
         renderJson();
     }//人工方案干预
+
+    public void getDispatchZResult(){
+        String taskId=getPara("taskId");
+        dispatchService.setTaskSetting(taskId);
+        setAttr("dispatchZResult",dispatchService.getDispatchZResult());
+        renderJson();
+    }//获取调度图水位数据
+
 }
