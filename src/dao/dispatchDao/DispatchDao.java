@@ -160,10 +160,19 @@ public class DispatchDao extends Controller {
         return ctrMap;
     }
     //调度水位结果读取
-    public List<RcmR> getManualAdviceQ(String taskId,String time){
-        String ymdhm=time+" 00:00:00";
+    public List<RcmR> getManualAdviceQ(String taskId,String datetime){
+        String ymdhm=datetime+" 00:00:00";
         List<RcmR> listRcmR = RcmR.dao.find("select * from f_rcm_r where NO = ? and YMC = UNIX_TIMESTAMP(?)",taskId,ymdhm);
         return listRcmR;
     }//
 
+    public List<CtrR> getMod3ForecastZ(String taskId){
+        List<CtrR> listCtrR = CtrR.dao.find("select FOZ from f_ctr_r where NO = ? and `MOD` = 3",taskId);
+        return listCtrR;
+    }//获取方案3预报水位
+
+
+    public void operationResultSave(){
+
+    }
 }
