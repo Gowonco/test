@@ -13,7 +13,11 @@ public class Calculation {
 	private double[] ww;
 	private double[] wwd;
 	private double[] wwdc;
-	
+
+	/**
+	 *
+	 * @param ppa 初始土壤湿度
+	 */
 	public Calculation(double[][] ppa) {
 		this.ppa = ppa;
 	}
@@ -284,10 +288,10 @@ public class Calculation {
 			wwdc[i] = (double) (Math.round(wwdc[i] * 100)) / 100;
 		}
 		Map<String, Object> chanLiu = new HashMap<>();
-		chanLiu.put("分块径流深", rr);
-		chanLiu.put("分块产水量", ww);
-		chanLiu.put("断面产水量", wwd);
-		chanLiu.put("修正断面产水量", wwdc);
+		chanLiu.put("rr", rr);//分块径流深
+		chanLiu.put("ww", ww);//分块产水量
+		chanLiu.put("wwd", wwd);//断面产水量
+		chanLiu.put("wwdc", wwdc);//修正断面产水量
 		return chanLiu;
 	}
 }

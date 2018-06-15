@@ -621,26 +621,26 @@ public class Huiliu {
 		}
 		Map<String, Object> Huiliu = new HashMap<>();
 		
-		Huiliu.put("蚌埠雨量", ppbb);
-		Huiliu.put("淮北雨量", ppby);
-		Huiliu.put("淮南雨量", ppmg);
-		Huiliu.put("湖面雨量", pphm);
-		Huiliu.put("洪泽湖雨量", pphz);
+		Huiliu.put("ppbb", ppbb);//蚌埠雨量
+		Huiliu.put("ppby", ppby);//淮北雨量
+		Huiliu.put("ppmg", ppmg);//淮南雨量
+		Huiliu.put("pphm", pphm);//湖面雨量
+		Huiliu.put("pphz", pphz);//洪泽湖平均雨量
 		
 		
-		Huiliu.put("蚌埠预报流量", qbbotc);
-		Huiliu.put("淮北预报流量", qbyc);
-		Huiliu.put("淮南预报流量", qmgc);
-		Huiliu.put("湖面预报流量",qhmc );
-		Huiliu.put("洪泽湖预报流量",qhzh );
+		Huiliu.put("qbbotc", qbbotc);//蚌埠预报流量
+		Huiliu.put("qbyc", qbyc);//淮北预报流量
+		Huiliu.put("qmgc", qmgc);//淮南预报流量
+		Huiliu.put("qhmc",qhmc );//湖面预报流量
+		Huiliu.put("qhzh",qhzh );//洪泽湖预报流量
+
+		Huiliu.put("qobsbb", qobsbb);//蚌埠实测
+		Huiliu.put("sumdmobs", sumdmobs);//淮北实测
+		Huiliu.put("qobsmg", qobsmg);//淮南实测
 		
-		Huiliu.put("蚌埠实测", qobsbb);
-		Huiliu.put("淮北实测", sumdmobs);
-		Huiliu.put("淮南实测", qobsmg);
-		
-		Huiliu.put("特征值", chara);
-		Huiliu.put("预报洪峰时间", qcaltime);
-		Huiliu.put("实测洪峰时间", qobstime);
+		Huiliu.put("chara", chara);//输出流域特征值
+		Huiliu.put("qcaltime", qcaltime);//预报洪峰
+		Huiliu.put("qobstime", qobstime);//实测洪峰
 		return Huiliu;
 	}
 }

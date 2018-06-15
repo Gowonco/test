@@ -47,6 +47,7 @@ public class ForecastAdapterService extends Controller {
     public String routStartTime;//记录汇流开始时间
     public String routEndTime;//记录汇流结束时间
     public float[] routOption;//记录汇流选择
+
     public void setAdapterConfig(ForecastC forecastC,Map xajMap,Map jyMap){
         this.forecastC=forecastC;
         this.xajMap=xajMap;
@@ -304,7 +305,7 @@ public class ForecastAdapterService extends Controller {
         return treeArr;
     }
     //返回雨量分析特征表—新安江模型
-    public List<DayrnflCh> getXAJDayrnflCh(float addPp[],float totalRain[],String maxName[]){
+    public List<DayrnflCh> saveXAJDayrnflCh(float addPp[],float totalRain[],String maxName[]){
         List<DayrnflCh> listDayrnflCh = new ArrayList<>();
         List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
         for(int i=0;i<listXAJChildRainStation.size();i++){
@@ -325,7 +326,7 @@ public class ForecastAdapterService extends Controller {
     }
 
     //返回面平均雨量表—新安江模型
-    public List<DayrnflAvg> getXAJDayrnflAvg(float pp[][],String timeSeries[]) throws ParseException {
+    public List<DayrnflAvg> saveXAJDayrnflAvg(float pp[][],String timeSeries[]) throws ParseException {
         List<DayrnflAvg> listDayrnflAvg = new ArrayList<>();
         List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
         ALLPP = new float[pp.length][];
@@ -397,7 +398,7 @@ public class ForecastAdapterService extends Controller {
         }
         float[][] pp1=(float[][]) mapp.get("averageRainfall");
         String[] timeseries=(String [])mapp.get("timeSeries");
-        List<DayrnflAvg> listDayrnflAvg = getXAJDayrnflAvg(pp1,timeseries);
+        List<DayrnflAvg> listDayrnflAvg = saveXAJDayrnflAvg(pp1,timeseries);
         float[][] zdylp = new float[getWtmtoBas()][23];
         //System.out.println(zdylp.length);
         for(int i=0;i<zdylp.length;i++){
@@ -458,7 +459,7 @@ public class ForecastAdapterService extends Controller {
         return timeSeries;
     }
     //返回土壤含水量表（F_SOIL_W）
-    public List<SoilW> getSoilW(Map mapLsSoil,Map mapBbSoil,Map mapMgSoil,Map mapBySoil,Map mapHbSoil) throws ParseException {
+    public List<SoilW> saveSoil(Map mapLsSoil,Map mapBbSoil,Map mapMgSoil,Map mapBySoil,Map mapHbSoil) throws ParseException {
         List<SoilW> listSoilW = new ArrayList<>();
         List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
         stateMap = new HashMap();
@@ -665,7 +666,7 @@ public class ForecastAdapterService extends Controller {
         return listSoilW;
     }
     //
-    public void saveSoil(){}
+
     //
     //----------------------------------新安江模型水库汇流选择------------------------------
     //实测开始时间getStartTime(),预报开始时间getRainTime(),预报结束时间getEndTime()
@@ -875,7 +876,11 @@ public class ForecastAdapterService extends Controller {
         return listCfr;
     }
     //
-    public void saveHuiLiu(){}
+    public void saveHuiLiu(Map mapYbbenhn,Map mapYbbensk,Map mapYbbensk1) throws ParseException {
+        getCfT(mapYbbenhn);
+        getCfr(mapYbbensk);
+        getCfBb(mapYbbensk1);
+    }
     //
 
     //----------------------------------新安江模型断面流量计算------------------------------
@@ -926,7 +931,7 @@ public class ForecastAdapterService extends Controller {
         }
         float[][] pp1=(float[][]) mapp.get("averageRainfall");
         String[] timeseries=(String [])mapp.get("timeSeries");
-        List<DayrnflAvg> listDayrnflAvg = getXAJDayrnflAvg(pp1,timeseries);
+        List<DayrnflAvg> listDayrnflAvg = saveXAJDayrnflAvg(pp1,timeseries);
         float[][] endpP = new float[ALLPP.length-getWtmtoBas()][];
         for(int i=0;i<endpP.length;i++){
             endpP[i] = new float[9];
@@ -961,7 +966,7 @@ public class ForecastAdapterService extends Controller {
         Map mapBySoil=bySoilMoiCalcu.soilOutPut();
         SoilMoiCalcu hbSoilMoiCalcu=new SoilMoiCalcu("hb",getWtmtoBas(),(float[])(getParaScetion().get("huBing")),(float[][])getParaInflow().get("huBing"),getEvap(),(float[])getXAJDayev().get("SHZ"),getXAJSTQ(),getXAJZdylp(),getState(2,20),getChildPara(2,20));
         Map mapHbSoil=hbSoilMoiCalcu.soilOutPut();
-        List<SoilW> soilWList  = getSoilW(mapLsSoil,mapBbSoil,mapMgSoil,mapBySoil,mapHbSoil);
+        List<SoilW> soilWList  = saveSoil(mapLsSoil,mapBbSoil,mapMgSoil,mapBySoil,mapHbSoil);
         return stateMap;
     }
     //水库汇流结果
@@ -1634,7 +1639,7 @@ public class ForecastAdapterService extends Controller {
         }
         float[][] pp=(float[][]) mapp.get("averageRainfall");
         String[] timeseries=(String [])mapp.get("timeSeries");
-        List<DayrnflAvg> listDayrnflAvg = getXAJDayrnflAvg(pp,timeseries);
+        List<DayrnflAvg> listDayrnflAvg = saveXAJDayrnflAvg(pp,timeseries);
         float[][] endpP = new float[ALLPP.length-getWtmtoBas()][];
         System.out.println(ALLPP.length);
         System.out.println(getWtmtoBas());
@@ -1971,8 +1976,9 @@ public class ForecastAdapterService extends Controller {
         return listForecastXajt;
     }
     //
-    public void saveFractureFlow(){
-
+    public void saveFractureFlow(Map mapLsFractureFlow,Map mapBbFractureFlow,Map mapMgFractureFlow,Map mapByFractureFlow,Map mapHbractureFlow,Map mapHmFractureFlow) throws ParseException {
+        getForecastXajr(mapLsFractureFlow,mapBbFractureFlow,mapMgFractureFlow,mapByFractureFlow,mapHbractureFlow,mapHmFractureFlow);
+        getForecastXajt(mapLsFractureFlow,mapBbFractureFlow,mapMgFractureFlow,mapByFractureFlow,mapHbractureFlow,mapHmFractureFlow);
     }
     //-----------------------------------------新安江模型入湖流量计算---------------------------
     //获取各断面雨量
@@ -2074,7 +2080,7 @@ public class ForecastAdapterService extends Controller {
         return treeArr;
     }
     //返回雨量分析特征值表—经验模型
-    public List<DayrnflCh> getJYDayrnflCh(float[] addPp){
+    public List<DayrnflCh> saveJYDayrnflCh(float[] addPp){
         List<DayrnflCh> listDayrnflCh = new ArrayList<>();
         List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
         pP = new float[addPp.length];
@@ -2092,7 +2098,7 @@ public class ForecastAdapterService extends Controller {
         return listDayrnflCh;
     }
     //返回面平均雨量—经验模型
-    public List<DayrnflAvg> getJYDayrnflAvg(float[][] pp,String timeSeries[]) throws ParseException {
+    public List<DayrnflAvg> saveJYDayrnflAvg(float[][] pp,String timeSeries[]) throws ParseException {
         List<DayrnflAvg> listDayrnflAvg = new ArrayList<>();
         List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
         pPM = new float[timeSeries.length][16];
@@ -2140,7 +2146,7 @@ public class ForecastAdapterService extends Controller {
     }
 
     //经验模型初始土壤湿度表
-    public List<SoilH> getJYSoilH(float paa[]){
+    public List<SoilH> saveJYSoilH(float paa[]){
         List<SoilH> listSoilH = new ArrayList<>();
         List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
         W = new float[paa.length];
@@ -2162,15 +2168,15 @@ public class ForecastAdapterService extends Controller {
         mapp = jy.jyRain( getRain(),getInitialTime(),getStartTime(), getRainTime());
         String[] time = (String[]) mapp.get("timeSeries");
         float[][] pp = (float[][]) mapp.get("averageRainfall");
-        List<DayrnflAvg> list =getJYDayrnflAvg(pp,time);
+        List<DayrnflAvg> list =saveJYDayrnflAvg(pp,time);
         Calinial calinial = new Calinial();
         Map mapp2 = new HashMap();
         float[][] p = pPM;
         mapp2 = calinial.jySoil(p,getJYIm(),getIYK1(),getIYK2(),getInitialTime(),getStartTime());
         float[] w = (float[]) mapp2.get("initialSoil");
         float[] addpp=(float[])mapp.get("totalRainfall");
-        List<DayrnflCh> list1 = getJYDayrnflCh(addpp);
-        List<SoilH> soilHList = getJYSoilH(w);
+        List<DayrnflCh> list1 = saveJYDayrnflCh(addpp);
+        List<SoilH> soilHList = saveJYSoilH(w);
         double[][] fkcl = new double[16][3];
         for(int i=0;i<fkcl.length;i++){
             fkcl[i][0] = ((double) i+1);
@@ -2207,7 +2213,7 @@ public class ForecastAdapterService extends Controller {
         return lyPara;
     }
     //分块产流结果表
-    public List<RpR> getRpR(double[] r,double[] w){
+    public List<RpR> saveRpR(double[] r,double[] w){
         List<RpR> listRpR = new ArrayList<>();
         List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
         for(int i=0;i<r.length;i++){
@@ -2221,7 +2227,7 @@ public class ForecastAdapterService extends Controller {
         return listRpR;
     }
     //产流结果修正表
-    public List<RpCr> getRpCr(double[] w, double cw[]){
+    public List<RpCr> saveRpCr(double[] w, double cw[]){
         List<RpCr> listRpCr = new ArrayList<>();
         List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
         RP = new double[cw.length][2];
@@ -2266,7 +2272,7 @@ public class ForecastAdapterService extends Controller {
         return msjg;
     }
     //新安江模型水库汇流结果表（F_CF_R）
-    public List<CfR> getCfr(double[][] cf,double [][]qrc ) throws ParseException {
+    public List<CfR> saveCfr(double[][] cf,double [][]qrc ) throws ParseException {
         List<CfR> listCfR = new ArrayList<>();
         String[] timeSeries = getTimeSeries();//获取实测开始至预报结束时间序列
         CFQ = new double[cf.length][6];
@@ -2334,7 +2340,7 @@ public class ForecastAdapterService extends Controller {
         return listCfR;
     }
     //蚌埠汇流选择表（F_CF_BB）
-    public List<CfBb> getCfBb(double[][] bBHL){
+    public List<CfBb> saveCfBb(double[][] bBHL){
         List<CfBb> listCfBb = new ArrayList<>();
         FL = new double[bBHL.length][2];
         for(int i=0;i<bBHL.length;i++){
@@ -2369,7 +2375,7 @@ public class ForecastAdapterService extends Controller {
         return listCfBb;
     }
     //汇流时间选择表（F_CF_T）
-    public List<CfT> getCfT(String time[][]) throws ParseException {
+    public List<CfT> saveCfT(String time[][]) throws ParseException {
         List<CfT> listCft = new ArrayList<>();
         TM = new String[time.length][2];
         for(int i=0;i<time.length;i++){
@@ -2402,7 +2408,7 @@ public class ForecastAdapterService extends Controller {
         mapp = jy.jyRain( getRain(),getInitialTime(), getStartTime(),getRainTime());
         float[][] pp = (float[][]) mapp.get("averageRainfall");
         String[] time = (String[]) mapp.get("timeSeries");
-        List<DayrnflAvg> jym = getJYDayrnflAvg(pp,time);
+        List<DayrnflAvg> jym = saveJYDayrnflAvg(pp,time);
         double[][] fenKuai = new double[pPM.length][pPM[0].length];
         for(int i=0;i<fenKuai.length;i++){
             for(int j=0;j<fenKuai[0].length;j++){
@@ -2417,7 +2423,7 @@ public class ForecastAdapterService extends Controller {
         Calculation inPut = new Calculation(ppaInt);
         double[] wwd=(double[])inPut.outputChanliu().get("断面产水量");
         double[] wwdc=(double[])inPut.outputChanliu().get("修正断面产水量");
-        List<RpCr> listRpCr = getRpCr(wwd,wwdc);
+        List<RpCr> listRpCr = saveRpCr(wwd,wwdc);
         return RP;
     }
     //水库汇流选择
@@ -2425,7 +2431,7 @@ public class ForecastAdapterService extends Controller {
         //调用测试水库汇流选择的方法
         Shuiku intputShuiKu = new Shuiku(getJYOtq(),getMSJG(),getStartTime(),getRainTime(),getEndTime());
         double[][] id=(double[][])intputShuiKu.outputShuiKu().get("来水总量");
-        List<CfBb> listCfBb = getCfBb(id);
+        List<CfBb> listCfBb = saveCfBb(id);
         return FL;
     }
 
@@ -2435,7 +2441,7 @@ public class ForecastAdapterService extends Controller {
         //调用淮干与淮南水库汇流时间算法
         Shuiku intputShuiKu = new Shuiku(getJYOtq(),getMSJG(),getStartTime(),getRainTime(),getEndTime());
         String[][] it=(String[][])intputShuiKu.outputShuiKu().get("流量大于500");
-        List<CfT> listCfT = getCfT(it);
+        List<CfT> listCfT = saveCfT(it);
         return TM;
     }
     //所有配置表（蚌埠（0,10）、淮北（2,8），淮南（1,12））
@@ -2481,11 +2487,11 @@ public class ForecastAdapterService extends Controller {
         Shuiku intputShuiKu = new Shuiku(getJYOtq(),getMSJG(),getStartTime(),getRainTime(),getEndTime());
         double[][] qc=(double[][])intputShuiKu.outputShuiKu().get("水库放水");
         double[][] qrc=(double[][])intputShuiKu.outputShuiKu().get("水库马法演算");
-        List<CfR> listCfR = getCfr(qc,qrc);
+        List<CfR> listCfR = saveCfr(qc,qrc);
         return CFQ;
     }
     //经验模型预报结果表（F_FORECAST_JYR）
-    public List<ForecastJyr> getForecastJyr(double bengBuRain[],double[] huaiBeiRain,double []huaiNanRain,double[] huMianRain,
+    public List<ForecastJyr> saveForecastJyr(double bengBuRain[],double[] huaiBeiRain,double []huaiNanRain,double[] huMianRain,
                                             double bengBuQ[],double huaiBeiQ[],double huaiNanQ[],double huMianQ[],double[] hZHQ,
                                             double bengBuSTQ[],double huaiBeiSTQ[],double huaiNanSTQ[]) throws ParseException {
         List<ForecastJyr> listForecastJyr = new ArrayList<>();
@@ -2535,7 +2541,7 @@ public class ForecastAdapterService extends Controller {
         return listForecastJyr;
     }
     //降雨汇流结果表（F_RFNL_HR）
-    public List<RfnlHr> getRfnlHr(double[][] qqobc) throws ParseException {
+    public List<RfnlHr> saveRfnlHr(double[][] qqobc) throws ParseException {
         List<RfnlHr> listRfnlHr = new ArrayList<>();
         String[] timeSeries = getTimeSeries();
         for(int i=0;i<timeSeries.length;i++){
@@ -2566,9 +2572,8 @@ public class ForecastAdapterService extends Controller {
         return listRfnlHr;
     }
     //经验模型预报特征值表（F_FORECAST_JYT）
-    public List<ForecastJyt> getForecastJyt(double[][] chara){
+    public List<ForecastJyt> saveForecastJyt(double[][] chara){
         List<ForecastJyt> listForecastJyt = new ArrayList<>();
-
         return listForecastJyt;
     }
 

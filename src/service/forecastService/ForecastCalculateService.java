@@ -3,6 +3,7 @@ package service.forecastService;
 import com.jfinal.core.Controller;
 import model.dbmodel.*;
 import model.viewmodel.xajmodel.XAJFractureChild;
+import service.forecastService.jyCalculate.*;
 import service.forecastService.xajCalculate.CalculationLake;
 import service.forecastService.xajCalculate.RainCalcu;
 import service.forecastService.xajCalculate.ReservoirConfluence;
@@ -35,8 +36,8 @@ public class ForecastCalculateService extends Controller {
         // ------------------------分块雨量计算---------------------------
         RainCalcu rainCalcu=new RainCalcu();
         Map mapRainCalcu=rainCalcu.partRain(fAS.getRain(),fAS.getInitialTime(),fAS.getStartTime(),fAS.getRainTime());
-        fAS.getXAJDayrnflCh((float[]) mapRainCalcu.get("totalRainfall"),(float[]) mapRainCalcu.get("maxTotalRainfall"),(String[]) mapRainCalcu.get("maxStationName"));
-        fAS.getXAJDayrnflAvg((float[][]) mapRainCalcu.get("averageRainfall"),(String[]) mapRainCalcu.get("timeSeries"));
+        fAS.saveXAJDayrnflCh((float[]) mapRainCalcu.get("totalRainfall"),(float[]) mapRainCalcu.get("maxTotalRainfall"),(String[]) mapRainCalcu.get("maxStationName"));
+        fAS.saveXAJDayrnflAvg((float[][]) mapRainCalcu.get("averageRainfall"),(String[]) mapRainCalcu.get("timeSeries"));
         //------------------------土壤含水量计算---------------------------
            // 鲁台子
         Map mapParaScetion=fAS.getParaScetion();
@@ -52,7 +53,7 @@ public class ForecastCalculateService extends Controller {
         Map mapBySoil=bySoilMoiCalcu.soilOutPut();
         SoilMoiCalcu hbSoilMoiCalcu=new SoilMoiCalcu("hb",fAS.getWtmtoBas(),(float[])(mapParaScetion.get("huBing")),(float[][])mapParaInflow.get("huBing"),fAS.getEvap(),(float[])mapXAJDayev.get("SHZ"),fAS.getXAJSTQ(),fAS.getXAJZdylp(),fAS.getState(2,20),fAS.getChildPara(2,20));
         Map mapHbSoil=hbSoilMoiCalcu.soilOutPut();
-        fAS.saveSoil();
+        fAS.saveSoil(mapLsSoil,mapBbSoil,mapMgSoil,mapBySoil,mapHbSoil);
         //---------------------------------------水库汇流选择----------------------------------
         ReservoirConfluence reservoirConfluence=new ReservoirConfluence(fAS.getXAJInflowNo(),fAS.getXAJSubBasinNo(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime());
           //赋初始值
@@ -67,10 +68,10 @@ public class ForecastCalculateService extends Controller {
         Map mapYbbensk=reservoirConfluence.ybbensk();
         Map mapYbbensk1=reservoirConfluence.ybbensk1();
 
-        fAS.saveHuiLiu();
+        fAS.saveHuiLiu(mapYbbenhn,mapYbbensk,mapYbbensk1);
         //-----------------------------断面流量计算---------------------------
-        //新安江土壤含水量map\水库汇流结果需要先准备----在适配器里面★★★★★★★★★★★★★★★★★★★
-        //鲁台子 d
+        //
+        //鲁台子
 
         Map mapDayev=fAS.getOtherDayev();
         Map mapStateData=fAS.getStateData();
@@ -87,20 +88,45 @@ public class ForecastCalculateService extends Controller {
         Map mapBbFractureFlow=sectionGeneral.calculationBengBu("bb",(float[][]) mapStateData.get("bbState"),(float[])(mapParaScetion.get("bengBu")),(float[][])mapParaInflow.get("bengBu"),fAS.getChildPara(4,9));
         Map mapMgFractureFlow=sectionGeneral.calculationHuaiNan("mg",(float[][]) mapStateData.get("mgState"),(float[])(mapParaScetion.get("huaiNan")),(float[][])mapParaInflow.get("huaiNan"),fAS.getChildPara(1,13));
         Map mapByFractureFlow=sectionGeneral.calculationHuaiBei("by",(float[][]) mapStateData.get("byState"),(float[])(mapParaScetion.get("huaiBei")),(float[][])mapParaInflow.get("huaiBei"),fAS.getChildPara(6,14));
-        Map mapHbractureFlow=sectionGeneral.calculationBengBu("hb",(float[][]) mapStateData.get("hbState"),(float[])(mapParaScetion.get("huBing")),(float[][])mapParaInflow.get("huBing"),fAS.getChildPara(2,20));
+        Map mapHbractureFlow=sectionGeneral.calculationHubin("hb",(float[][]) mapStateData.get("hbState"),(float[])(mapParaScetion.get("huBing")),(float[][])mapParaInflow.get("huBing"),fAS.getChildPara(2,20));
         Map mapHmFractureFlow=sectionGeneral.charactLake("hu",(float[])(mapParaScetion.get("huMian")),(float[][])mapParaInflow.get("huMian"));
-        fAS.saveFractureFlow();
+        fAS.saveFractureFlow(mapLsFractureFlow,mapBbFractureFlow,mapMgFractureFlow,mapByFractureFlow,mapHbractureFlow,mapHmFractureFlow);
 
         //-----------------------------入湖预报计算--------------------------
         CalculationLake calculationLake=new CalculationLake();
         Map mapruLake=calculationLake.ruLake(fAS.getPj(),fAS.getQr(),fAS.getStartTime(),fAS.getEndTime());
         fAS.saveRuLake(mapruLake);
+
+
+
         //-----------------  经验 -----------------
-        //面平均雨量计算
-        //初始土壤湿度
-        //产流计算
-        //水库汇流选择
-        //汇流计算
+        //-----------------  经验 -----------------
+        //-------------------------面平均雨量计算---------------------
+        JyRainCalcu jyRainCalcu=new JyRainCalcu();
+        Map mapjyRain=jyRainCalcu.jyRain(fAS.getRain(),fAS.getInitialTime(),fAS.getStartTime(),fAS.getRainTime());
+        fAS.saveJYDayrnflAvg((float[][]) mapjyRain.get("averageRainfall"),(String[])mapjyRain.get("timeSeries"));
+        fAS.saveJYDayrnflCh((float[])mapjyRain.get("totalRainfall"));
+        //-------------------------初始土壤湿度------------------------
+        Calinial calinial=new Calinial();
+        Map mapjySoil=calinial.jySoil(fAS.pPM,fAS.getJYIm(),fAS.getIYK1(),fAS.getIYK2(),fAS.getInitialTime(),fAS.getStartTime());
+        fAS.saveJYSoilH((float[])mapjySoil.get("initialSoil"));
+        //-------------------------产流计算----------------------------
+        Calculation calculation=new Calculation(fAS.getFKCL());
+        Map mapChanliu=calculation.outputChanliu();
+        fAS.saveRpR((double[])mapChanliu.get("rr"),(double[])mapChanliu.get("ww"));
+        fAS.saveRpCr((double[])mapChanliu.get("wwd"),(double[])mapChanliu.get("wwdc"));
+        //-------------------------水库汇流选择------------------------
+        Shuiku shuiku=new Shuiku(fAS.getJYOtq(),fAS.getMSJG(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime());
+        Map mapShuiKu=shuiku.outputShuiKu();
+        fAS.saveCfr((double[][])mapShuiKu.get("qc"),(double[][])mapShuiKu.get("qrc"));
+        fAS.saveCfBb((double[][])mapShuiKu.get("id"));
+        fAS.saveCfT((String[][])mapShuiKu.get("it"));
+        //-------------------------汇流计算-----------------------------
+        Huiliu huiliu=new Huiliu(fAS.getJYMAvg(),fAS.getRP(),fAS.getCfg(0,10),fAS.getCfg(2,8),fAS.getCfg(1,12),fAS.getBbandSqQ(),fAS.getCFQ(),fAS.getFL(),fAS.getJYQobs(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime(),fAS.getInitialTime(),fAS.getTM());
+        Map mapHuiliu=huiliu.outputhuiliu();
+        fAS.saveForecastJyr((double[]) mapHuiliu.get("ppbb"),(double[]) mapHuiliu.get("ppby"),(double[]) mapHuiliu.get("ppmg"),(double[]) mapHuiliu.get("pphm"),(double[]) mapHuiliu.get("qbbotc"),(double[]) mapHuiliu.get("qbyc"),(double[]) mapHuiliu.get("qmgc"),(double[]) mapHuiliu.get("qhmc"),(double[]) mapHuiliu.get("qhzh"),(double[]) mapHuiliu.get("qobsbb"),(double[]) mapHuiliu.get("sumdmobs"),(double[]) mapHuiliu.get("qobsmg"));
+        fAS.saveRfnlHr((double[][])mapHuiliu.get(""));
+        fAS.saveForecastJyt((double[][])mapHuiliu.get("chara"));
 
     }
 

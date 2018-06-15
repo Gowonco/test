@@ -234,10 +234,10 @@ public class Shuiku {
 			}
 				
 		Map<String, Object> shuiKuHui = new HashMap<>();
-				shuiKuHui.put("水库放水", qc);
-				shuiKuHui.put("水库马法演算", qrc);
-				shuiKuHui.put("来水总量", id);
-				shuiKuHui.put("流量大于500", it);
+				shuiKuHui.put("qc", qc);//水库放水
+				shuiKuHui.put("qrc", qrc);//水库马法演算
+				shuiKuHui.put("id", id);//来水总量
+				shuiKuHui.put("it", it);//流量大于500
 				
 				return shuiKuHui;
 			}

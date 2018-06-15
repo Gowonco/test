@@ -87,7 +87,7 @@ public class ForecastCalculateService2 extends Controller {
            SoilMoiCalcu hbSoilMoiCalcu=new SoilMoiCalcu("hb",fAS.getWtmtoBas(),(float[])(mapParaScetion.get("huBing")),(float[][])mapParaInflow.get("huBing"),fAS.getEvap(),(float[])mapXAJDayev.get("SHZ"),fAS.getXAJSTQ(),fAS.getXAJZdylp(),fAS.getState(2,20),fAS.getChildPara(2,20));
            Map mapHbSoil=hbSoilMoiCalcu.soilOutPut();
            //测试土壤含水量表（F_SOIL_W）
-           List<SoilW> getSoilW = fAS.getSoilW(mapLsSoil,mapBbSoil,mapMgSoil,mapBySoil,mapHbSoil);
+           List<SoilW> getSoilW = fAS.saveSoil(mapLsSoil,mapBbSoil,mapMgSoil,mapBySoil,mapHbSoil);
            for(int i=0;i<getSoilW.size();i++){
                SoilW soilW = getSoilW.get(i);
                System.out.println(soilW.getARCD()+"  "+sdf.format(soilW.getYMDHM())+"   "+soilW.getFr());
@@ -248,7 +248,7 @@ public class ForecastCalculateService2 extends Controller {
 //            }
 //        }
         String[] time = (String[]) mapp.get("timeSeries");
-        List<DayrnflAvg> list = fAS.getJYDayrnflAvg(pp,time);
+        List<DayrnflAvg> list = fAS.saveJYDayrnflAvg(pp,time);
        // float[] p = fAS.pP;
 //        for(int i=0;i<p.length;i++){
 //            for(int j=0;j<p[0].length;j++){
@@ -307,7 +307,7 @@ public class ForecastCalculateService2 extends Controller {
 //            System.out.println(rpR.getARCD()+"  "+ rpR.getR()+"  "+rpR.getW());
 //        }
         //测试产流结果修正表
-        List<RpCr> listRpC = fAS.getRpCr(wwd,wwdc);
+        List<RpCr> listRpC = fAS.saveRpCr(wwd,wwdc);
         for(int i=0;i<listRpC.size();i++){
             RpCr RpCr = listRpC.get(i);
             System.out.println(RpCr.getID()+"  "+ RpCr.getW()+"  "+RpCr.getCW());
@@ -352,7 +352,7 @@ public class ForecastCalculateService2 extends Controller {
 //            System.out.println(cfBb.getDBCD()+"  "+cfBb.getIL()+"  "+ cfBb.getW()+"  "+cfBb.getFL());
 //        }
         //测试汇流时间选择表（F_CF_T）
-        List<CfT> listCfT = fAS.getCfT(it);
+        List<CfT> listCfT = fAS.saveCfT(it);
         for(int i=0;i<listCfT.size();i++){
             CfT cft  = listCfT.get(i);
             System.out.println(cft.getDBCD()+"  "+cft.getITEM()+"  "+sdf.format(cft.getSTARTTM())+ "  "+sdf.format(cft.getENDTM()));
