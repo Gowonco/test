@@ -2593,8 +2593,147 @@ public class ForecastAdapterService {
         return listRfnlHr;
     }
     //经验模型预报特征值表（F_FORECAST_JYT）
-    public List<ForecastJyt> saveForecastJyt(double[][] chara){
+    public List<ForecastJyt> saveForecastJyt(double[][] chara,String qobstime[],String qcaltime[]) {//chara 行代表编号，列代表存入参数
         List<ForecastJyt> listForecastJyt = new ArrayList<>();
+        ForecastJyt forecastJyt = new ForecastJyt();
+        forecastJyt.setNO(forecastC.getNO());//鲁台子
+        forecastJyt.setID("00101000");
+        forecastJyt.setP(new BigDecimal(df0.format(chara[0][0])));
+        forecastJyt.setW(new BigDecimal(df.format(chara[0][1])));
+        forecastJyt.setOBW(new BigDecimal(df.format(chara[0][2])));
+        forecastJyt.setPOW(new BigDecimal(df.format(chara[0][3])));
+        forecastJyt.setWPE(new BigDecimal(df1.format(chara[0][4])));
+        forecastJyt.setOBPD(new BigDecimal(df.format(chara[0][5])));
+        forecastJyt.setFOPD(new BigDecimal(df.format(chara[0][6])));
+        forecastJyt.setPDE(new BigDecimal(df1.format(chara[0][7])));
+        try {
+            forecastJyt.setOBPT(sdf.parse(qobstime[0]+" 00:00:00"));
+            forecastJyt.setFOPT(sdf.parse(qcaltime[0]+" 00:00:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        forecastJyt.setDY(new BigDecimal(df1.format(chara[0][10])));
+
+        ForecastJyt forecastJytbb = new ForecastJyt();//蚌埠
+        forecastJytbb.setNO(forecastC.getNO());
+        forecastJytbb.setID("00102000");
+        forecastJytbb.setP(new BigDecimal(df0.format(chara[1][0])));
+        forecastJytbb.setW(new BigDecimal(df.format(chara[1][1])));
+        forecastJytbb.setOBW(new BigDecimal(df.format(chara[1][2])));
+        forecastJytbb.setPOW(new BigDecimal(df.format(chara[1][3])));
+        forecastJytbb.setWPE(new BigDecimal(df1.format(chara[1][4])));
+        forecastJytbb.setOBPD(new BigDecimal(df.format(chara[1][5])));
+        forecastJytbb.setFOPD(new BigDecimal(df.format(chara[1][6])));
+        forecastJytbb.setPDE(new BigDecimal(df1.format(chara[1][7])));
+        try {
+            forecastJytbb.setOBPT(sdf.parse(qobstime[1]+" 00:00:00"));
+            forecastJytbb.setFOPT(sdf.parse(qcaltime[1]+" 00:00:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        forecastJytbb.setDY(new BigDecimal(df1.format(chara[1][10])));
+
+        ForecastJyt forecastJytby = new ForecastJyt();//淮北
+        forecastJytby.setNO(forecastC.getNO());
+        forecastJytby.setID("00104000");
+        forecastJytby.setP(new BigDecimal(df0.format(chara[2][0])));
+        forecastJytby.setW(new BigDecimal(df.format(chara[2][1])));
+        forecastJytby.setOBW(new BigDecimal(df.format(chara[2][2])));
+        forecastJytby.setPOW(new BigDecimal(df.format(chara[2][3])));
+        forecastJytby.setWPE(new BigDecimal(df1.format(chara[2][4])));
+        forecastJytby.setOBPD(new BigDecimal(df.format(chara[2][5])));
+        forecastJytby.setFOPD(new BigDecimal(df.format(chara[2][6])));
+        forecastJytby.setPDE(new BigDecimal(df1.format(chara[2][7])));
+        try {
+            forecastJytby.setOBPT(sdf.parse(qobstime[2]+" 00:00:00"));
+            forecastJytby.setFOPT(sdf.parse(qcaltime[2]+" 00:00:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        forecastJytby.setDY(new BigDecimal(df1.format(chara[0][10])));
+
+        ForecastJyt forecastJytmg = new ForecastJyt();
+        forecastJytmg.setNO(forecastC.getNO());//淮南
+        forecastJytmg.setID("00103000");
+        forecastJytmg.setP(new BigDecimal(df0.format(chara[3][0])));
+        forecastJytmg.setW(new BigDecimal(df.format(chara[3][1])));
+        forecastJytmg.setOBW(new BigDecimal(df.format(chara[3][2])));
+        forecastJytmg.setPOW(new BigDecimal(df.format(chara[3][3])));
+        forecastJytmg.setWPE(new BigDecimal(df1.format(chara[3][4])));
+        forecastJytmg.setOBPD(new BigDecimal(df.format(chara[3][5])));
+        forecastJytmg.setFOPD(new BigDecimal(df.format(chara[3][6])));
+        forecastJytmg.setPDE(new BigDecimal(df1.format(chara[3][7])));
+        try {
+            forecastJytmg.setOBPT(sdf.parse(qobstime[3]+" 00:00:00"));
+            forecastJytmg.setFOPT(sdf.parse(qcaltime[3]+" 00:00:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        forecastJytmg.setDY(new BigDecimal(df1.format(chara[3][10])));
+
+        ForecastJyt forecastJythb = new ForecastJyt();
+        forecastJythb.setNO(forecastC.getNO());//胡兵
+        forecastJythb.setID("00105000");
+        forecastJythb.setP(new BigDecimal(df0.format(chara[4][0])));
+        forecastJythb.setW(new BigDecimal(df.format(chara[4][1])));
+        forecastJythb.setOBW(new BigDecimal(df.format(chara[4][2])));
+        forecastJythb.setPOW(new BigDecimal(df.format(chara[4][3])));
+        forecastJythb.setWPE(new BigDecimal(df1.format(chara[4][4])));
+        forecastJythb.setOBPD(new BigDecimal(df.format(chara[4][5])));
+        forecastJythb.setFOPD(new BigDecimal(df.format(chara[4][6])));
+        forecastJythb.setPDE(new BigDecimal(df1.format(chara[4][7])));
+        try {
+            forecastJythb.setOBPT(sdf.parse(qobstime[4]+" 00:00:00"));
+            forecastJythb.setFOPT(sdf.parse(qcaltime[4]+" 00:00:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        forecastJythb.setDY(new BigDecimal(df1.format(chara[4][10])));
+
+        ForecastJyt forecastJythm = new ForecastJyt();
+        forecastJythm.setNO(forecastC.getNO());//湖面
+        forecastJythm.setID("00106000");
+        forecastJythm.setP(new BigDecimal(df0.format(chara[5][0])));
+        forecastJythm.setW(new BigDecimal(df.format(chara[5][1])));
+        forecastJythm.setOBW(new BigDecimal(df.format(chara[5][2])));
+        forecastJythm.setPOW(new BigDecimal(df.format(chara[5][3])));
+        forecastJythm.setWPE(new BigDecimal(df1.format(chara[5][4])));
+        forecastJythm.setOBPD(new BigDecimal(df.format(chara[5][5])));
+        forecastJythm.setFOPD(new BigDecimal(df.format(chara[5][6])));
+        forecastJythm.setPDE(new BigDecimal(df1.format(chara[5][7])));
+        try {
+            forecastJythm.setOBPT(sdf.parse(qobstime[5]+" 00:00:00"));
+            forecastJythm.setFOPT(sdf.parse(qcaltime[5]+" 00:00:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        forecastJythm.setDY(new BigDecimal(df1.format(chara[5][10])));
+
+        ForecastJyt forecastJythzh = new ForecastJyt();
+        forecastJythzh.setNO(forecastC.getNO());//洪泽湖
+        forecastJythzh.setID("00100000");
+        forecastJythzh.setP(new BigDecimal(df0.format(chara[6][0])));
+        forecastJythzh.setW(new BigDecimal(df.format(chara[6][1])));
+        forecastJythzh.setOBW(new BigDecimal(df.format(chara[6][2])));
+        forecastJythzh.setPOW(new BigDecimal(df.format(chara[6][3])));
+        forecastJythzh.setWPE(new BigDecimal(df1.format(chara[6][4])));
+        forecastJythzh.setOBPD(new BigDecimal(df.format(chara[6][5])));
+        forecastJythzh.setFOPD(new BigDecimal(df.format(chara[6][6])));
+        forecastJythzh.setPDE(new BigDecimal(df1.format(chara[6][7])));
+        try {
+            forecastJythzh.setOBPT(sdf.parse(qobstime[6]+" 00:00:00"));
+            forecastJythzh.setFOPT(sdf.parse(qcaltime[6]+" 00:00:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        forecastJythzh.setDY(new BigDecimal(df1.format(chara[6][10])));
+        listForecastJyt.add(forecastJyt);
+        listForecastJyt.add(forecastJytbb);
+        listForecastJyt.add(forecastJytmg);
+        listForecastJyt.add(forecastJytby);
+        listForecastJyt.add(forecastJythb);
+        listForecastJyt.add(forecastJythm);
+        listForecastJyt.add(forecastJythzh);
         return listForecastJyt;
     }
 

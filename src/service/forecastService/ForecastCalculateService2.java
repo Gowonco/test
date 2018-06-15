@@ -307,10 +307,10 @@ public class ForecastCalculateService2 extends Controller {
     public void testJYFenkuai() throws ParseException {
         double[][] ppaInt = fAS.getFKCL();
         Calculation inPut = new Calculation(ppaInt);
-        double[] rr=(double[])inPut.outputChanliu().get("分块径流深");
-        double[] ww=(double[])inPut.outputChanliu().get("分块产水量");
-        double[] wwd=(double[])inPut.outputChanliu().get("断面产水量");
-        double[] wwdc=(double[])inPut.outputChanliu().get("修正断面产水量");
+        double[] rr=(double[])inPut.outputChanliu().get("rr");
+        double[] ww=(double[])inPut.outputChanliu().get("ww");
+        double[] wwd=(double[])inPut.outputChanliu().get("wwd");
+        double[] wwdc=(double[])inPut.outputChanliu().get("wwdc");
 //		产流计算修正测试
 //        for(int i=0;i<16;i++){
 //            System.out.println(rr[i]+" "+ww[i]);
@@ -338,10 +338,10 @@ public class ForecastCalculateService2 extends Controller {
      */
     public void testHuiLiu() throws ParseException {
         Shuiku intputShuiKu = new Shuiku(fAS.getJYOtq(),fAS.getMSJG(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime());
-        double[][] qc=(double[][])intputShuiKu.outputShuiKu().get("水库放水");
-        double[][] qrc=(double[][])intputShuiKu.outputShuiKu().get("水库马法演算");
-        double[][] id=(double[][])intputShuiKu.outputShuiKu().get("来水总量");
-        String[][] it=(String[][])intputShuiKu.outputShuiKu().get("流量大于500");
+        double[][] qc=(double[][])intputShuiKu.outputShuiKu().get("qc");
+        double[][] qrc=(double[][])intputShuiKu.outputShuiKu().get("qrc");
+        double[][] id=(double[][])intputShuiKu.outputShuiKu().get("id");
+        String[][] it=(String[][])intputShuiKu.outputShuiKu().get("it");
 //		for(int j=0;j<3;j++) {
 //			for (int i = 0; i < qc.length; i++) {
 //				System.out.println(qc[i][0]+" "+qc[i][1]+" "+qc[i][2]) ;
@@ -366,17 +366,17 @@ public class ForecastCalculateService2 extends Controller {
 //            System.out.println(cfR.getDBCD()+"  "+cfR.getID()+"  "+ cfR.getNAME()+"  "+sdf.format(cfR.getYMDHM())+"  "+cfR.getQ());
 //        }
         //测试蚌埠汇流选择表（F_CF_BB）
-//        List<CfBb> listCfBb = fAS.getCfBb(id);
-//        for(int i=0;i<listCfBb.size();i++){
-//            CfBb cfBb = listCfBb.get(i);
-//            System.out.println(cfBb.getDBCD()+"  "+cfBb.getIL()+"  "+ cfBb.getW()+"  "+cfBb.getFL());
-//        }
-        //测试汇流时间选择表（F_CF_T）
-        List<CfT> listCfT = fAS.saveCfT(it);
-        for(int i=0;i<listCfT.size();i++){
-            CfT cft  = listCfT.get(i);
-            System.out.println(cft.getDBCD()+"  "+cft.getITEM()+"  "+sdf.format(cft.getSTARTTM())+ "  "+sdf.format(cft.getENDTM()));
+        List<CfBb> listCfBb = fAS.saveCfBb(id);
+        for(int i=0;i<listCfBb.size();i++){
+            CfBb cfBb = listCfBb.get(i);
+            System.out.println(cfBb.getDBCD()+"  "+cfBb.getIL()+"  "+ cfBb.getW()+"  "+cfBb.getFL());
         }
+        //测试汇流时间选择表（F_CF_T）
+//        List<CfT> listCfT = fAS.saveCfT(it);
+//        for(int i=0;i<listCfT.size();i++){
+//            CfT cft  = listCfT.get(i);
+//            System.out.println(cft.getDBCD()+"  "+cft.getITEM()+"  "+sdf.format(cft.getSTARTTM())+ "  "+sdf.format(cft.getENDTM()));
+//        }
     }
 
     /**
