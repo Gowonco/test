@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ForecastAdapterService extends Controller {
+public class ForecastAdapterService {
     public ForecastC forecastC=new ForecastC();
     public Tree tree = new Tree();
     Map xajMap=new HashMap();
@@ -35,7 +35,7 @@ public class ForecastAdapterService extends Controller {
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
     DecimalFormat df0 = new DecimalFormat("#.00");
     DecimalFormat df = new DecimalFormat("#.000");
-    DecimalFormat df1 = new DecimalFormat("#.000");
+    DecimalFormat df1 = new DecimalFormat("#.0000");
     public  float[][] behindpP;//记录前9块子流域面平均雨量
     public  float[][] ALLPP;//记录新安江模型1到23块子流域面平均雨量
     public float[] pP;//记录经验模型各块累计雨量
@@ -2377,6 +2377,7 @@ public class ForecastAdapterService extends Controller {
     }
     //蚌埠汇流选择表（F_CF_BB）
     public List<CfBb> saveCfBb(double[][] bBHL){
+        System.out.println(bBHL.length);
         List<CfBb> listCfBb = new ArrayList<>();
         FL = new double[bBHL.length][2];
         for(int i=0;i<bBHL.length;i++){
@@ -2455,29 +2456,17 @@ public class ForecastAdapterService extends Controller {
     }
     //断面修正产水量
     public double[][] getRP() throws ParseException {
-        double[][] ppaInt = getFKCL();
-        Calculation inPut = new Calculation(ppaInt);
-        double[] wwd=(double[])inPut.outputChanliu().get("断面产水量");
-        double[] wwdc=(double[])inPut.outputChanliu().get("修正断面产水量");
-        List<RpCr> listRpCr = saveRpCr(wwd,wwdc);
         return RP;
     }
     //水库汇流选择
     public double[][] getFL(){
-        //调用测试水库汇流选择的方法
-        Shuiku intputShuiKu = new Shuiku(getJYOtq(),getMSJG(),getStartTime(),getRainTime(),getEndTime());
-        double[][] id=(double[][])intputShuiKu.outputShuiKu().get("来水总量");
-        List<CfBb> listCfBb = saveCfBb(id);
         return FL;
     }
 
 
     //考虑淮干与淮南水库汇流时间
     public String[][] getTM() throws ParseException {
-        //调用淮干与淮南水库汇流时间算法
-        Shuiku intputShuiKu = new Shuiku(getJYOtq(),getMSJG(),getStartTime(),getRainTime(),getEndTime());
-        String[][] it=(String[][])intputShuiKu.outputShuiKu().get("流量大于500");
-        List<CfT> listCfT = saveCfT(it);
+
         return TM;
     }
     //所有配置表（蚌埠（0,10）、淮北（2,8），淮南（1,12））
@@ -2520,10 +2509,6 @@ public class ForecastAdapterService extends Controller {
     }
     //获取经验模型水库来水及汇流
     public double[][] getCFQ() throws ParseException {
-        Shuiku intputShuiKu = new Shuiku(getJYOtq(),getMSJG(),getStartTime(),getRainTime(),getEndTime());
-        double[][] qc=(double[][])intputShuiKu.outputShuiKu().get("水库放水");
-        double[][] qrc=(double[][])intputShuiKu.outputShuiKu().get("水库马法演算");
-        List<CfR> listCfR = saveCfr(qc,qrc);
         return CFQ;
     }
     //经验模型预报结果表（F_FORECAST_JYR）

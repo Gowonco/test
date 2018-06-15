@@ -26,6 +26,8 @@ public class ForecastService extends Controller {
     Map xajMap=new HashMap();
     Map jyMap=new HashMap();
     Map mapp = new HashMap();
+
+    ForecastCalculateService fc;
     /**
      * 获取本次任务配置
      * @param taskId
@@ -39,7 +41,7 @@ public class ForecastService extends Controller {
      * @param taskId
      * @throws ParseException
      */
-    public void doForecast(String taskId) throws ParseException {
+    public ForecastAdapterService doForecast(String taskId) throws Exception {
          this.setTaskSetting(taskId);
          //新安江模型大Map
          xajMap.put("listViewRain",getRainData());//68个雨量站插值处理过的日雨量
@@ -67,7 +69,9 @@ public class ForecastService extends Controller {
          jyMap.put("listJYConfig",getExperienceConfig());//经验模型-- 蚌埠 明光 淮北 配置表
          jyMap.put("listJYHydrologyFlow",getHydrologyFlow());//7个水文站的实测流量
          jyMap.put("listParaMu",getParaMu());//马斯京根汇流参数
-        //ForecastCalculateService fc=new ForecastCalculateService(forecastC,xajMap,jyMap);
+         fc=new ForecastCalculateService(forecastC,xajMap,jyMap);
+         fc.doForecast();
+         return fc.fAS;
         //ForecastCalculateService f = new ForecastCalculateService(mapp);
          //fc.testInitialTime();
         //fc.testStartTime();

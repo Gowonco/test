@@ -27,6 +27,8 @@ public class Config extends JFinalConfig {
 
         loadPropertyFile("db_config.txt");
         me.setDevMode(getPropertyToBoolean("devMode",false));
+
+        //me.setError500View("/error/500");
     }
 
     @Override
