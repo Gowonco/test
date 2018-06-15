@@ -14,6 +14,8 @@ import service.forecastService.jyCalculate.Calinial;
 import service.forecastService.jyCalculate.JyRainCalcu;
 import service.forecastService.jyCalculate.Shuiku;
 import service.forecastService.xajCalculate.RainCalcu;
+import service.forecastService.xajCalculate.ReservoirConfluence;
+import service.forecastService.xajCalculate.SoilMoiCalcu;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -32,14 +34,19 @@ public class ForecastAdapterService extends Controller {
 
     public  float[][] behindpP;//记录前9块子流域面平均雨量
     public  float[][] ALLPP;//记录新安江模型1到23块子流域面平均雨量
-    public  float[] pP;//记录经验模型各块累计雨量
+    public float[] pP;//记录经验模型各块累计雨量
     public  float[][] pPM;//记录经验模型面平均雨量
     public  float[] W;//记录经验模型计算后的土壤湿度
     public  double[][] RP;//记录产流结果修正数据
     public   double[][] FL;//记录水库汇流选择
     public  double[][] CFQ;//记录水库来水及汇流
     public   String[][] TM;//记录考虑淮干与淮南水库汇流时间
+    public Map stateMap;//记录新安江土壤含水量计算后的结果
 
+    public double[][] qReservoir;//记录水库汇流结果
+    public String routStartTime;//记录汇流开始时间
+    public String routEndTime;//记录汇流结束时间
+    public float[] routOption;//记录汇流选择
     public void setAdapterConfig(ForecastC forecastC,Map xajMap,Map jyMap){
         this.forecastC=forecastC;
         this.xajMap=xajMap;
@@ -381,7 +388,7 @@ public class ForecastAdapterService extends Controller {
         return qobs;
     }
     //面平均降雨量（从预热期开始到实测开始前一天）按照面平均雨量结果是预热期到实测结束
-   /*public float[][] getXAJZdylp() throws ParseException {
+    public float[][] getXAJZdylp() throws ParseException {
         RainCalcu rainCalcu = new RainCalcu();
         try {
             mapp=rainCalcu.partRain(getRain(),getInitialTime(),getStartTime(),getRainTime());
@@ -399,14 +406,13 @@ public class ForecastAdapterService extends Controller {
             }
         }
         return zdylp;
-    }*/
+    }
     //界面输入蒸发值
-   public float getEvap(){
-       double evap = (double) xajMap.get("e");
-       return (float) evap;
-   }
+    public float getEvap(){
+        double evap = (double) xajMap.get("e");
+        return (float) evap;
+    }
     //鲁台子或三河闸的蒸发资料（从预热期开始到实测开始前一天）（鲁台子和蚌埠用鲁台子的蒸发资料，其余断面用三河闸的蒸发资料
-   //目前测试错误，因为list取的是ymc1到ymc2,库里也没有很多数据
     public Map<String,Object> getXAJDayev(){
         Map map = new HashMap();
         List<XAJDayevH>  listXAJDayevH = (List<XAJDayevH>) xajMap.get("listDayevH");
@@ -455,6 +461,7 @@ public class ForecastAdapterService extends Controller {
     public List<SoilW> getSoilW(Map mapLsSoil,Map mapBbSoil,Map mapMgSoil,Map mapBySoil,Map mapHbSoil) throws ParseException {
         List<SoilW> listSoilW = new ArrayList<>();
         List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
+        stateMap = new HashMap();
         float[][] epej = (float[][]) mapLsSoil.get("e");
         float[][] plpj = (float[][]) mapLsSoil.get("p");
         float[][] wpj = (float[][]) mapLsSoil.get("w");
@@ -505,6 +512,66 @@ public class ForecastAdapterService extends Controller {
         float[][] spj4 = (float[][]) mapHbSoil.get("s");
         float[][] frpj4 = (float[][]) mapHbSoil.get("fr");
 
+        float[][] lsState = new float[epej[0].length][7];//9*7  —取结果最后一天 记录鲁台子土壤含水量结果
+        float[][] bbState = new float[epej1[0].length][7];
+        float[][] mgState = new float[epej2[0].length][7];
+        float[][] byState = new float[epej3[0].length][7];
+        float[][] hbState = new float[epej4[0].length][7];
+        int row = wpj.length-1;//最后一天 鲁台子
+        int row1 = wpj1.length-1;//蚌埠
+        int row2 = wpj2.length-1;//淮南
+        int row3 = wpj3.length-1;//淮北
+        int row4 = wpj4.length-1;//湖滨
+        for(int i=0;i<lsState.length;i++){
+            lsState[i][0] =  wpj[row][i];
+            lsState[i][1] =  wupj[row][i];
+            lsState[i][2] =  wlpj[row][i];
+            lsState[i][3] =  wdpj[row][i];
+            lsState[i][4] =  qcalj[row][i];
+            lsState[i][5] =  spj[row][i];
+            lsState[i][6] =  frpj[row][i];
+        }
+        for(int i=0;i<bbState.length;i++){
+            bbState[i][0] =  wpj1[row1][i];
+            bbState[i][1] =  wupj1[row1][i];
+            bbState[i][2] =  wlpj1[row1][i];
+            bbState[i][3] =  wdpj1[row1][i];
+            bbState[i][4] =  qcalj1[row1][i];
+            bbState[i][5] =  spj1[row1][i];
+            bbState[i][6] =  frpj1[row1][i];
+        }
+        for(int i=0;i<mgState.length;i++){
+            mgState[i][0] =  wpj2[row2][i];
+            mgState[i][1] =  wupj2[row2][i];
+            mgState[i][2] =  wlpj2[row2][i];
+            mgState[i][3] =  wdpj2[row2][i];
+            mgState[i][4] =  qcalj2[row2][i];
+            mgState[i][5] =  spj2[row2][i];
+            mgState[i][6] =  frpj2[row2][i];
+        }
+        for(int i=0;i<byState.length;i++){
+            byState[i][0] =  wpj3[row3][i];
+            byState[i][1] =  wupj3[row3][i];
+            byState[i][2] =  wlpj3[row3][i];
+            byState[i][3] =  wdpj3[row3][i];
+            byState[i][4] =  qcalj3[row3][i];
+            byState[i][5] =  spj3[row3][i];
+            byState[i][6] =  frpj3[row3][i];
+        }
+        for(int i=0;i<hbState.length;i++){
+            hbState[i][0] =  wpj4[row4][i];
+            hbState[i][1] =  wupj4[row4][i];
+            hbState[i][2] =  wlpj4[row4][i];
+            hbState[i][3] =  wdpj4[row4][i];
+            hbState[i][4] =  qcalj4[row4][i];
+            hbState[i][5] =  spj4[row4][i];
+            hbState[i][6] =  frpj4[row4][i];
+        }
+        stateMap.put("lsState",lsState);
+        stateMap.put("bbState",bbState);
+        stateMap.put("mgState",mgState);
+        stateMap.put("byState",byState);
+        stateMap.put("hbState",hbState);
         String[] timeSeries = getFrontTimeSeries();
         for(int t=0;t<epej.length;t++){
             for(int i =0;i<epej[0].length;i++){//鲁台子
@@ -600,8 +667,6 @@ public class ForecastAdapterService extends Controller {
     //
     public void saveSoil(){}
     //
-
-
     //----------------------------------新安江模型水库汇流选择------------------------------
     //实测开始时间getStartTime(),预报开始时间getRainTime(),预报结束时间getEndTime()
     //获取入流个数
@@ -682,6 +747,8 @@ public class ForecastAdapterService extends Controller {
         String[] note = (String[]) mapYbbenhn.get("项目");
         String [] startTime = (String[]) mapYbbenhn.get("起始时间");
         String [] endTime = (String[]) mapYbbenhn.get("结束时间");
+        routStartTime  = startTime[0];//记录汇流开始时间
+        routEndTime =  endTime[0];//记录汇流结束时间
         for(int i=0;i<note.length;i++){
             CfT cft = new CfT();
             cft.setDBCD("00100000");
@@ -699,12 +766,112 @@ public class ForecastAdapterService extends Controller {
         String[] note = (String[]) mapYbbensk1.get("说明");
         float [] isOpen= (float[]) mapYbbensk1.get("是否汇流到蚌埠");
         double[] totalW= (double[]) mapYbbensk1.get("来水总量");
+        routOption = isOpen;
+        for(int i=0;i<note.length;i++){
+            CfBb cfBb = new CfBb();
+            cfBb.setNO(forecastC.getNO());
+            cfBb.setDBCD("00100000");
+            cfBb.setIL(note[i]);
+            cfBb.setW(new BigDecimal(Double.toString(totalW[i])));//位数过长
+            cfBb.setFL((int) isOpen[i]);
+            listCfBb.add(cfBb);
+        }
         return listCfBb;
     }
     //返回新安江模型水库汇流结果表（F_CF_R）
-    public List<CfR> getCfr(Map mapYbbensk){
+    public List<CfR> getCfr(Map mapYbbensk) throws ParseException {
         List<CfR> listCfr = new ArrayList<>();
+        double[] sumQ1 = (double[]) mapYbbensk.get("昭平台");
+        double[] sumQ2 = (double[]) mapYbbensk.get("洪汝河");
+        double[] sumQ3 = (double[]) mapYbbensk.get("淮南");
+        double[] sumQ4 = (double[]) mapYbbensk.get("上桥闸");
+        double[] routeQ1 = (double[]) mapYbbensk.get("昭平台汇流");
+        double[] routeQ2 = (double[]) mapYbbensk.get("洪汝河汇流");
+        double[] routeQ3 = (double[]) mapYbbensk.get("淮南汇流");
+        double[] routeQ4 = (double[]) mapYbbensk.get("上桥闸汇流");
+        qReservoir = new double[sumQ1.length][8];
+        String [] timeSeries = getTimeSeries();//实测期到预报结束时间序列
+        for(int i=0;i<sumQ1.length;i++){
+            qReservoir[i][0] = sumQ1[i];
+            qReservoir[i][1] = sumQ2[i];
+            qReservoir[i][2] = sumQ3[i];
+            qReservoir[i][3] = sumQ4[i];
+            qReservoir[i][4] = routeQ1[i];
+            qReservoir[i][5] = routeQ2[i];
+            qReservoir[i][6] = routeQ3[i];
+            qReservoir[i][7] = routeQ4[i];
+            CfR cfR1 = new CfR();
+            cfR1.setNO(forecastC.getNO());//昭平台
+            cfR1.setDBCD("00100000");
+            cfR1.setID("001");
+            cfR1.setNAME("昭平台");
+            cfR1.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            cfR1.setQ(new BigDecimal(Double.toString(sumQ1[i])));//位数可能过多
 
+            CfR cfR2 = new CfR();
+            cfR2.setNO(forecastC.getNO());//洪汝河
+            cfR2.setDBCD("00100000");
+            cfR2.setID("002");
+            cfR2.setNAME("洪汝河");
+            cfR2.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            cfR2.setQ(new BigDecimal(Double.toString(sumQ2[i])));
+
+            CfR cfR3 = new CfR();
+            cfR3.setNO(forecastC.getNO());//淮南
+            cfR3.setDBCD("00100000");
+            cfR3.setID("003");
+            cfR3.setNAME("淮南");
+            cfR3.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            cfR3.setQ(new BigDecimal(Double.toString(sumQ3[i])));
+
+            CfR cfR4 = new CfR();
+            cfR4.setNO(forecastC.getNO());//上桥闸
+            cfR4.setDBCD("00100000");
+            cfR4.setID("004");
+            cfR4.setNAME("上桥闸");
+            cfR4.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            cfR4.setQ(new BigDecimal(Double.toString(sumQ4[i])));
+
+            CfR cfR5 = new CfR();
+            cfR5.setNO(forecastC.getNO());//昭平台汇流
+            cfR5.setDBCD("00100000");
+            cfR5.setID("101");
+            cfR5.setNAME("昭平台汇流");
+            cfR5.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            cfR5.setQ(new BigDecimal(Double.toString(routeQ1[i])));
+
+            CfR cfR6 = new CfR();
+            cfR6.setNO(forecastC.getNO());//洪汝河汇流
+            cfR6.setDBCD("00100000");
+            cfR6.setID("202");
+            cfR6.setNAME("洪汝河汇流");
+            cfR6.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            cfR6.setQ(new BigDecimal(Double.toString(routeQ2[i])));
+
+            CfR cfR7 = new CfR();
+            cfR7.setNO(forecastC.getNO());//淮南汇流
+            cfR7.setDBCD("00100000");
+            cfR7.setID("303");
+            cfR7.setNAME("淮南汇流");
+            cfR7.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            cfR7.setQ(new BigDecimal(Double.toString(routeQ3[i])));
+
+            CfR cfR8 = new CfR();
+            cfR8.setNO(forecastC.getNO());//上桥闸汇流
+            cfR8.setDBCD("00100000");
+            cfR8.setID("404");
+            cfR8.setNAME("上桥闸汇流");
+            cfR8.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            cfR8.setQ(new BigDecimal(Double.toString(routeQ4[i])));
+            listCfr.add(cfR1);
+            listCfr.add(cfR2);
+            listCfr.add(cfR3);
+            listCfr.add(cfR4);
+            listCfr.add(cfR5);
+            listCfr.add(cfR6);
+            listCfr.add(cfR7);
+            listCfr.add(cfR8);
+        }
         return listCfr;
     }
     //
@@ -781,10 +948,64 @@ public class ForecastAdapterService extends Controller {
         }
         return ppfu;
     }
-    //鲁台子土壤含水量（可以直接从土壤含水量计算模块传入，可以不用适配器）?
-    //水库汇流结果?
-    //汇流开始时间?
-    //汇流结束时间?
+    //鲁台子土壤含水量（可以直接从土壤含水量计算模块传入，可以不用适配器）
+    //"lsState" "bbState" "mgState" "byState" "hbState"
+    public Map getStateData() throws Exception {
+        SoilMoiCalcu lsSoilMoiCalcu =  new SoilMoiCalcu("ls",getWtmtoBas(),(float[])(getParaScetion().get("luTaiZi")),(float[][])getParaInflow().get("luTaiZi"),getEvap(),(float[])getXAJDayev().get("LTZ"),getXAJSTQ(),getXAJZdylp(),getState(9,0),getChildPara(9,0));
+        Map mapLsSoil=lsSoilMoiCalcu.soilOutPut();
+        SoilMoiCalcu bbSoilMoiCalcu=new SoilMoiCalcu("bb",getWtmtoBas(),(float[])(getParaScetion().get("bengBu")),(float[][])getParaInflow().get("bengBu"),getEvap(),(float[])getXAJDayev().get("LTZ"),getXAJSTQ(),getXAJZdylp(),getState(4,9),getChildPara(4,9));
+        Map mapBbSoil=bbSoilMoiCalcu.soilOutPut();
+        SoilMoiCalcu mgSoilMoiCalcu=new SoilMoiCalcu("mg",getWtmtoBas(),(float[])(getParaScetion().get("huaiNan")),(float[][])getParaInflow().get("huaiNan"),getEvap(),(float[])getXAJDayev().get("SHZ"),getXAJSTQ(),getXAJZdylp(),getState(1,13),getChildPara(1,13));
+        Map mapMgSoil=mgSoilMoiCalcu.soilOutPut();
+        SoilMoiCalcu bySoilMoiCalcu=new SoilMoiCalcu("by",getWtmtoBas(),(float[])(getParaScetion().get("huaiBei")),(float[][])getParaInflow().get("huaiBei"),getEvap(),(float[])getXAJDayev().get("SHZ"),getXAJSTQ(),getXAJZdylp(),getState(6,14),getChildPara(6,14));
+        Map mapBySoil=bySoilMoiCalcu.soilOutPut();
+        SoilMoiCalcu hbSoilMoiCalcu=new SoilMoiCalcu("hb",getWtmtoBas(),(float[])(getParaScetion().get("huBing")),(float[][])getParaInflow().get("huBing"),getEvap(),(float[])getXAJDayev().get("SHZ"),getXAJSTQ(),getXAJZdylp(),getState(2,20),getChildPara(2,20));
+        Map mapHbSoil=hbSoilMoiCalcu.soilOutPut();
+        List<SoilW> soilWList  = getSoilW(mapLsSoil,mapBbSoil,mapMgSoil,mapBySoil,mapHbSoil);
+        return stateMap;
+    }
+    //水库汇流结果
+    public float[][] getqReservoir() throws ParseException {
+        ReservoirConfluence reservoirConfluence=new ReservoirConfluence(getXAJInflowNo(),getXAJSubBasinNo(),getStartTime(),getRainTime(),getEndTime());
+        //赋初始值
+        reservoirConfluence.setPara(getPara1());
+        reservoirConfluence.setReadQ(getReadQ());
+        //计算
+        reservoirConfluence.readParameter();
+        reservoirConfluence.qInflow();
+        reservoirConfluence.calReservoir();
+        //水库汇流结果
+        Map mapYbbensk=reservoirConfluence.ybbensk();
+        List<CfR> cfRList = getCfr(mapYbbensk);
+        double [][] qReservoir2 = qReservoir;
+        float[][] qReservoir1 = new float[qReservoir2.length][qReservoir2[0].length];
+        for(int i=0;i<qReservoir2.length;i++){
+            for(int j=0;j<qReservoir2[0].length;j++){
+                qReservoir1[i][j] = (float) qReservoir2[i][j];
+            }
+        }
+        return qReservoir1;
+    }
+    //汇流开始时间
+    public String getroutBeginTime() throws ParseException {
+        ReservoirConfluence reservoirConfluence=new ReservoirConfluence(getXAJInflowNo(),getXAJSubBasinNo(),getStartTime(),getRainTime(),getEndTime());
+
+        reservoirConfluence.setPara(getPara1());
+        reservoirConfluence.setReadQ(getReadQ());
+        //计算
+        reservoirConfluence.readParameter();
+        reservoirConfluence.qInflow();
+        reservoirConfluence.calReservoir();
+        //水库汇流结果
+        Map mapYbbenhn=reservoirConfluence.ybbenhn();
+        List<CfT> listCft = getCfT(mapYbbenhn);
+        return routStartTime;
+    }
+    //汇流结束时间
+    public String getroutEndTime() throws ParseException {
+        getroutBeginTime();
+        return routEndTime;
+    }
     //时间序列（从实测开始到预报结束）
     public String[] getTimeSeries(){
         String[] timeSeries =new String[getStToEnd2()];
@@ -796,7 +1017,20 @@ public class ForecastAdapterService extends Controller {
         }
         return timeSeries;
     }
-    //汇流选择?
+    //汇流选择
+    public float[] getroutOption(){
+        ReservoirConfluence reservoirConfluence=new ReservoirConfluence(getXAJInflowNo(),getXAJSubBasinNo(),getStartTime(),getRainTime(),getEndTime());
+
+        reservoirConfluence.setPara(getPara1());
+        reservoirConfluence.setReadQ(getReadQ());
+        //计算
+        reservoirConfluence.readParameter();
+        reservoirConfluence.qInflow();
+        reservoirConfluence.calReservoir();
+        Map mapYbbensk1=reservoirConfluence.ybbensk1();
+        List<CfBb> cfBbList = getCfBb(mapYbbensk1);
+        return routOption;
+    }
     //鲁台子的子流域参数 n=9,num=0
     // 子流域参数见getChildPara()函数，鲁台子（9，0），蚌埠（4，9），淮南（1，13），淮北（6，14），湖滨（2，20），湖面没有
     public Map<String,Object> getChildPara(int n,int num){
@@ -1345,12 +1579,16 @@ public class ForecastAdapterService extends Controller {
     }
     //蒸发值（从界面手动输入得到的）getEvap()
     //蚌埠闸，明光，金锁镇，峰山，泗洪老，泗洪新，团结闸的实测流量（从实测开始到实测结束）
-    //从河道水情表中取出，但是没有团结闸
     public float[][] getOtherQobs(){
         List<XAJHydrologicFlow> listXAJHydrologicFlow = (List<XAJHydrologicFlow>) xajMap.get("listHydrologicFlow");
-        float[][] qobs = new float[listXAJHydrologicFlow.size()][];
+        List<ViewFlow> listViewFlow = (List<ViewFlow>) xajMap.get("listStrobeFlow");
+        float[][] qobs = new float[listXAJHydrologicFlow.size()-getWtmtoBas()][7];
         for(int i=0;i<qobs.length;i++){
-            qobs[i] = new float[7];
+            for(int k=0;k<listViewFlow.get(i).getListWasR().size();k++){
+                if(listViewFlow.get(i).getListWasR().get(k).getSTCD().equals("50908300")){//团结闸
+                    qobs[i][6] = listViewFlow.get(i).getListWasR().get(k).getTGTQ().floatValue();
+                }
+            }
             for(int j=0;j<listXAJHydrologicFlow.get(i).getListRiverH().size();j++){
                 RiverH viewFlow = listXAJHydrologicFlow.get(i).getListRiverH().get(j);
                 if(viewFlow.getSTCD().equals("50104200")){//蚌埠闸
@@ -1440,25 +1678,299 @@ public class ForecastAdapterService extends Controller {
         return qinflow;
     }
     //时间序列（从实测开始到预报结束）——同上getTimeSeries()
-    //汇流选择?
+    //汇流选择getroutOption()
     //(10-23)子流域参数，可以写一个大map（module）蚌埠（4，9），淮南（1，13），淮北（6，14），湖滨（2，20），湖面没有
+    //新安江模型断面预报结果表（F_FORECAST_XAJR）
+    public List<ForecastXajr> getForecastXajr( Map mapLsFractureFlow,Map mapBbFractureFlow, Map mapMgFractureFlow,Map mapByFractureFlow,Map mapHbractureFlow,Map mapHmFractureFlow) throws ParseException {
+        List<ForecastXajr> listForecastXajr = new ArrayList<>();
+        String[] timeSeries = getTimeSeries();
+        //鲁台子
+        float[] ppj = (float[]) mapLsFractureFlow.get("averageP");//面平均雨量
+        float[] wj =  (float[]) mapLsFractureFlow.get("soilWater");//土壤含水量
+        float[] rr =  (float[]) mapLsFractureFlow.get("runoffDepth");//流域平均产流深
+        float[] qinh =  (float[]) mapLsFractureFlow.get("upstreamWater");//上游来水演算流量
+        float[] qjy =  (float[]) mapLsFractureFlow.get("runoffYield");//降水产流流量
+        float[] qObs =  (float[]) mapLsFractureFlow.get("measuredQ");//实测流量
+        float[] qcal =  (float[]) mapLsFractureFlow.get("forecastQ");//预报流量
+        //蚌埠
+        float[] ppjbb = (float[]) mapBbFractureFlow.get("averageP");//面平均雨量
+        float[] wjbb =  (float[]) mapBbFractureFlow.get("soilWater");//土壤含水量
+        float[] rrbb =  (float[]) mapBbFractureFlow.get("runoffDepth");//流域平均产流深
+        float[] qinhbb =  (float[]) mapBbFractureFlow.get("upstreamWater");//上游来水演算流量
+        float[] qjybb =  (float[]) mapBbFractureFlow.get("runoffYield");//降水产流流量
+        float[] qObsbb =  (float[]) mapBbFractureFlow.get("measuredQ");//实测流量
+        float[] qcalbb =  (float[]) mapBbFractureFlow.get("forecastQ");//预报流量
+        //淮南
+        float[] ppjmg = (float[]) mapMgFractureFlow.get("averageP");//面平均雨量
+        float[] wjmg =  (float[]) mapMgFractureFlow.get("soilWater");//土壤含水量
+        float[] rrmg =  (float[]) mapMgFractureFlow.get("runoffDepth");//流域平均产流深
+        float[] qinhmg =  (float[]) mapMgFractureFlow.get("upstreamWater");//上游来水演算流量
+        float[] qjymg =  (float[]) mapMgFractureFlow.get("runoffYield");//降水产流流量
+        float[] qObsmg =  (float[]) mapMgFractureFlow.get("measuredQ");//实测流量
+        float[] qcalmg =  (float[]) mapMgFractureFlow.get("forecastQ");//预报流量
+        //淮北
+        float[] ppjby = (float[]) mapByFractureFlow.get("averageP");//面平均雨量
+        float[] wjby =  (float[]) mapByFractureFlow.get("soilWater");//土壤含水量
+        float[] rrby =  (float[]) mapByFractureFlow.get("runoffDepth");//流域平均产流深
+        float[] qinhby =  (float[]) mapByFractureFlow.get("upstreamWater");//上游来水演算流量
+        float[] qjyby =  (float[]) mapByFractureFlow.get("runoffYield");//降水产流流量
+        float[] qObsby =  (float[]) mapByFractureFlow.get("measuredQ");//实测流量
+        float[] qcalby =  (float[]) mapByFractureFlow.get("forecastQ");//预报流量
+        //湖滨
+        float[] ppjhb = (float[]) mapHbractureFlow.get("averageP");//面平均雨量
+        float[] wjhb =  (float[]) mapHbractureFlow.get("soilWater");//土壤含水量
+        float[] rrhb =  (float[]) mapHbractureFlow.get("runoffDepth");//流域平均产流深
+        float[] qinhhb =  (float[]) mapHbractureFlow.get("upstreamWater");//上游来水演算流量
+        float[] qjyhb =  (float[]) mapHbractureFlow.get("runoffYield");//降水产流流量
+        float[] qObshb =  (float[]) mapHbractureFlow.get("measuredQ");//实测流量
+        float[] qcalhb =  (float[]) mapHbractureFlow.get("forecastQ");//预报流量
 
+        for(int i=0;i<ppj.length;i++){
+            ForecastXajr forecastXajr = new ForecastXajr();//鲁台子
+            ForecastXajr forecastXajr1 = new ForecastXajr();//蚌埠
+            ForecastXajr forecastXajr2 = new ForecastXajr();//淮南
+            ForecastXajr forecastXajr3 = new ForecastXajr();//淮北
+            ForecastXajr forecastXajr4 = new ForecastXajr();//湖滨
+            forecastXajr.setNO(forecastC.getNO());
+            forecastXajr.setDMCD("00101000");
+            forecastXajr.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            forecastXajr.setDRN(new BigDecimal(Float.toString(ppj[i])));
+            forecastXajr.setW(new BigDecimal(Float.toString(wj[i])));
+            forecastXajr.setRR(new BigDecimal(Float.toString(rr[i])));
+            forecastXajr.setINQ(new BigDecimal(Float.toString(qinh[i])));
+            forecastXajr.setPPQ(new BigDecimal(Float.toString(qjy[i])));
+            forecastXajr.setQ(new BigDecimal(Float.toString(qObs[i])));
+            forecastXajr.setPQ(new BigDecimal(Float.toString(qcal[i])));
+
+            forecastXajr1.setNO(forecastC.getNO());
+            forecastXajr1.setDMCD("00102000");
+            forecastXajr1.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            forecastXajr1.setDRN(new BigDecimal(Float.toString(ppjbb[i])));
+            forecastXajr1.setW(new BigDecimal(Float.toString(wjbb[i])));
+            forecastXajr1.setRR(new BigDecimal(Float.toString(rrbb[i])));
+            forecastXajr1.setINQ(new BigDecimal(Float.toString(qinhbb[i])));
+            forecastXajr1.setPPQ(new BigDecimal(Float.toString(qjybb[i])));
+            forecastXajr1.setQ(new BigDecimal(Float.toString(qObsbb[i])));
+            forecastXajr1.setPQ(new BigDecimal(Float.toString(qcalbb[i])));
+
+            forecastXajr2.setNO(forecastC.getNO());
+            forecastXajr2.setDMCD("00103000");
+            forecastXajr2.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            forecastXajr2.setDRN(new BigDecimal(Float.toString(ppjmg[i])));
+            forecastXajr2.setW(new BigDecimal(Float.toString(wjmg[i])));
+            forecastXajr2.setRR(new BigDecimal(Float.toString(rrmg[i])));
+            forecastXajr2.setINQ(new BigDecimal(Float.toString(qinhmg[i])));
+            forecastXajr2.setPPQ(new BigDecimal(Float.toString(qjymg[i])));
+            forecastXajr2.setQ(new BigDecimal(Float.toString(qObsmg[i])));
+            forecastXajr2.setPQ(new BigDecimal(Float.toString(qcalmg[i])));
+
+            forecastXajr3.setNO(forecastC.getNO());
+            forecastXajr3.setDMCD("00104000");
+            forecastXajr3.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            forecastXajr3.setDRN(new BigDecimal(Float.toString(ppjby[i])));
+            forecastXajr3.setW(new BigDecimal(Float.toString(wjby[i])));
+            forecastXajr3.setRR(new BigDecimal(Float.toString(rrby[i])));
+            forecastXajr3.setINQ(new BigDecimal(Float.toString(qinhby[i])));
+            forecastXajr3.setPPQ(new BigDecimal(Float.toString(qjyby[i])));
+            forecastXajr3.setQ(new BigDecimal(Float.toString(qObsby[i])));
+            forecastXajr3.setPQ(new BigDecimal(Float.toString(qcalby[i])));
+
+            forecastXajr4.setNO(forecastC.getNO());
+            forecastXajr4.setDMCD("00105000");
+            forecastXajr4.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            forecastXajr4.setDRN(new BigDecimal(Float.toString(ppjhb[i])));
+            forecastXajr4.setW(new BigDecimal(Float.toString(wjhb[i])));
+            forecastXajr4.setRR(new BigDecimal(Float.toString(rrhb[i])));
+            forecastXajr4.setINQ(new BigDecimal(Float.toString(qinhhb[i])));
+            forecastXajr4.setPPQ(new BigDecimal(Float.toString(qjyhb[i])));
+            forecastXajr4.setQ(new BigDecimal(Float.toString(qObshb[i])));
+            forecastXajr4.setPQ(new BigDecimal(Float.toString(qcalhb[i])));
+            listForecastXajr.add(forecastXajr);
+            listForecastXajr.add(forecastXajr1);
+            listForecastXajr.add(forecastXajr2);
+            listForecastXajr.add(forecastXajr3);
+            listForecastXajr.add(forecastXajr4);
+        }
+        //湖面
+        String[] timeSeriesHm = (String[]) mapHmFractureFlow.get("timeseries");//时间序列
+        float[] ppaver = (float[]) mapHmFractureFlow.get("averageRainfall");//面平均雨量
+        float[] qcalhm =  (float[]) mapHmFractureFlow.get("forecastQ");//预报流量
+        for(int i=0;i<timeSeriesHm.length;i++){
+            ForecastXajr forecastXajr = new ForecastXajr();
+            forecastXajr.setNO(forecastC.getNO());
+            forecastXajr.setDMCD("00106000");
+            forecastXajr.setYMDHM(sdf.parse(timeSeriesHm[i]+" 00:00:00"));
+            forecastXajr.setDRN(new BigDecimal(Float.toString(ppaver[i])));
+            forecastXajr.setPQ(new BigDecimal(Float.toString(qcalhm[i])));
+            listForecastXajr.add(forecastXajr);
+        }
+        return listForecastXajr;
+    }
+    //新安江模型断面预报特征值表（F_FORECAST_XAJT）
+    public List<ForecastXajt> getForecastXajt(Map mapLsFractureFlow,Map mapBbFractureFlow, Map mapMgFractureFlow,Map mapByFractureFlow,Map mapHbractureFlow,Map mapHmFractureFlow) throws ParseException {
+        List<ForecastXajt> listForecastXajt = new ArrayList<>();
+        //鲁台子
+        float ppj = (float) mapLsFractureFlow.get("rainfall");//总雨量
+        float rrrr = (float) mapLsFractureFlow.get("totalFlow");//产水总量
+        float rcaly = (float) mapLsFractureFlow.get("forecastFlood");//预报洪量
+        float robsy = (float) mapLsFractureFlow.get("measuredFlood");//实测洪量
+        float rcali = (float) mapLsFractureFlow.get("totalWater");//断面来水总量
+        float ce = (float) mapLsFractureFlow.get("ErrorFlood");//洪量相对误差
+        float qom = (float) mapLsFractureFlow.get("measuredPeak");//实测洪峰流量
+        float qcm = (float) mapLsFractureFlow.get("forecastPeak");//预报洪峰流量
+        float eqm = (float) mapLsFractureFlow.get("ErrorPeak");//洪峰相对误差
+        float sttime = (float) mapLsFractureFlow.get("measuredPeakTime");//实测峰现时间
+        float ftime = (float) mapLsFractureFlow.get("forecastPeakTime");//预报峰现时间
+        float iem = (float) mapLsFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        float dc = (float) mapLsFractureFlow.get("dc");//确定性系数
+        ForecastXajt forecastXajt = new ForecastXajt();
+        forecastXajt.setNO(forecastC.getNO());
+        forecastXajt.setID("00101000");
+        forecastXajt.setP(new BigDecimal(Float.toString(ppj)));
+        forecastXajt.setW(new BigDecimal(Float.toString(rrrr)));
+        forecastXajt.setPW(new BigDecimal(Float.toString(rcaly)));
+        forecastXajt.setOBW(new BigDecimal(Float.toString(robsy)));
+        forecastXajt.setDW(new BigDecimal(Float.toString(rcali)));
+        forecastXajt.setWE(new BigDecimal(Float.toString(ce)));
+        forecastXajt.setOBPD(new BigDecimal(Float.toString(qom)));
+        forecastXajt.setFOPD(new BigDecimal(Float.toString(qcm)));
+        forecastXajt.setRPE(new BigDecimal(Float.toString(eqm)));
+        forecastXajt.setOBPT(sdf.parse(sttime+" 00:00:00"));
+        forecastXajt.setFOPT(sdf.parse(ftime+" 00:00:00"));
+        forecastXajt.setFOPZ(new BigDecimal(Float.toString(iem)));
+        forecastXajt.setDY(new BigDecimal(Float.toString(dc)));
+        listForecastXajt.add(forecastXajt);
+
+        //蚌埠
+        float ppjbb = (float) mapBbFractureFlow.get("rainfall");//总雨量
+        float rrrrbb = (float) mapBbFractureFlow.get("totalFlow");//产水总量
+        float rcalybb = (float) mapBbFractureFlow.get("forecastFlood");//预报洪量
+        float robsybb = (float) mapBbFractureFlow.get("measuredFlood");//实测洪量
+        float rcalibb = (float) mapBbFractureFlow.get("totalWater");//断面来水总量
+        float cebb = (float) mapBbFractureFlow.get("ErrorFlood");//洪量相对误差
+        float qombb = (float) mapBbFractureFlow.get("measuredPeak");//实测洪峰流量
+        float qcmbb = (float) mapBbFractureFlow.get("forecastPeak");//预报洪峰流量
+        float eqmbb = (float) mapBbFractureFlow.get("ErrorPeak");//洪峰相对误差
+        float sttimebb = (float) mapBbFractureFlow.get("measuredPeakTime");//实测峰现时间
+        float ftimebb = (float) mapBbFractureFlow.get("forecastPeakTime");//预报峰现时间
+        float iembb = (float) mapBbFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        float dcbb = (float) mapBbFractureFlow.get("dc");//确定性系数
+        ForecastXajt forecastXajtBb = new ForecastXajt();
+        forecastXajtBb.setNO(forecastC.getNO());
+        forecastXajtBb.setID("00102000");
+        forecastXajtBb.setP(new BigDecimal(Float.toString(ppjbb)));
+        forecastXajtBb.setW(new BigDecimal(Float.toString(rrrrbb)));
+        forecastXajtBb.setPW(new BigDecimal(Float.toString(rcalybb)));
+        forecastXajtBb.setOBW(new BigDecimal(Float.toString(robsybb)));
+        forecastXajtBb.setDW(new BigDecimal(Float.toString(rcalibb)));
+        forecastXajtBb.setWE(new BigDecimal(Float.toString(cebb)));
+        forecastXajtBb.setOBPD(new BigDecimal(Float.toString(qombb)));
+        forecastXajtBb.setFOPD(new BigDecimal(Float.toString(qcmbb)));
+        forecastXajtBb.setRPE(new BigDecimal(Float.toString(eqmbb)));
+        forecastXajtBb.setOBPT(sdf.parse(sttimebb+" 00:00:00"));
+        forecastXajtBb.setFOPT(sdf.parse(ftimebb+" 00:00:00"));
+        forecastXajtBb.setFOPZ(new BigDecimal(Float.toString(iembb)));
+        forecastXajtBb.setDY(new BigDecimal(Float.toString(dcbb)));
+        listForecastXajt.add(forecastXajtBb);
+
+        //淮南
+        float ppjmg = (float) mapMgFractureFlow.get("rainfall");//总雨量
+        float rrrrmg  = (float) mapMgFractureFlow.get("totalFlow");//产水总量
+        float rcalymg  = (float) mapMgFractureFlow.get("forecastFlood");//预报洪量
+        float robsymg  = (float) mapMgFractureFlow.get("measuredFlood");//实测洪量
+        float rcalimg  = (float) mapMgFractureFlow.get("totalWater");//断面来水总量
+        float cemg  = (float) mapMgFractureFlow.get("ErrorFlood");//洪量相对误差
+        float qommg  = (float) mapMgFractureFlow.get("measuredPeak");//实测洪峰流量
+        float qcmmg  = (float) mapMgFractureFlow.get("forecastPeak");//预报洪峰流量
+        float eqmmg  = (float) mapMgFractureFlow.get("ErrorPeak");//洪峰相对误差
+        float sttimemg  = (float) mapMgFractureFlow.get("measuredPeakTime");//实测峰现时间
+        float ftimemg  = (float) mapMgFractureFlow.get("forecastPeakTime");//预报峰现时间
+        float iemmg  = (float) mapMgFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        float dcmg  = (float) mapMgFractureFlow.get("dc");//确定性系数
+        ForecastXajt forecastXajtMg = new ForecastXajt();
+        forecastXajtMg.setNO(forecastC.getNO());
+        forecastXajtMg.setID("00103000");
+        forecastXajtMg.setP(new BigDecimal(Float.toString(ppjmg)));
+        forecastXajtMg.setW(new BigDecimal(Float.toString(rrrrmg)));
+        forecastXajtMg.setPW(new BigDecimal(Float.toString(rcalymg)));
+        forecastXajtMg.setOBW(new BigDecimal(Float.toString(robsymg)));
+        forecastXajtMg.setDW(new BigDecimal(Float.toString(rcalimg)));
+        forecastXajtMg.setWE(new BigDecimal(Float.toString(cemg)));
+        forecastXajtMg.setOBPD(new BigDecimal(Float.toString(qommg)));
+        forecastXajtMg.setFOPD(new BigDecimal(Float.toString(qcmmg)));
+        forecastXajtMg.setRPE(new BigDecimal(Float.toString(eqmmg)));
+        forecastXajtMg.setOBPT(sdf.parse(sttimemg+" 00:00:00"));
+        forecastXajtMg.setFOPT(sdf.parse(ftimemg+" 00:00:00"));
+        forecastXajtMg.setFOPZ(new BigDecimal(Float.toString(iemmg)));
+        forecastXajtMg.setDY(new BigDecimal(Float.toString(dcmg)));
+        listForecastXajt.add(forecastXajtMg);
+
+        //淮北
+        float ppjby = (float) mapByFractureFlow.get("rainfall");//总雨量
+        float rrrrby = (float) mapByFractureFlow.get("totalFlow");//产水总量
+        float rcalyby = (float) mapByFractureFlow.get("forecastFlood");//预报洪量
+        float robsyby = (float) mapByFractureFlow.get("measuredFlood");//实测洪量
+        float rcaliby = (float) mapByFractureFlow.get("totalWater");//断面来水总量
+        float ceby = (float) mapByFractureFlow.get("ErrorFlood");//洪量相对误差
+        float qomby = (float) mapByFractureFlow.get("measuredPeak");//实测洪峰流量
+        float qcmby = (float) mapByFractureFlow.get("forecastPeak");//预报洪峰流量
+        float eqmby = (float) mapByFractureFlow.get("ErrorPeak");//洪峰相对误差
+        float sttimeby = (float) mapByFractureFlow.get("measuredPeakTime");//实测峰现时间
+        float ftimeby = (float) mapByFractureFlow.get("forecastPeakTime");//预报峰现时间
+        float iemby = (float) mapByFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        float dcby = (float) mapByFractureFlow.get("dc");//确定性系数
+        ForecastXajt forecastXajtBy = new ForecastXajt();
+        forecastXajtBy.setNO(forecastC.getNO());
+        forecastXajtBy.setID("00104000");
+        forecastXajtBy.setP(new BigDecimal(Float.toString(ppjby)));
+        forecastXajtBy.setW(new BigDecimal(Float.toString(rrrrby)));
+        forecastXajtBy.setPW(new BigDecimal(Float.toString(rcalyby)));
+        forecastXajtBy.setOBW(new BigDecimal(Float.toString(robsyby)));
+        forecastXajtBy.setDW(new BigDecimal(Float.toString(rcaliby)));
+        forecastXajtBy.setWE(new BigDecimal(Float.toString(ceby)));
+        forecastXajtBy.setOBPD(new BigDecimal(Float.toString(qomby)));
+        forecastXajtBy.setFOPD(new BigDecimal(Float.toString(qcmby)));
+        forecastXajtBy.setRPE(new BigDecimal(Float.toString(eqmby)));
+        forecastXajtBy.setOBPT(sdf.parse(sttimeby+" 00:00:00"));
+        forecastXajtBy.setFOPT(sdf.parse(ftimeby+" 00:00:00"));
+        forecastXajtBy.setFOPZ(new BigDecimal(Float.toString(iemby)));
+        forecastXajtBy.setDY(new BigDecimal(Float.toString(dcby)));
+        listForecastXajt.add(forecastXajtBy);
+
+        //湖滨
+        float ppjhm = (float) mapHbractureFlow.get("rainfall");//总雨量
+        float rrrrhm = (float) mapHbractureFlow.get("totalFlow");//产水总量
+        float rcalyhm = (float) mapHbractureFlow.get("forecastFlood");//预报洪量
+        float robsyhm = (float) mapHbractureFlow.get("measuredFlood");//实测洪量
+        float rcalihm = (float) mapHbractureFlow.get("totalWater");//断面来水总量
+        float cehm = (float) mapHbractureFlow.get("ErrorFlood");//洪量相对误差
+        float qomhm = (float) mapHbractureFlow.get("measuredPeak");//实测洪峰流量
+        float qcmhm = (float) mapHbractureFlow.get("forecastPeak");//预报洪峰流量
+        float eqmhm = (float) mapHbractureFlow.get("ErrorPeak");//洪峰相对误差
+        float sttimehm = (float) mapHbractureFlow.get("measuredPeakTime");//实测峰现时间
+        float ftimehm = (float) mapHbractureFlow.get("forecastPeakTime");//预报峰现时间
+        float iemhm = (float) mapHbractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        float dchm = (float) mapHbractureFlow.get("dc");//确定性系数
+        ForecastXajt forecastXajtHm = new ForecastXajt();
+        forecastXajtHm.setNO(forecastC.getNO());
+        forecastXajtHm.setID("00105000");
+        forecastXajtHm.setP(new BigDecimal(Float.toString(ppjhm)));
+        forecastXajtHm.setW(new BigDecimal(Float.toString(rrrrhm)));
+        forecastXajtHm.setPW(new BigDecimal(Float.toString(rcalyhm)));
+        forecastXajtHm.setOBW(new BigDecimal(Float.toString(robsyhm)));
+        forecastXajtHm.setDW(new BigDecimal(Float.toString(rcalihm)));
+        forecastXajtHm.setWE(new BigDecimal(Float.toString(cehm)));
+        forecastXajtHm.setOBPD(new BigDecimal(Float.toString(qomhm)));
+        forecastXajtHm.setFOPD(new BigDecimal(Float.toString(qcmhm)));
+        forecastXajtHm.setRPE(new BigDecimal(Float.toString(eqmhm)));
+        forecastXajtHm.setOBPT(sdf.parse(sttimehm+" 00:00:00"));
+        forecastXajtHm.setFOPT(sdf.parse(ftimehm+" 00:00:00"));
+        forecastXajtHm.setFOPZ(new BigDecimal(Float.toString(iemhm)));
+        forecastXajtHm.setDY(new BigDecimal(Float.toString(dchm)));
+        listForecastXajt.add(forecastXajtHm);
+        return listForecastXajt;
+    }
     //
-    public Map getStateData(){
-        return new HashMap();
-    }
-    public float[][] getqReservoir(){
-        return new float[2][];
-    }
-    public String getroutBeginTime(){
-        return "haha";
-    }
-    public String getroutEndTime(){
-        return "heihei";
-    }
-    public float[] getroutOption(){
-        return new float[5];
-    }
     public void saveFractureFlow(){
 
     }
@@ -1714,8 +2226,8 @@ public class ForecastAdapterService extends Controller {
         List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
         RP = new double[cw.length][2];
         for(int i=0;i<RP.length;i++){
-           RP[i][0] = w[i];
-           RP[i][1] = cw[i];
+            RP[i][0] = w[i];
+            RP[i][1] = cw[i];
         }
         for(int i=0;i<w.length;i++){
             RpCr rpCr = new RpCr();
@@ -1900,14 +2412,14 @@ public class ForecastAdapterService extends Controller {
         return fenKuai;
     }
     //断面修正产水量
-    /*public double[][] getRP() throws ParseException {
+    public double[][] getRP() throws ParseException {
         double[][] ppaInt = getFKCL();
         Calculation inPut = new Calculation(ppaInt);
         double[] wwd=(double[])inPut.outputChanliu().get("断面产水量");
         double[] wwdc=(double[])inPut.outputChanliu().get("修正断面产水量");
         List<RpCr> listRpCr = getRpCr(wwd,wwdc);
         return RP;
-    }*/
+    }
     //水库汇流选择
     public double[][] getFL(){
         //调用测试水库汇流选择的方法
@@ -1916,6 +2428,8 @@ public class ForecastAdapterService extends Controller {
         List<CfBb> listCfBb = getCfBb(id);
         return FL;
     }
+
+
     //考虑淮干与淮南水库汇流时间
     public String[][] getTM() throws ParseException {
         //调用淮干与淮南水库汇流时间算法
