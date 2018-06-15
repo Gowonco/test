@@ -2,13 +2,13 @@ package dao.resultDao;
 
 import com.jfinal.core.Controller;
 import dao.forecastDao.ForecastResultDao;
-import model.dbmodel.ForecastC;
-import model.dbmodel.ForecastJyt;
-import model.dbmodel.ForecastXajt;
-import model.dbmodel.Tree;
+import model.dbmodel.*;
+import model.viewmodel.ViewEventFE;
 import model.viewmodel.resultmodel.JYForecastJyt;
 import model.viewmodel.resultmodel.XAJForecastXajt;
+//import org.junit.Test;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +21,7 @@ public class ResultDao extends Controller {
     Date day=new Date();
     ForecastResultDao forecastResultDao = new ForecastResultDao();
     SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
-
+    SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMdd");
     /**
      * 月记录查询
      * @param userId
@@ -91,6 +91,39 @@ public class ResultDao extends Controller {
      */
     public List<JYForecastJyt> getJyName(String taskJid) {
         return forecastResultDao.getForecastJyt(taskJid);
+    }
+
+    /**
+     * 保存
+     * @param id
+     * @param startTm
+     * @param endTm
+     * @param ok
+     * @return
+     * @throws ParseException
+     */
+    public String doSave(String id, String startTm, String endTm, String ok) throws ParseException {
+        List<EventFe> listEventFe=EventFe.dao.find("select * from f_event_fe");
+        new EventFe().setID(id).setSTARTTM(sdf.parse(startTm)).setENDTM(sdf.parse(endTm)).setOK(ok).save();
+        return "success";
+    }
+
+    /**
+     * 获取评价结果
+     * @param startTm
+     * @param endTm
+     * @return
+     */
+    public List<ViewEventFE> getResult(String startTm, String endTm) {
+         List<EventFe> listEventFe=EventFe.dao.find("select id,ok from f_event_fe where STARTTM<=? and ENDTM>=?",startTm,endTm);
+        List<ViewEventFE> listViewEventFe=new ArrayList<ViewEventFE>();
+        ViewEventFE viewEventFE=new ViewEventFE();
+        viewEventFE.setStarttm(startTm);
+        viewEventFE.setEndtm(endTm);
+        viewEventFE.setListEventFE(listEventFe);
+        listViewEventFe.add(viewEventFE);
+        return listViewEventFe;
+
     }
 }
 
