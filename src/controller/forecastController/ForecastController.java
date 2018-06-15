@@ -12,9 +12,9 @@ public class ForecastController extends Controller {
     ForecastService forecastService=new ForecastService();
     ForecastResultService forecastResultService=new ForecastResultService();
 
-    public void doForecast() throws ParseException {
+    public void doForecast() throws Exception {
         String taskId=getPara("taskId");
-        forecastService.doForecast(taskId);
+        //forecastService.doForecast(taskId);
 //        System.out.println(forecastService.forecastC);
         //setAttr("listViewRain",forecastService.getRainData());
         //setAttr("listChildRainStation",forecastService.getChildRainStation());
@@ -30,7 +30,7 @@ public class ForecastController extends Controller {
 //        setAttr("listStrobeFlow",forecastService.getStrobeFlow());
 //        setAttr("listHydrologicFlow",forecastService.getHydrologicFlow());
 //       setAttr("listXAJMMusk",forecastService.getMMusk());
-       setAttr("listXAJForecastXajr",forecastService.getForecastXajr());
+       //setAttr("listXAJForecastXajr",forecastService.getForecastXajr());
 //
 //        setAttr("listJYChildRainStation",forecastService.getExperienceChildRainStation());
 //        setAttr("listJYFractureChild",forecastService.getExperienceFractureChild());
@@ -39,7 +39,7 @@ public class ForecastController extends Controller {
 //        setAttr("listJYHydrologyFlow",forecastService.getHydrologyFlow());
       //  setAttr("listParaMu",forecastService.getParaMu());
 
-
+        setAttr("fas",forecastService.doForecast(taskId));
         renderJson();
     }
 

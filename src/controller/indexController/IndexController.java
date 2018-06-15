@@ -6,6 +6,8 @@ import model.viewmodel.ViewDatasCf;
 import service.indexService.IndexService;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class IndexController extends Controller{
@@ -103,6 +105,13 @@ public class IndexController extends Controller{
         String fontSettings=getPara("fontSettings");
         indexService.doSaveUserColorSetting(fontSettings);
         setAttr("resultStatus","success");
+        renderJson();
+    }
+    public void testMap(){
+        Map map=new HashMap();
+        map.put("haha","nihao");
+        map.put("list",indexService.getReservoirInfo());
+        setAttr("map",map);
         renderJson();
     }
 
