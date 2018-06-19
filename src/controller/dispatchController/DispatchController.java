@@ -58,17 +58,20 @@ public class DispatchController extends Controller {
         String taskId=getPara("taskId");
         dispatchService.setTaskSetting(taskId);
         dispatchService.doDispatch();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        List<RcmR> list = new ArrayList<>();
-        RcmR rcmR = new RcmR();
-        rcmR.setNO(taskId);
-        rcmR.setYMDHM((sdf.parse("2000-08-10 00:00:00")));
-        rcmR.setEHZQ(BigDecimal.valueOf(100));
-        rcmR.setSHZQ(BigDecimal.valueOf(200));
-        rcmR.setGLZQ(BigDecimal.valueOf(50));
-        rcmR.setGLDZQ(BigDecimal.valueOf(50));
-        list.add(rcmR);
-        //dispatchService.doFixMS("2000-8-10",list);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        List<RcmR> list = new ArrayList<>();
+//        RcmR rcmR = new RcmR();
+//        rcmR.setNO(taskId);
+//        rcmR.setYMDHM((sdf.parse("2000-08-10 00:00:00")));
+//        rcmR.setEHZQ(BigDecimal.valueOf(100));
+//        rcmR.setSHZQ(BigDecimal.valueOf(200));
+//        rcmR.setGLZQ(BigDecimal.valueOf(50));
+//        rcmR.setGLDZQ(BigDecimal.valueOf(50));
+//        list.add(rcmR);
+        //String correctData =getPara("taskId");
+        String correctData = "[{\"gates\":\"建议放水\",\"gate1\":250.5,\"gate2\":250.5,\"gate3\":250.5,\"gate4\":250.5}]";
+        dispatchService.doFixMS("2000-8-10",correctData);
+////        dispatchService.doFixMS("2000-8-10",correctData);
 
         setAttr("resultStatus","success");
         renderJson();
@@ -132,7 +135,9 @@ public class DispatchController extends Controller {
 
     public void doManualAdviceQFix(){
         String taskId=getPara("taskId");
-        String datetime = getPara("datetime");
+        // todo:需要恢复成url获取的
+        String datetime = "2000-08-10";
+//        String datetime = getPara("datetime");
         String fixData = getPara("fixData");
         dispatchService.setTaskSetting(taskId);
         dispatchService.doFixMS(datetime,fixData);

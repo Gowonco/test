@@ -2,8 +2,10 @@ package controller.resultController;
 
 import com.jfinal.core.Controller;
 import model.dbmodel.ForecastC;
+import model.viewmodel.ViewEventFE;
 import service.resultService.ResultService;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class ResultController extends Controller {
@@ -62,6 +64,29 @@ public class ResultController extends Controller {
         setAttr("forecastC",resultService.getForecastC(taskId));
         setAttr("forecastResultXajt",resultService.getXajT(taskId));
         setAttr("forecastResultJyt",resultService.getHistoryByTaskIdJyt(taskId));
+        renderJson();
+    }
+
+    /**
+     * 保存
+     * @throws ParseException
+     */
+    public void doSave() throws ParseException {
+        String id=getPara("id");
+        String startTm=getPara("startTm");
+        String endTm=getPara("endTm");
+        String ok=getPara("ok");
+        setAttr("resultStatus",resultService.doSave(id,startTm,endTm,ok));
+        renderJson();
+    }
+
+    /**
+     * 获取评价结果
+     */
+    public void getResult(){
+        String startTm=getPara("startTm");
+        String endTm=getPara("endTm");
+        setAttr("forecastEvaluate",resultService.getResult(startTm,endTm));
         renderJson();
     }
 

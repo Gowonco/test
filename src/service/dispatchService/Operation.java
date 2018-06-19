@@ -26,6 +26,8 @@ public class Operation {
     public double[] waterLevelG, gateCurve2, gateCurve3, gateCurveG;
     public boolean[] breakPolder,slantedStorage;
     public double[][] rStorage,reservoirStorage;
+    //三个闸泄流能力的放水
+    public double[] gate3Interpolation,gate2Interpolation,gateGInterpolation;
 
     public Operation(){};
 
@@ -132,27 +134,31 @@ public class Operation {
     public void operationMainForecast(int msStartTime) {
         /*预报期开始到预报期结束*/
         ti = obsEndTime-1;
+        gate2Interpolation=new double[forecastEndTime];
+        gate3Interpolation=new double[forecastEndTime];
+        gateGInterpolation=new double[forecastEndTime];
+
         reStorage = this.chooseCurveR();
         calStorage[ti] = this.interpolation(calStage[ti], waterLevelR, reStorage);
         calStage[ti] = lakeStage[ti];//initialZ;
         if (msStartTime!=obsEndTime){sumEwater=eWater[0] *msStartTime* lakeArea / 100000;}
 
         for (int i = msStartTime-1; i < forecastEndTime-1; i++) {//注意时间节点
-            double k = this.interpolation(calStage[i], waterLevelG, gateCurve3);
-            if (k <= safe3Q) {
-                gate3Q[i + 1] = k;  //三河闸建议放水
+            gate3Interpolation[i+1] = this.interpolation(calStage[i], waterLevelG, gateCurve3);
+            if (gate3Interpolation[i+1] <= safe3Q) {
+                gate3Q[i + 1] = gate3Interpolation[i+1];  //三河闸建议放水
             } else {
                 gate3Q[i + 1] = safe3Q;
             }
-            double m = this.interpolation(calStage[i], waterLevelG, gateCurve2);
-            if (m <= safe2Q) {
-                gate2Q[i + 1] = m;  //二河闸建议放水
+            gate2Interpolation[i+1] = this.interpolation(calStage[i], waterLevelG, gateCurve2);
+            if (gate2Interpolation[i+1] <= safe2Q) {
+                gate2Q[i + 1] = gate2Interpolation[i+1];  //二河闸建议放水
             } else {
                 gate2Q[i + 1] = safe2Q;
             }
-            double n = this.interpolation(calStage[i], waterLevelG, gateCurveG);
-            if (n <= safeGQ) {
-                gateGQ[i + 1] = n;
+            gateGInterpolation[i+1] = this.interpolation(calStage[i], waterLevelG, gateCurveG);
+            if (gateGInterpolation[i+1] <= safeGQ) {
+                gateGQ[i + 1] = gateGInterpolation[i+1];
             } else {
                 gateGQ[i + 1] = safeGQ; //高良涧闸建议放水
             }
@@ -340,6 +346,7 @@ public class Operation {
 //            stageError[i]=0;
 //        }
         //任务编号，日期，方案号，日期注释
+        operationResults.put("方案号",taskNo);
         operationResults.put("面平均雨量",averageP);
         operationResults.put("总入湖流量",totalQIn);
         operationResults.put("总出湖流量",totalQOut);
@@ -392,6 +399,7 @@ public class Operation {
         calMaxStageT=maxIndex(calStage,forecastEndTime);
         stageAbsError=obsMaxStage-calMaxStage;
         //任务编号，方案号
+        characteristicValue.put("方案号",taskNo);
         characteristicValue.put("总入湖水量",totalInW);
         characteristicValue.put("总出湖水量",totalOutW);
         characteristicValue.put("反算入湖水量",inverseTotalInW);
@@ -406,11 +414,15 @@ public class Operation {
     }
 
     //输出建议放水表
+    //任务编号，日期，日期注释
     public Map<String, Object> adviseQ(){
         adviseDischarge.put("三河闸",gate3Q);
         adviseDischarge.put("二河闸",gate2Q);
         adviseDischarge.put("高良涧闸",gateGQ);
         adviseDischarge.put("高良涧水电站",hydropowerQ);
+        adviseDischarge.put("三河闸泄流能力",gate3Interpolation);
+        adviseDischarge.put("二河闸泄流能力",gate2Interpolation);
+        adviseDischarge.put("高良涧闸泄流能力",gateGInterpolation);
         return adviseDischarge;
     }
     //求数组最大值
@@ -608,12 +620,12 @@ class ManualSetting extends Operation{
         calStage[ti] = lakeStage[ti];//initialZ;
         if (msStartTime!=obsEndTime){sumEwater=eWater[0] *msStartTime* lakeArea / 100000;}
         for (int i = msStartTime-1; i < forecastEndTime-1; i++) {//注意时间节点
-            double k = this.interpolation(calStage[i], waterLevelG, gateCurve3);
-            if (k <= safe3Q) {
+            gate3Interpolation[i+1] = this.interpolation(calStage[i], waterLevelG, gateCurve3);
+            if (gate3Interpolation[i+1] <= safe3Q) {
                 if (i == msStartTime-1 && MQ[0]!=0.0) {
                     gate3Q[i + 1]=MQ[0];  //三河闸建议放水
                 } else {
-                    gate3Q[i + 1] = k;
+                    gate3Q[i + 1] = gate3Interpolation[i+1];
                 }
             } else {
                 if (i == msStartTime-1 && MQ[0]!=0.0) {
@@ -622,12 +634,12 @@ class ManualSetting extends Operation{
                     gate3Q[i + 1] = safe3Q;
                 }
             }
-            double m = this.interpolation(calStage[i], waterLevelG, gateCurve2);
-            if (m <= safe2Q) {
+            gate2Interpolation[i+1] = this.interpolation(calStage[i], waterLevelG, gateCurve2);
+            if (gate2Interpolation[i+1] <= safe2Q) {
                 if (i == msStartTime-1 && MQ[1]!=0.0) {
                     gate2Q[i + 1] =MQ[1];  //二河闸建议放水
                 } else {
-                    gate2Q[i + 1] = m;
+                    gate2Q[i + 1] = gate2Interpolation[i+1];
                 }
             } else {
                 if (i == msStartTime-1 && MQ[1]!=0.0) {
@@ -636,12 +648,12 @@ class ManualSetting extends Operation{
                     gate2Q[i + 1] = safe2Q;
                 }
             }
-            double n = this.interpolation(calStage[i], waterLevelG, gateCurveG);
-            if (n <= safeGQ) {
+            gateGInterpolation[i+1] = this.interpolation(calStage[i], waterLevelG, gateCurveG);
+            if (gateGInterpolation[i+1] <= safeGQ) {
                 if (i == msStartTime-1 && MQ[2]!=0.0) {
                     gateGQ[i + 1] = MQ[2];
                 } else {
-                    gateGQ[i + 1] = n; //高良涧闸建议放水
+                    gateGQ[i + 1] = gateGInterpolation[i+1]; //高良涧闸建议放水
                 }
             } else {
                 if (i == msStartTime-1 && MQ[2]!=0.0) {

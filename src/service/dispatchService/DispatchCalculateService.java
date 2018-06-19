@@ -85,9 +85,14 @@ public class DispatchCalculateService {
         taskMS.ti = taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1;
         taskMS.eWater=taskDC.eWater;
         taskMS.totalOutQ=taskDC.totalOutQ;
+
+        taskMS.gate2Interpolation=taskDC.gate2Interpolation;
+        taskMS.gate3Interpolation=taskDC.gate3Interpolation;
+        taskMS.gateGInterpolation=taskDC.gateGInterpolation;
+
         //100、200、50、50为三个闸和水电站修改后的流量值
-        taskMS.gate3Q[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[0];
-        taskMS.gate2Q[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[1];
+        taskMS.gate3Q[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[1];
+        taskMS.gate2Q[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[0];
         taskMS.gateGQ[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[2];
         taskMS.hydropowerQ[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[3];
         // 三个闸修改后的流量值赋值给MSQ数组
@@ -97,8 +102,8 @@ public class DispatchCalculateService {
         taskMS.MSQ[2]=correctQ[2];
         //从修改当天开始进行计算，计算到预报期结束
         taskMS.operationMainForecast(taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1,taskMS.MSQ);
-//        for (int i = 0; i < taskMS.calStage.length; i++) {
-//            System.out.println(taskMS.calStage[i]);
+//        for (int i = 0; i < taskMS.gate3Interpolation.length; i++) {
+//            System.out.println(taskMS.gate3Interpolation[i]);
 //        }
 
         //存储三张结果表
