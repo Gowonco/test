@@ -219,6 +219,7 @@ public class ForecastResultService  {
      * @param listInflowXajt
      */
     public void saveInflowXajt(List<InflowXajt> listInflowXajt){
+
         forecastResultDao.saveInflowXajt(listInflowXajt,forecastC.getNO());
     }
     //--------------------------------------------------------存结果数据-----------------------------------------------------------------
