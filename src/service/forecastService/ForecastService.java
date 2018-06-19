@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ForecastService extends Controller {
+public class ForecastService  {
 
     public ForecastDao forecastDao=new ForecastDao();
     public ForecastC forecastC=new ForecastC();

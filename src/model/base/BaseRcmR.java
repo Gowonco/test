@@ -72,4 +72,31 @@ public abstract class BaseRcmR<M extends BaseRcmR<M>> extends Model<M> implement
 		return get("GLDZQ");
 	}
 
+	public M setEHZQXL(java.math.BigDecimal EHZQXL) {
+		set("EHZQXL", EHZQXL);
+		return (M)this;
+	}
+	
+	public java.math.BigDecimal getEHZQXL() {
+		return get("EHZQXL");
+	}
+
+	public M setSHZQXL(java.math.BigDecimal SHZQXL) {
+		set("SHZQXL", SHZQXL);
+		return (M)this;
+	}
+	
+	public java.math.BigDecimal getSHZQXL() {
+		return get("SHZQXL");
+	}
+
+	public M setGLZQXL(java.math.BigDecimal GLZQXL) {
+		set("GLZQXL", GLZQXL);
+		return (M)this;
+	}
+	
+	public java.math.BigDecimal getGLZQXL() {
+		return get("GLZQXL");
+	}
+
 }

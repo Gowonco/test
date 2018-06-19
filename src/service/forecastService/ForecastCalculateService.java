@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ForecastCalculateService extends Controller {
+public class ForecastCalculateService  {
     ForecastAdapterService fAS=new ForecastAdapterService();
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     ForecastC forecastC=new ForecastC();

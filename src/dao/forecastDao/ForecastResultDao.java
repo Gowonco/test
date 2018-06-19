@@ -1,6 +1,7 @@
 package dao.forecastDao;
 
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Db;
 import model.dbmodel.*;
 import model.viewmodel.ViewRain;
 import model.viewmodel.resultmodel.*;
@@ -342,7 +343,207 @@ public class ForecastResultDao extends Controller {
         listJYEchartsData.add(jyEchartsData);
         return listJYEchartsData;
     }
+    //--------------------------------------------------------存结果数据-----------------------------------------------------------------
+    //--------------------------------------------------------新安江模型-----------------------------------------------------------------
 
+    /**
+     * 保存雨量分析特征表
+     * @param listDayrnflCh
+     * @param taskId
+     */
+    public void saveXAJDayrnflCh(List<DayrnflCh> listDayrnflCh,String taskId){
+        Long count= Db.queryLong("select count(*) from f_dayrnfl_ch where no=?",taskId);
+        System.out.println(count);
+        if(count==0){
+            for(DayrnflCh dayrnflCh:listDayrnflCh){
+                dayrnflCh.save();
+            }
+        }else{
+            for(DayrnflCh dayrnflCh:listDayrnflCh){
+                dayrnflCh.update();
+            }
+        }
+
+    }
+
+    /**
+     * 保存面平均雨量表
+     * @param listDayrnflAvg
+     * @param taskId
+     */
+    public void saveXAJDayrnflAvg(List<DayrnflAvg> listDayrnflAvg,String taskId){
+        Long count= Db.queryLong("select count(*) from f_dayrnfl_avg where no=?",taskId);
+        if(count==0){
+            for(DayrnflAvg dayrnflAvg:listDayrnflAvg){
+                Db.update("insert into f_dayrnfl_avg values(?,?,?,UNIX_TIMESTAMP(?),?)",dayrnflAvg.getARCD(),dayrnflAvg.getYMDHM(),dayrnflAvg.getNO(),dayrnflAvg.getYMDHM(),dayrnflAvg.getDRN());
+            }
+        }else{
+            for(DayrnflAvg dayrnflAvg:listDayrnflAvg){
+                dayrnflAvg.update();
+            }
+        }
+    }
+
+    /**
+     * 保存土壤含水量表
+     * @param listSoilW
+     * @param taskId
+     */
+    public void saveSoil(List<SoilW> listSoilW ,String taskId){
+        Long count= Db.queryLong("select count(*) from f_soil_w where no=?",taskId);
+        if(count==0){
+            for(SoilW soilW:listSoilW){
+                soilW.setYMC(0);
+                soilW.save();
+            }
+            Db.update("update f_soil_w set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
+        }else{
+            for(SoilW soilW:listSoilW){
+                soilW.update();
+            }
+        }
+    }
+
+    /**
+     * 保存汇流时间选择表
+     * @param listCfT
+     * @param taskId
+     */
+    public void saveCfT(List<CfT> listCfT,String taskId){
+        Long count= Db.queryLong("select count(*) from f_cf_t where no=?",taskId);
+        System.out.println(count);
+        if(count==0){
+            for(CfT cfT:listCfT){
+                cfT.save();
+            }
+        }else{
+            for(CfT cfT:listCfT){
+                cfT.update();
+            }
+        }
+    }
+
+    /**
+     * 保存蚌埠汇流选择表
+     * @param listCfBb
+     * @param taskId
+     */
+    public void saveCfBb(List<CfBb> listCfBb,String taskId){
+        Long count= Db.queryLong("select count(*) from f_cf_bb where no=?",taskId);
+        System.out.println(count);
+        if(count==0){
+            for(CfBb cfBb:listCfBb){
+                cfBb.save();
+            }
+        }else{
+            for(CfBb cfBb:listCfBb){
+                cfBb.update();
+            }
+        }
+    }
+
+    /**
+     * 保存新安江模型水库汇流结果表
+     * @param listCfr
+     * @param taskId
+     */
+    public void saveCfr(List<CfR> listCfr,String taskId){
+        Long count= Db.queryLong("select count(*) from f_cf_r where no=?",taskId);
+        if(count==0){
+            for(CfR cfR:listCfr){
+                cfR.setYMC(0);
+                cfR.save();
+            }
+            Db.update("update f_cf_r set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
+        }else{
+            for(CfR cfR:listCfr){
+                cfR.update();
+            }
+        }
+    }
+
+    /**
+     * 保存新安江模型断面预报结果表
+     * @param listForecastXajr
+     * @param taskId
+     */
+    public void saveForecastXajr(List<ForecastXajr> listForecastXajr,String taskId){
+        Long count= Db.queryLong("select count(*) from f_forecast_xajr where no=?",taskId);
+        if(count==0){
+            for(ForecastXajr forecastXajr:listForecastXajr){
+                forecastXajr.setYMC(0);
+                forecastXajr.save();
+            }
+            Db.update("update f_forecast_xajr set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
+        }else{
+            for(ForecastXajr forecastXajr:listForecastXajr){
+                forecastXajr.update();
+            }
+        }
+    }
+
+    /**
+     * 保存新安江模型断面预报特征值表
+     * @param listForecastXajt
+     * @param taskId
+     */
+    public void saveForecastXajt(List<ForecastXajt> listForecastXajt,String taskId){
+        Long count= Db.queryLong("select count(*) from f_forecast_xajt where no=?",taskId);
+        if(count==0){
+            for(ForecastXajt forecastXajt:listForecastXajt){
+               forecastXajt.save();
+            }
+        }else{
+            for(ForecastXajt forecastXajt:listForecastXajt){
+                System.out.println(forecastXajt.getRPE());
+                forecastXajt.update();
+            }
+        }
+    }
+
+    /**
+     * 保存新安江模型入湖流量过程表
+     * @param listInflowXajr
+     * @param taskId
+     */
+    public void saveInflowXajr(List<InflowXajr> listInflowXajr,String taskId){
+        Long count= Db.queryLong("select count(*) from f_inflow_xajr where no=?",taskId);
+        if(count==0){
+            for(InflowXajr inflowXajr:listInflowXajr){
+                inflowXajr.setYMC(0);
+                inflowXajr.save();
+            }
+            Db.update("update f_inflow_xajr set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
+        }else{
+            for(InflowXajr inflowXajr:listInflowXajr){
+                inflowXajr.update();
+            }
+        }
+    }
+
+    /**
+     * 保存新安江模型入湖总量特征值表
+     * @param listInflowXajt
+     * @param taskId
+     */
+    public void saveInflowXajt(List<InflowXajt> listInflowXajt,String taskId){
+        Long count= Db.queryLong("select count(*) from f_inflow_xajt where no=?",taskId);
+        if(count==0){
+            for(InflowXajt inflowXajt:listInflowXajt){
+                inflowXajt.save();
+            }
+        }else{
+            for(InflowXajt inflowXajt:listInflowXajt){
+                inflowXajt.update();
+            }
+        }
+    }
+
+    //--------------------------------------------------------存结果数据-----------------------------------------------------------------
+    //--------------------------------------------------------经验模型-----------------------------------------------------------------
+    public void saveJYDayrnflAvg(List<DayrnflAvg> listDayrnflAvg,String taskId){
+
+    }
 
 
 }

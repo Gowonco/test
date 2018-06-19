@@ -31,6 +31,10 @@ public class ForecastAdapterService {
     Map xajMap=new HashMap();
     Map jyMap=new HashMap();
     Map mapp = new HashMap();
+
+    public Map testMap=new HashMap();
+    public ForecastResultService fRS;
+
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
     DecimalFormat df4 = new DecimalFormat("#.0");
@@ -58,6 +62,7 @@ public class ForecastAdapterService {
         this.forecastC=forecastC;
         this.xajMap=xajMap;
         this.jyMap=jyMap;
+        fRS=new ForecastResultService(forecastC);
     }
 
     //test 可删除
@@ -310,6 +315,29 @@ public class ForecastAdapterService {
         }
         return treeArr;
     }
+    //返回雨量分析特征表—新安江模型
+    public List<DayrnflCh> saveXAJDayrnflCh(float addPp[],float totalRain[],String maxName[]){
+        List<DayrnflCh> listDayrnflCh = new ArrayList<>();
+        List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
+        for(int i=0;i<listXAJChildRainStation.size();i++){
+            DayrnflCh dayrnflCh = new DayrnflCh();
+            dayrnflCh.setARCD(listXAJChildRainStation.get(i).getChildId());
+            dayrnflCh.setNO(forecastC.getNO());
+            dayrnflCh.setAMRN(BigDecimal.valueOf(addPp[i]));
+            dayrnflCh.setSTMRN(BigDecimal.valueOf(totalRain[i]));
+            dayrnflCh.setSTNM(maxName[i]);
+            for(int j=0;j<listXAJChildRainStation.get(i).getSize();j++){
+                if(listXAJChildRainStation.get(i).getListRainStation().get(j).getNAME().equals(maxName[i])){
+                    dayrnflCh.setSTCD(listXAJChildRainStation.get(i).getListRainStation().get(j).getID());break;
+                }
+            }
+            listDayrnflCh.add(dayrnflCh);
+        }
+        fRS.saveXAJDayrnflCh(listDayrnflCh);
+        testMap.put("listDayrnflCh",listDayrnflCh);
+        return listDayrnflCh;
+    }
+
     //返回面平均雨量表—新安江模型
     public List<DayrnflAvg> saveXAJDayrnflAvg(float pp[][],String timeSeries[]) throws ParseException {
         List<DayrnflAvg> listDayrnflAvg = new ArrayList<>();
@@ -328,27 +356,9 @@ public class ForecastAdapterService {
                 listDayrnflAvg.add(dayrnflAvg);
             }
         }
+        fRS.saveXAJDayrnflAvg(listDayrnflAvg);
+        testMap.put("listDayrnflAvg",listDayrnflAvg);
         return listDayrnflAvg;
-    }
-    //返回雨量分析特征表—新安江模型
-    public List<DayrnflCh> saveXAJDayrnflCh(float addPp[],float totalRain[],String maxName[]){
-        List<DayrnflCh> listDayrnflCh = new ArrayList<>();
-        List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
-        for(int i=0;i<listXAJChildRainStation.size();i++){
-            DayrnflCh dayrnflCh = new DayrnflCh();
-            dayrnflCh.setARCD(listXAJChildRainStation.get(i).getChildId());
-            dayrnflCh.setNO(forecastC.getNO());
-            dayrnflCh.setAMRN(new BigDecimal(df0.format(addPp[i])));
-            dayrnflCh.setSTMRN(new BigDecimal(df0.format(totalRain[i])));
-            dayrnflCh.setSTNM(maxName[i]);
-            for(int j=0;j<listXAJChildRainStation.get(i).getSize();j++){
-                if(listXAJChildRainStation.get(i).getListRainStation().get(j).getNAME().equals(maxName[i])){
-                    dayrnflCh.setSTCD(listXAJChildRainStation.get(i).getListRainStation().get(j).getID());break;
-                }
-            }
-            listDayrnflCh.add(dayrnflCh);
-        }
-        return listDayrnflCh;
     }
 
 
@@ -669,7 +679,8 @@ public class ForecastAdapterService {
             }
 
         }
-
+        fRS.saveSoil(listSoilW);
+        testMap.put("listSoilW",listSoilW);
         return listSoilW;
     }
     //
@@ -766,6 +777,8 @@ public class ForecastAdapterService {
             cft.setENDTM(sdf.parse(endTime[i]+" 00:00:00"));
             listCfT.add(cft);
         }
+        fRS.saveCfT(listCfT);
+        testMap.put("listCfT",listCfT);
         return listCfT;
     }
     //返回蚌埠汇流选择表（F_CF_BB）
@@ -784,6 +797,8 @@ public class ForecastAdapterService {
             cfBb.setFL((int) isOpen[i]);
             listCfBb.add(cfBb);
         }
+        fRS.saveCfBb(listCfBb);
+        testMap.put("listCfBb",listCfBb);
         return listCfBb;
     }
     //返回新安江模型水库汇流结果表（F_CF_R）
@@ -880,6 +895,8 @@ public class ForecastAdapterService {
             listCfr.add(cfR7);
             listCfr.add(cfR8);
         }
+        fRS.saveCfr(listCfr);
+        testMap.put("listCfr",listCfr);
         return listCfr;
     }
     //
@@ -1821,6 +1838,8 @@ public class ForecastAdapterService {
             forecastXajr.setPQ(new BigDecimal(df.format(qcalhm[i])));
             listForecastXajr.add(forecastXajr);
         }
+        fRS.saveForecastXajr(listForecastXajr);
+        testMap.put("listForecastXajr",listForecastXajr);
         return listForecastXajr;
     }
     //新安江模型断面预报特征值表（F_FORECAST_XAJT）
@@ -1983,6 +2002,8 @@ public class ForecastAdapterService {
        // forecastXajtHm.setFOPZ(new BigDecimal(Float.toString(iemhm)));
         forecastXajtHm.setDY(new BigDecimal(df1.format(dchm)));
         listForecastXajt.add(forecastXajtHm);
+        fRS.saveForecastXajt(listForecastXajt);
+        testMap.put("listForecastXajt",listForecastXajt);
         return listForecastXajt;
     }
     //
@@ -2070,6 +2091,8 @@ public class ForecastAdapterService {
             inflowXajr.setQ(new BigDecimal(df.format(qcal[t])));
             listInflowXajr.add(inflowXajr);
         }
+        fRS.saveInflowXajr(listInflowXajr);
+        testMap.put("listInflowXajr",listInflowXajr);
         return listInflowXajr;
     }
     //返回新安江模型入湖总量特征值表
@@ -2097,10 +2120,15 @@ public class ForecastAdapterService {
         inflowXajt.setFOPD(new BigDecimal(df.format(qm[0])));
         inflowXajt.setFOPT(sdf.parse(im[0]+" 00:00:00"));
         listInflowXajt.add(inflowXajt);
+        fRS.saveInflowXajt(listInflowXajt);
+        testMap.put("listInflowXajt",listInflowXajt);
         return listInflowXajt;
     }
-    public void saveRuLake(Map mapruLake){
-
+    public void saveRuLake(Map mapruLake) throws ParseException {
+        //getInflowXajr(String[] timeSeries,float pp[],float qr[][],float[] qcal)
+        getInflowXajr((String[])mapruLake.get("dt"),(float[])mapruLake.get("rainfall"),(float[][])mapruLake.get("sectionFlow"),(float[])mapruLake.get("totalFlow"));
+        //getInflowXajt(float ppj,float[]ww,float[] qm,String[] im);
+        getInflowXajt((float)mapruLake.get("totalRainfall"),(float[])mapruLake.get("totalW"),(float[])mapruLake.get("forecastPeak"),(String[])mapruLake.get("peakTime"));
     }
     //---------------------------------------------------------经验模型面平均雨量-----------------------------------
     //获取经验模型 子流域-雨量站级联关系表

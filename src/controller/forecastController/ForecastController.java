@@ -1,6 +1,7 @@
 package controller.forecastController;
 
 import com.jfinal.core.Controller;
+import service.forecastService.ForecastAdapterService;
 import service.forecastService.ForecastResultService;
 import service.forecastService.ForecastService;
 
@@ -38,8 +39,8 @@ public class ForecastController extends Controller {
 //        setAttr("listJYConfig",forecastService.getExperienceConfig());
 //        setAttr("listJYHydrologyFlow",forecastService.getHydrologyFlow());
       //  setAttr("listParaMu",forecastService.getParaMu());
-
-        setAttr("fas",forecastService.doForecast(taskId));
+        ForecastAdapterService test=forecastService.doForecast(taskId);
+        setAttr("fas",test.testMap);
         renderJson();
     }
 
