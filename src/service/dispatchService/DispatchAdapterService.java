@@ -5,12 +5,10 @@ import model.dbmodel.ForecastC;
 import model.dbmodel.*;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class DispatchAdapterService extends Controller {
@@ -19,7 +17,9 @@ public class DispatchAdapterService extends Controller {
     public Map temMap=new HashMap();
     double[] waterLevelR=new double[10];
     double[][] reservoirStorage = new double[10][8];
-
+    DecimalFormat df0 = new DecimalFormat("#.00");
+    DecimalFormat df = new DecimalFormat("#.000");
+    DecimalFormat df1 = new DecimalFormat("#.0000");
     public  DispatchAdapterService(ForecastC forecastC, Map dispatchMap){
         this.forecastC =forecastC;
         this.dispatchMap=dispatchMap;
@@ -171,5 +171,107 @@ public class DispatchAdapterService extends Controller {
         return temMap;
     }
 
+    //时间长（从实测开始到预报结束）
+    public int getStToEnd2(){
+        Date  startTime = forecastC.getBASEDTM();
+        Date rainTime = forecastC.getENDTM();
+        int days = (int) ((rainTime.getTime()-startTime.getTime())/(1000*24*3600));
+        return days+1;
+    }
+    //时间序列（从实测开始到预报结束）
+    public String[] getTimeSeries(){
+        String[] timeSeries =new String[getStToEnd2()];
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(forecastC.getBASEDTM());
+        for(int i=0;i<timeSeries.length;i++){
+            timeSeries[i] = sdf.format(calendar.getTime());
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+        }
+        return timeSeries;
+    }
+    //调度结果表（F_CTR_R）
+    public List<CtrR> saveCtrR(Map operationResults) throws ParseException {
+        List<CtrR> listCtrR = new ArrayList<>();
+        int taskNo = (int) operationResults.get("taskNo");
+        double[] averageP = (double[]) operationResults.get("averageP");
+        double[] totalQIn = (double[]) operationResults.get("totalQIn");
+        double[] totalQOut = (double[]) operationResults.get("totalQOut");
+        double[] calStorage = (double[]) operationResults.get("calStorage");
+        double[] lakeStage = (double[]) operationResults.get("lakeStage");
+        double[] calStage = (double[]) operationResults.get("calStage");
+        double[] stageError = (double[]) operationResults.get("stageError");
+        String[] timeSeries = getTimeSeries();
+        for(int i=0;i<timeSeries.length;i++){
+            CtrR ctrR = new CtrR();
+            ctrR.setNO(forecastC.getNO());
+            ctrR.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            ctrR.setMOD(taskNo);
+            ctrR.setDRN(new BigDecimal(df0.format(averageP[i])));
+            ctrR.setSINQ(new BigDecimal(df.format(totalQIn[i])));
+            ctrR.setSOTQ(new BigDecimal(df.format(totalQOut[i])));
+            ctrR.setW(new BigDecimal(df.format(calStorage[i])));
+            ctrR.setOBZ(new BigDecimal(df.format(lakeStage[i])));
+            ctrR.setFOZ(new BigDecimal(df.format(calStage[i])));
+            ctrR.setZDE(new BigDecimal(df1.format(stageError[i])));
+            listCtrR.add(ctrR);
+        }
+        return listCtrR;
+    }
 
+    //调度特征值表（F_CTR_CT）
+    public List<CtrCt> saveCtrCt(Map characteristicValue) throws ParseException {
+        List<CtrCt> listCtrCt = new ArrayList<>();
+        int taskNo = (int) characteristicValue.get("taskNo");
+        double totalInW = (double) characteristicValue.get("totalInW");
+        double inverseTotalInW = (double) characteristicValue.get("inverseTotalInW");
+        double totalOutW = (double) characteristicValue.get("totalInW");
+        double stageAbsError = (double) characteristicValue.get("stageAbsError");
+        double dc = (double) characteristicValue.get("dc");
+        double obsMaxStage = (double) characteristicValue.get("obsMaxStage");
+        String obsMaxStageT = (String) characteristicValue.get("obsMaxStageT");
+        double calMaxStage = (double) characteristicValue.get("calMaxStage");
+        String calMaxStageT = (String) characteristicValue.get("calMaxStageT");
+        CtrCt ctrCt = new CtrCt();
+        ctrCt.setNO(forecastC.getNO());
+        ctrCt.setMOD(taskNo);
+        ctrCt.setSINQ(new BigDecimal(df.format(totalInW)));//总入湖流量
+        ctrCt.setCLINQ(new BigDecimal(df.format(inverseTotalInW)));//反算入湖流量
+        ctrCt.setSOTQ(new BigDecimal(df.format(totalOutW)));//总出胡水量
+        ctrCt.setDZE(new BigDecimal(df1.format(stageAbsError)));//洪峰水位绝对误差
+        ctrCt.setDY(new BigDecimal(df1.format(dc)));//确定性系数
+        ctrCt.setOBZ(new BigDecimal(df.format(obsMaxStage)));//实测最高水位
+        ctrCt.setOBT(sdf.parse(obsMaxStageT+" 00:00:00"));//实测最高水位出现时间
+        ctrCt.setFOZ(new BigDecimal(df.format(calMaxStage)));//预报最高水位
+        ctrCt.setFOT(sdf.parse(calMaxStageT+" 00:00:00"));//预报最高水位出现时间
+        listCtrCt.add(ctrCt);
+        return listCtrCt;
+    }
+
+    //建议放水流量结果表（F_RCM_R）
+    public List<RcmR> saveRcmR(Map adviseDischarge) throws ParseException {
+        List<RcmR> listRcmR = new ArrayList<>();
+        String[] timeSeries = getTimeSeries();
+        double[] gate2Q = (double[]) adviseDischarge.get("gate2Q");
+        double[] gate3Q = (double[]) adviseDischarge.get("gate3Q");
+        double[] gateGQ = (double[]) adviseDischarge.get("gateGQ");
+        double[] hydropowerQ = (double[]) adviseDischarge.get("hydropowerQ");
+        double[] gate3Interpolation = (double[]) adviseDischarge.get("gate3Interpolation");
+        double[] gate2Interpolation = (double[]) adviseDischarge.get("gate2Interpolation");
+        double[] gateGInterpolation = (double[]) adviseDischarge.get("gateGInterpolation");
+        for(int i=0;i<timeSeries.length;i++){
+            RcmR rcmR = new RcmR();
+            rcmR.setNO(forecastC.getNO());
+            rcmR.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
+            rcmR.setEHZQ(new BigDecimal(df.format(gate2Q[i])));
+            rcmR.setSHZQ(new BigDecimal(df.format(gate3Q[i])));
+            rcmR.setGLZQ(new BigDecimal(df.format(gateGQ[i])));
+            rcmR.setGLDZQ(new BigDecimal(df.format(hydropowerQ[i])));
+            rcmR.setEHZQXL(new BigDecimal(df.format(gate3Interpolation[i])));
+            rcmR.setSHZQXL(new BigDecimal(df.format(gate2Interpolation[i])));
+            rcmR.setGLZQXL(new BigDecimal(df.format(gateGInterpolation[i])));
+            listRcmR.add(rcmR);
+        }
+        return listRcmR;
+
+    }
 }

@@ -1,8 +1,13 @@
 package service.dispatchService;
 
+import model.dbmodel.CtrCt;
+import model.dbmodel.CtrR;
 import model.dbmodel.ForecastC;
+import model.dbmodel.RcmR;
 
+import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DispatchCalculateService {
@@ -65,6 +70,37 @@ public class DispatchCalculateService {
         taskMS.characteristicValue=taskDC.characteristic();
         taskMS.adviseDischarge=taskDC.adviseQ();
         //三个结果要存数据库
+        //调度结果表（F_CTR_R）
+//        try {
+//            List<CtrR> saveCtrR = dispatchAdapterService.saveCtrR(taskMS.operationResults);
+//            for(int i=0;i<saveCtrR.size();i++){
+//                CtrR ctrR = saveCtrR.get(i);
+//                System.out.println(ctrR.getNO()+"  "+ctrR.getDRN());
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        //调度特征值表（F_CTR_CT）
+//        try {
+//            List<CtrCt> saveCtrCt = dispatchAdapterService.saveCtrCt(taskMS.characteristicValue);
+//            for(int i=0;i<saveCtrCt.size();i++){
+//                CtrCt ctrCt = saveCtrCt.get(i);
+//                System.out.println(ctrCt.getNO()+"  "+ctrCt.getMOD());
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        //建议放水流量结果表（F_RCM_R）
+//        try {
+//            List<RcmR> saveRcmR = dispatchAdapterService.saveRcmR(taskDC.adviseQ());
+//            for(int i=0;i<saveRcmR.size();i++){
+//                RcmR rcmR = saveRcmR.get(i);
+//                System.out.println(rcmR.getNO()+"  "+rcmR.getEHZQ()+"  "+rcmR.getGLDZQ()+"  "+rcmR.getGLZQXL());
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
 

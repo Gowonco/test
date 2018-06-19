@@ -3,6 +3,7 @@
  */
 package service.dispatchService;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.text.SimpleDateFormat;
@@ -346,14 +347,14 @@ public class Operation {
 //            stageError[i]=0;
 //        }
         //任务编号，日期，方案号，日期注释
-        operationResults.put("方案号",taskNo);
-        operationResults.put("面平均雨量",averageP);
-        operationResults.put("总入湖流量",totalQIn);
-        operationResults.put("总出湖流量",totalQOut);
-        operationResults.put("蓄量",calStorage);
-        operationResults.put("实测水位",lakeStage);
-        operationResults.put("计算水位",calStage);
-        operationResults.put("水位绝对误差",stageError);
+        operationResults.put("taskNo",taskNo);//方案号
+        operationResults.put("averageP",averageP);//面平均雨量
+        operationResults.put("totalQIn",totalQIn);//总入湖流量
+        operationResults.put("totalQOut",totalQOut);//总出湖流量
+        operationResults.put("calStorage",calStorage);//蓄量
+        operationResults.put("lakeStage",lakeStage);//实测水位
+        operationResults.put("calStage",calStage);//计算水位
+        operationResults.put("stageError",stageError);//水位绝对误差
         return operationResults;
     }
 
@@ -365,7 +366,8 @@ public class Operation {
     public Map<String, Object> characteristic(){
         Map<String,Object> CharacteristicValue=new HashMap<>();
         double sumZ=0;
-        double obsMaxStage,obsMaxStageT,calMaxStage,calMaxStageT,calMaxfStage,calMaxfStageT;
+        double obsMaxStage,calMaxStage,calMaxfStage,calMaxfStageT;
+        String obsMaxStageT,calMaxStageT;
         double stageAbsError;
         int endTime=obsEndTime;//选取哪个时间
         double totalInW=0,totalOutW=0,obsTotalOutW=0,inverseTotalInW=0;
@@ -394,35 +396,36 @@ public class Operation {
         fn = fn / endTime;
         dc = 1 - fn / (f0 + 0.00001);
         obsMaxStage = max(lakeStage,forecastEndTime);//实测最高水位（到m）
-        obsMaxStageT = maxIndex(lakeStage,forecastEndTime);
+        obsMaxStageT = indexToDate(maxIndex(lakeStage,forecastEndTime),obsStartDay);
+
         calMaxStage=max(calStage,forecastEndTime);//计算最高水位（到m ）
-        calMaxStageT=maxIndex(calStage,forecastEndTime);
+        calMaxStageT = indexToDate(maxIndex(calStage,forecastEndTime),obsStartDay);
         stageAbsError=obsMaxStage-calMaxStage;
         //任务编号，方案号
-        characteristicValue.put("方案号",taskNo);
-        characteristicValue.put("总入湖水量",totalInW);
-        characteristicValue.put("总出湖水量",totalOutW);
-        characteristicValue.put("反算入湖水量",inverseTotalInW);
+        characteristicValue.put("taskNo",taskNo);//方案号
+        characteristicValue.put("totalInW",totalInW);//总入湖水量
+        characteristicValue.put("totalOutW",totalOutW);//总出湖水量
+        characteristicValue.put("inverseTotalInW",inverseTotalInW);//反算入湖水量
 
-        characteristicValue.put("实测最高水位",obsMaxStage);
-        characteristicValue.put("实测最高水位出现时间",obsMaxStageT);
-        characteristicValue.put("预报最高水位",calMaxStage);
-        characteristicValue.put("预报最高水位出现时间",calMaxStageT);
-        characteristicValue.put("洪峰水位绝对误差",stageAbsError);
-        characteristicValue.put("确定性系数",dc);
+        characteristicValue.put("obsMaxStage",obsMaxStage);//实测最高水位
+        characteristicValue.put("obsMaxStageT",obsMaxStageT);//实测最高水位出现时间
+        characteristicValue.put("calMaxStage",calMaxStage);//预报最高水位
+        characteristicValue.put("calMaxStageT",calMaxStageT);//预报最高水位出现时间
+        characteristicValue.put("stageAbsError",stageAbsError);//洪峰水位绝对误差
+        characteristicValue.put("dc",dc);
         return characteristicValue;
     }
 
     //输出建议放水表
     //任务编号，日期，日期注释
     public Map<String, Object> adviseQ(){
-        adviseDischarge.put("三河闸",gate3Q);
-        adviseDischarge.put("二河闸",gate2Q);
-        adviseDischarge.put("高良涧闸",gateGQ);
-        adviseDischarge.put("高良涧水电站",hydropowerQ);
-        adviseDischarge.put("三河闸泄流能力",gate3Interpolation);
-        adviseDischarge.put("二河闸泄流能力",gate2Interpolation);
-        adviseDischarge.put("高良涧闸泄流能力",gateGInterpolation);
+        adviseDischarge.put("gate3Q",gate3Q);//三河闸
+        adviseDischarge.put("gate2Q",gate2Q);//二河闸
+        adviseDischarge.put("gateGQ",gateGQ);//高良涧闸
+        adviseDischarge.put("hydropowerQ",hydropowerQ);//高良涧水电站
+        adviseDischarge.put("gate3Interpolation",gate3Interpolation);//三河闸泄流能力
+        adviseDischarge.put("gate2Interpolation",gate2Interpolation);//二河闸泄流能力
+        adviseDischarge.put("gateGInterpolation",gateGInterpolation);//高良涧闸泄流能力
         return adviseDischarge;
     }
     //求数组最大值
@@ -438,7 +441,7 @@ public class Operation {
         return a;
     }
     //求数组最大值下标
-    public double maxIndex(double[] A,int endTime) {
+    public int maxIndex(double[] A,int endTime) {
         int index = 0;
         if (A.length > 0) {
             double a = A[0];
@@ -451,6 +454,7 @@ public class Operation {
         }
         return index;
     }
+    //日期转化成数组下标
     public int getDayIndex(String startDay,String endDay){
         int endDayIndex=0;
         try {
@@ -464,6 +468,25 @@ public class Operation {
             e.printStackTrace();
         }
         return endDayIndex;
+    }
+
+    //将数组下标转化为日期格式
+    public  String indexToDate(int i,String startDay){
+        String s="";
+        try{
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+            Date start=sdf.parse(startDay);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(start);
+            // add方法中的第二个参数n中，正数表示该日期后n天，负数表示该日期的前n天
+            calendar.add(Calendar.DATE, i);
+            Date date1 = calendar.getTime();
+            s = sdf.format(date1);
+            return s;}
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 
 }
