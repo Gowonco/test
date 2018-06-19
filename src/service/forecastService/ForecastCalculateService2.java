@@ -383,26 +383,61 @@ public class ForecastCalculateService2 extends Controller {
      * 测试经验汇流计算
      */
     public void testHuiLiuJiSuan() throws ParseException {
-//        Huiliu inputHuiliu=new Huiliu(fAS.getJYMAvg(),fAS.getRP(),fAS.getCfg(0,10),fAS.getCfg(2,8),fAS.getCfg(1,12),fAS.getBbandSqQ(),fAS.getCFQ(),fAS.getFL() ,fAS.getJYQobs(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime(),fAS.getInitialTime(), fAS.getTM());
-//        double[] ppbb=(double[])inputHuiliu.outputhuiliu().get("蚌埠雨量");
-//        double[] ppby=(double[])inputHuiliu.outputhuiliu().get("淮北雨量");
-//        double[] ppmg=(double[])inputHuiliu.outputhuiliu().get("淮南雨量");
-//        double[] pphm=(double[])inputHuiliu.outputhuiliu().get("湖面雨量");
-//        double[] pphz=(double[])inputHuiliu.outputhuiliu().get("洪泽湖雨量");
-//
-//        double[] qbbotc=(double[])inputHuiliu.outputhuiliu().get("蚌埠预报流量");
-//        double[] qbyc=(double[])inputHuiliu.outputhuiliu().get("淮北预报流量");
-//        double[] qmgc=(double[])inputHuiliu.outputhuiliu().get("淮南预报流量");
-//        double[] qhmc =(double[])inputHuiliu.outputhuiliu().get("湖面预报流量");
-//        double[] qhzh=(double[])inputHuiliu.outputhuiliu().get("洪泽湖预报流量");
-//
-//        double[] qobsbb=(double[])inputHuiliu.outputhuiliu().get("蚌埠实测");
-//        double[] sumdmobs=(double[])inputHuiliu.outputhuiliu().get("淮北实测");
-//        double[] qobsmg=(double[])inputHuiliu.outputhuiliu().get("淮南实测");
-//
-//        double[][] chara=(double[][])inputHuiliu.outputhuiliu().get("特征值");
-//        String[] qcaltime=(String[] )inputHuiliu.outputhuiliu().get("预报洪峰时间");
-//        String[] qobstime=(String[] )inputHuiliu.outputhuiliu().get("实测洪峰时间");
+        Huiliu inputHuiliu=new Huiliu(fAS.getJYMAvg(),fAS.getRP(),fAS.getCfg(0,10),fAS.getCfg(2,8),fAS.getCfg(1,12),fAS.getBbandSqQ(),fAS.getCFQ(),fAS.getFL() ,fAS.getJYQobs(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime(),fAS.getInitialTime(), fAS.getTM());
+        double[] ppbb=(double[])inputHuiliu.outputhuiliu().get("ppbb");
+        double[] ppby=(double[])inputHuiliu.outputhuiliu().get("ppby");
+        double[] ppmg=(double[])inputHuiliu.outputhuiliu().get("ppmg");
+        double[] pphm=(double[])inputHuiliu.outputhuiliu().get("pphm");
+        double[] pphz=(double[])inputHuiliu.outputhuiliu().get("pphz");
+
+        double[] qbbotc=(double[])inputHuiliu.outputhuiliu().get("qbbotc");
+        double[] qbyc=(double[])inputHuiliu.outputhuiliu().get("qbyc");
+        double[] qmgc=(double[])inputHuiliu.outputhuiliu().get("qmgc");
+        double[] qhmc =(double[])inputHuiliu.outputhuiliu().get("qhmc");
+        double[] qhzh=(double[])inputHuiliu.outputhuiliu().get("qhzh");
+
+        double[] qobsbb=(double[])inputHuiliu.outputhuiliu().get("qobsbb");
+        double[] sumdmobs=(double[])inputHuiliu.outputhuiliu().get("sumdmobs");
+        double[] qobsmg=(double[])inputHuiliu.outputhuiliu().get("qobsmg");
+
+        double[][] chara=(double[][])inputHuiliu.outputhuiliu().get("chara");
+        String[] qcaltime=(String[] )inputHuiliu.outputhuiliu().get("qcaltime");
+        String[] qobstime=(String[] )inputHuiliu.outputhuiliu().get("qobstime");
+
+        double[]  qqobc0=(double[])inputHuiliu.outputhuiliu().get("qqobc0");
+        double[]  qqobc1=(double[])inputHuiliu.outputhuiliu().get("qqobc1");
+        double[]  qqobc2=(double[])inputHuiliu.outputhuiliu().get("qqobc2");
+        for(int i=0;i<qcaltime.length;i++){
+            System.out.print(qcaltime[i]+"  ");
+        }
+        System.out.println();
+        for(int i=0;i<qobstime.length;i++){
+            System.out.print(qobstime[i]+"  ");
+        }
+        System.out.println();
+//        for(int i=0;i<qqobc0.length;i++){
+//            System.out.println(qqobc0[i]);
+//        }
+        //经验模型预报结果表（F_FORECAST_JYR）
+
+//        List<ForecastJyr> saveForecastJyr = fAS.saveForecastJyr(ppbb,ppby,ppmg,pphm,pphz,qbbotc,qbyc,qmgc,qhmc,qhzh,qobsbb,sumdmobs,qobsmg);
+//        for(int i=0;i<saveForecastJyr.size();i++){
+//            ForecastJyr forecastJyr = saveForecastJyr.get(i);
+//            System.out.println(forecastJyr.getID()+"  "+forecastJyr.getDRN()+"  "+sdf.format(forecastJyr.getYMDHM()));
+//        }
+
+        // //降雨汇流结果表（F_RFNL_HR）
+//        List<RfnlHr> saveRfnlHr = fAS.saveRfnlHr(qqobc0,qqobc1,qqobc2);
+//        for(int i=0;i<saveRfnlHr.size();i++){
+//            RfnlHr rfnlHr = saveRfnlHr.get(i);
+//            System.out.println(rfnlHr.getDBCD()+"  "+rfnlHr.getDMCD()+"  "+rfnlHr.getQ()+"  "+sdf.format(rfnlHr.getYMDHM()));
+//        }
+        //经验模型预报特征值表（F_FORECAST_JYT）
+        List<ForecastJyt> saveForecastJyt = fAS.saveForecastJyt(chara,qobstime,qcaltime);
+        for(int i=0;i<saveForecastJyt.size();i++){
+            ForecastJyt forecastJyt = saveForecastJyt.get(i);
+            System.out.println(forecastJyt.getID()+"  "+forecastJyt.getOBPD()+"  "+forecastJyt.getOBW()+"  "+sdf.format(forecastJyt.getOBPT()));
+        }
 
     }
     //测试初始时间
