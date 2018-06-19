@@ -123,6 +123,12 @@ public class HuaiBeiCal extends DchyubasH {
         f0=f0/(n+min1);
         fn=fn/(n+min1);
         dc=1f-fn/(f0+min1);
+        if (dc<0){
+            dc=0;
+        }
+        if (Math.abs(ce)>10){
+            ce=0;
+        }
         qom=qObs[0];
         for (int j=0;j<m;j++){
             if (qObs[j]>qom){

@@ -193,6 +193,7 @@ public class BengBuCal extends DchyubasH{
         int n=longtime;float min1=0.000001f;
         float qcm,icm,eqm,iem,pp;
         float rqo,rqc,eqobs,f0,fn,robsy,rcaly,ce,dc,qom,iom,rcali;
+
         icm=0;iom=0;
         rqo=qObs[0]/2f;
         rqc=qcal[0]/2f;
@@ -225,6 +226,12 @@ public class BengBuCal extends DchyubasH{
         f0=f0/(n+min1);
         fn=fn/(n+min1);
         dc=1f-fn/(f0+min1);
+        if (dc<0){
+            dc=0;
+        }
+        if (Math.abs(ce)>10){
+            ce=0;
+        }
         qom=qObs[0];
         for (int j=0;j<m;j++){
             if (qObs[j]>qom){
@@ -241,6 +248,12 @@ public class BengBuCal extends DchyubasH{
         }
         eqm=(qcm-qom)/(qom+min1)*100;
         iem=icm-iom;
+        float floodPeakStage;
+        if (qcm<=4000){
+            floodPeakStage=0.00014f*qcm+12.883f;
+        }else {
+            floodPeakStage=0.0009f*qcm+14.808f;
+        }
         Map<String,Object>charactBengbu=new HashMap<>();
         charactBengbu.put("rainfall",pp);//总降雨量
         charactBengbu.put("totalFlow",rrrr);//产流总水量
@@ -250,6 +263,7 @@ public class BengBuCal extends DchyubasH{
         charactBengbu.put("ErrorFlood",ce);//洪量相对误差
         charactBengbu.put("measuredPeak",qom);//实测洪峰
         charactBengbu.put("forecastPeak",qcm);//预报洪峰
+        charactBengbu.put("floodPeakWaterLevel",floodPeakStage);//洪峰水位
         charactBengbu.put("ErrorPeak",eqm);//洪峰相对误差
         charactBengbu.put("measuredPeakTime",timeSeries[(int)iom]);//实测峰现时间
         charactBengbu.put("forecastPeakTime",timeSeries[(int)icm]);//预报峰现时间

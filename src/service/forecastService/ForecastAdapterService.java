@@ -33,6 +33,7 @@ public class ForecastAdapterService {
     Map mapp = new HashMap();
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+    DecimalFormat df4 = new DecimalFormat("#.0");
     DecimalFormat df0 = new DecimalFormat("#.00");
     DecimalFormat df = new DecimalFormat("#.000");
     DecimalFormat df1 = new DecimalFormat("#.0000");
@@ -309,27 +310,6 @@ public class ForecastAdapterService {
         }
         return treeArr;
     }
-    //返回雨量分析特征表—新安江模型
-    public List<DayrnflCh> saveXAJDayrnflCh(float addPp[],float totalRain[],String maxName[]){
-        List<DayrnflCh> listDayrnflCh = new ArrayList<>();
-        List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
-        for(int i=0;i<listXAJChildRainStation.size();i++){
-            DayrnflCh dayrnflCh = new DayrnflCh();
-            dayrnflCh.setARCD(listXAJChildRainStation.get(i).getChildId());
-            dayrnflCh.setNO(forecastC.getNO());
-            dayrnflCh.setAMRN(BigDecimal.valueOf(addPp[i]));
-            dayrnflCh.setSTMRN(BigDecimal.valueOf(totalRain[i]));
-            dayrnflCh.setSTNM(maxName[i]);
-            for(int j=0;j<listXAJChildRainStation.get(i).getSize();j++){
-                if(listXAJChildRainStation.get(i).getListRainStation().get(j).getNAME().equals(maxName[i])){
-                    dayrnflCh.setSTCD(listXAJChildRainStation.get(i).getListRainStation().get(j).getID());break;
-                }
-            }
-            listDayrnflCh.add(dayrnflCh);
-        }
-        return listDayrnflCh;
-    }
-
     //返回面平均雨量表—新安江模型
     public List<DayrnflAvg> saveXAJDayrnflAvg(float pp[][],String timeSeries[]) throws ParseException {
         List<DayrnflAvg> listDayrnflAvg = new ArrayList<>();
@@ -343,13 +323,35 @@ public class ForecastAdapterService {
                 dayrnflAvg.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
                 dayrnflAvg.setNO(forecastC.getNO());
                 //dayrnflAvg.setYMC((int) sdf2.parse(timeSeries[t]).getTime());
-                dayrnflAvg.setDRN(new BigDecimal(Float.toString(pp[t][m])));
+                dayrnflAvg.setDRN(new BigDecimal(df0.format(pp[t][m])));
                 ALLPP[t][m] = pp[t][m];
                 listDayrnflAvg.add(dayrnflAvg);
             }
         }
         return listDayrnflAvg;
     }
+    //返回雨量分析特征表—新安江模型
+    public List<DayrnflCh> saveXAJDayrnflCh(float addPp[],float totalRain[],String maxName[]){
+        List<DayrnflCh> listDayrnflCh = new ArrayList<>();
+        List<XAJChildRainStation> listXAJChildRainStation = (List<XAJChildRainStation>) xajMap.get("listChildRainStation");
+        for(int i=0;i<listXAJChildRainStation.size();i++){
+            DayrnflCh dayrnflCh = new DayrnflCh();
+            dayrnflCh.setARCD(listXAJChildRainStation.get(i).getChildId());
+            dayrnflCh.setNO(forecastC.getNO());
+            dayrnflCh.setAMRN(new BigDecimal(df0.format(addPp[i])));
+            dayrnflCh.setSTMRN(new BigDecimal(df0.format(totalRain[i])));
+            dayrnflCh.setSTNM(maxName[i]);
+            for(int j=0;j<listXAJChildRainStation.get(i).getSize();j++){
+                if(listXAJChildRainStation.get(i).getListRainStation().get(j).getNAME().equals(maxName[i])){
+                    dayrnflCh.setSTCD(listXAJChildRainStation.get(i).getListRainStation().get(j).getID());break;
+                }
+            }
+            listDayrnflCh.add(dayrnflCh);
+        }
+        return listDayrnflCh;
+    }
+
+
     //-------------------------------------------新安江土壤含水量计算---------------------------------
     //实测流量（从预热期开始到实测开始前一天)(阜阳闸、鲁台子、明光、蚌埠闸、金锁镇、峰山、泗洪老、泗洪新、团结闸)
     //从河道水情表和闸坝放水表，没有团结闸
@@ -586,15 +588,15 @@ public class ForecastAdapterService {
                 soilW.setARCD(listXAJChildRainStation.get(i).getChildId());
                 soilW.setNO(forecastC.getNO());
                 soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
-                soilW.setE(new BigDecimal(Float.toString(epej[t][i])));
-                soilW.setP(new BigDecimal(Float.toString(plpj[t][i])));
-                soilW.setW(new BigDecimal(Float.toString(wpj[t][i])));
-                soilW.setWu(new BigDecimal(Float.toString(wupj[t][i])));
-                soilW.setWl(new BigDecimal(Float.toString(wlpj[t][i])));
-                soilW.setWd(new BigDecimal(Float.toString(wdpj[t][i])));
-                soilW.setQ(new BigDecimal(Float.toString(qcalj[t][i])));
-                soilW.setS(new BigDecimal(Float.toString(spj[t][i])));
-                soilW.setFr(new BigDecimal(Float.toString(frpj[t][i])));
+                soilW.setE(new BigDecimal(df4.format(epej[t][i])));
+                soilW.setP(new BigDecimal(df4.format(plpj[t][i])));
+                soilW.setW(new BigDecimal(df4.format(wpj[t][i])));
+                soilW.setWu(new BigDecimal(df4.format(wupj[t][i])));
+                soilW.setWl(new BigDecimal(df4.format(wlpj[t][i])));
+                soilW.setWd(new BigDecimal(df4.format(wdpj[t][i])));
+                soilW.setQ(new BigDecimal(df.format(qcalj[t][i])));
+                soilW.setS(new BigDecimal(df0.format(spj[t][i])));
+                soilW.setFr(new BigDecimal(df0.format(frpj[t][i])));
                 listSoilW.add(soilW);
             }
             for(int i =0;i<epej1[0].length;i++){//蚌埠
@@ -603,15 +605,15 @@ public class ForecastAdapterService {
                 soilW.setARCD(listXAJChildRainStation.get(i+epej[0].length).getChildId());
                 soilW.setNO(forecastC.getNO());
                 soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
-                soilW.setE(new BigDecimal(Float.toString(epej1[t][i])));
-                soilW.setP(new BigDecimal(Float.toString(plpj1[t][i])));
-                soilW.setW(new BigDecimal(Float.toString(wpj1[t][i])));
-                soilW.setWu(new BigDecimal(Float.toString(wupj1[t][i])));
-                soilW.setWl(new BigDecimal(Float.toString(wlpj1[t][i])));
-                soilW.setWd(new BigDecimal(Float.toString(wdpj1[t][i])));
-                soilW.setQ(new BigDecimal(Float.toString(qcalj1[t][i])));
-                soilW.setS(new BigDecimal(Float.toString(spj1[t][i])));
-                soilW.setFr(new BigDecimal(Float.toString(frpj1[t][i])));
+                soilW.setE(new BigDecimal(df4.format(epej1[t][i])));
+                soilW.setP(new BigDecimal(df4.format(plpj1[t][i])));
+                soilW.setW(new BigDecimal(df4.format(wpj1[t][i])));
+                soilW.setWu(new BigDecimal(df4.format(wupj1[t][i])));
+                soilW.setWl(new BigDecimal(df4.format(wlpj1[t][i])));
+                soilW.setWd(new BigDecimal(df4.format(wdpj1[t][i])));
+                soilW.setQ(new BigDecimal(df.format(qcalj1[t][i])));
+                soilW.setS(new BigDecimal(df0.format(spj1[t][i])));
+                soilW.setFr(new BigDecimal(df0.format(frpj1[t][i])));
                 listSoilW.add(soilW);
             }
             for(int i =0;i<epej2[0].length;i++){//淮南
@@ -620,15 +622,15 @@ public class ForecastAdapterService {
                 soilW.setARCD(listXAJChildRainStation.get(i+epej[0].length+epej1[0].length).getChildId());
                 soilW.setNO(forecastC.getNO());
                 soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
-                soilW.setE(new BigDecimal(Float.toString(epej2[t][i])));
-                soilW.setP(new BigDecimal(Float.toString(plpj2[t][i])));
-                soilW.setW(new BigDecimal(Float.toString(wpj2[t][i])));
-                soilW.setWu(new BigDecimal(Float.toString(wupj2[t][i])));
-                soilW.setWl(new BigDecimal(Float.toString(wlpj2[t][i])));
-                soilW.setWd(new BigDecimal(Float.toString(wdpj2[t][i])));
-                soilW.setQ(new BigDecimal(Float.toString(qcalj2[t][i])));
-                soilW.setS(new BigDecimal(Float.toString(spj2[t][i])));
-                soilW.setFr(new BigDecimal(Float.toString(frpj2[t][i])));
+                soilW.setE(new BigDecimal(df4.format(epej2[t][i])));
+                soilW.setP(new BigDecimal(df4.format(plpj2[t][i])));
+                soilW.setW(new BigDecimal(df4.format(wpj2[t][i])));
+                soilW.setWu(new BigDecimal(df4.format(wupj2[t][i])));
+                soilW.setWl(new BigDecimal(df4.format(wlpj2[t][i])));
+                soilW.setWd(new BigDecimal(df4.format(wdpj2[t][i])));
+                soilW.setQ(new BigDecimal(df.format(qcalj2[t][i])));
+                soilW.setS(new BigDecimal(df0.format(spj2[t][i])));
+                soilW.setFr(new BigDecimal(df0.format(frpj2[t][i])));
                 listSoilW.add(soilW);
             }
             for(int i =0;i<epej3[0].length;i++){//淮北
@@ -637,15 +639,15 @@ public class ForecastAdapterService {
                 soilW.setARCD(listXAJChildRainStation.get(i+epej[0].length+epej1[0].length+epej2[0].length).getChildId());
                 soilW.setNO(forecastC.getNO());
                 soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
-                soilW.setE(new BigDecimal(Float.toString(epej3[t][i])));
-                soilW.setP(new BigDecimal(Float.toString(plpj3[t][i])));
-                soilW.setW(new BigDecimal(Float.toString(wpj3[t][i])));
-                soilW.setWu(new BigDecimal(Float.toString(wupj3[t][i])));
-                soilW.setWl(new BigDecimal(Float.toString(wlpj3[t][i])));
-                soilW.setWd(new BigDecimal(Float.toString(wdpj3[t][i])));
-                soilW.setQ(new BigDecimal(Float.toString(qcalj3[t][i])));
-                soilW.setS(new BigDecimal(Float.toString(spj3[t][i])));
-                soilW.setFr(new BigDecimal(Float.toString(frpj3[t][i])));
+                soilW.setE(new BigDecimal(df4.format(epej3[t][i])));
+                soilW.setP(new BigDecimal(df4.format(plpj3[t][i])));
+                soilW.setW(new BigDecimal(df4.format(wpj3[t][i])));
+                soilW.setWu(new BigDecimal(df4.format(wupj3[t][i])));
+                soilW.setWl(new BigDecimal(df4.format(wlpj3[t][i])));
+                soilW.setWd(new BigDecimal(df4.format(wdpj3[t][i])));
+                soilW.setQ(new BigDecimal(df.format(qcalj3[t][i])));
+                soilW.setS(new BigDecimal(df0.format(spj3[t][i])));
+                soilW.setFr(new BigDecimal(df0.format(frpj3[t][i])));
                 listSoilW.add(soilW);
             }
             for(int i =0;i<epej4[0].length;i++){//胡兵
@@ -654,15 +656,15 @@ public class ForecastAdapterService {
                 soilW.setARCD(listXAJChildRainStation.get(i+epej[0].length+epej1[0].length+epej2[0].length+epej3[0].length).getChildId());
                 soilW.setNO(forecastC.getNO());
                 soilW.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
-                soilW.setE(new BigDecimal(Float.toString(epej4[t][i])));
-                soilW.setP(new BigDecimal(Float.toString(plpj4[t][i])));
-                soilW.setW(new BigDecimal(Float.toString(wpj4[t][i])));
-                soilW.setWu(new BigDecimal(Float.toString(wupj4[t][i])));
-                soilW.setWl(new BigDecimal(Float.toString(wlpj4[t][i])));
-                soilW.setWd(new BigDecimal(Float.toString(wdpj4[t][i])));
-                soilW.setQ(new BigDecimal(Float.toString(qcalj4[t][i])));
-                soilW.setS(new BigDecimal(Float.toString(spj4[t][i])));
-                soilW.setFr(new BigDecimal(Float.toString(frpj4[t][i])));
+                soilW.setE(new BigDecimal(df4.format(epej4[t][i])));
+                soilW.setP(new BigDecimal(df4.format(plpj4[t][i])));
+                soilW.setW(new BigDecimal(df4.format(wpj4[t][i])));
+                soilW.setWu(new BigDecimal(df4.format(wupj4[t][i])));
+                soilW.setWl(new BigDecimal(df4.format(wlpj4[t][i])));
+                soilW.setWd(new BigDecimal(df4.format(wdpj4[t][i])));
+                soilW.setQ(new BigDecimal(df.format(qcalj4[t][i])));
+                soilW.setS(new BigDecimal(df0.format(spj4[t][i])));
+                soilW.setFr(new BigDecimal(df0.format(frpj4[t][i])));
                 listSoilW.add(soilW);
             }
 
@@ -778,7 +780,7 @@ public class ForecastAdapterService {
             cfBb.setNO(forecastC.getNO());
             cfBb.setDBCD("00100000");
             cfBb.setIL(note[i]);
-            cfBb.setW(new BigDecimal(df.format(totalW[i])));//位数过长
+            cfBb.setW(new BigDecimal(df.format(totalW[i])));
             cfBb.setFL((int) isOpen[i]);
             listCfBb.add(cfBb);
         }
@@ -812,7 +814,7 @@ public class ForecastAdapterService {
             cfR1.setID("001");
             cfR1.setNAME("昭平台");
             cfR1.setYMDHM(sdf.parse(timeSeries[i]+" 00:00:00"));
-            cfR1.setQ(new BigDecimal(df.format(sumQ1[i])));//位数可能过多
+            cfR1.setQ(new BigDecimal(df.format(sumQ1[i])));
 
             CfR cfR2 = new CfR();
             cfR2.setNO(forecastC.getNO());//洪汝河
@@ -1836,7 +1838,7 @@ public class ForecastAdapterService {
         float eqm = (float) mapLsFractureFlow.get("ErrorPeak");//洪峰相对误差
         String sttime = (String) mapLsFractureFlow.get("measuredPeakTime");//实测峰现时间
         String ftime = (String) mapLsFractureFlow.get("forecastPeakTime");//预报峰现时间
-        //float iem = (float) mapLsFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        float floodPeakStage = (float) mapLsFractureFlow.get("floodPeakWaterLevel");//预报洪峰水位
         float dc = (float) mapLsFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajt = new ForecastXajt();
         forecastXajt.setNO(forecastC.getNO());
@@ -1852,7 +1854,7 @@ public class ForecastAdapterService {
         forecastXajt.setRPE(new BigDecimal(df1.format(eqm)));
         forecastXajt.setOBPT(sdf.parse(sttime+" 00:00:00"));
         forecastXajt.setFOPT(sdf.parse(ftime+" 00:00:00"));
-       // forecastXajt.setFOPZ(new BigDecimal(Float.toString(iem)));
+        forecastXajt.setFOPZ(new BigDecimal(df.format(floodPeakStage)));
         forecastXajt.setDY(new BigDecimal(df1.format(dc)));
         listForecastXajt.add(forecastXajt);
 
@@ -1868,7 +1870,8 @@ public class ForecastAdapterService {
         float eqmbb = (float) mapBbFractureFlow.get("ErrorPeak");//洪峰相对误差
         String sttimebb = (String) mapBbFractureFlow.get("measuredPeakTime");//实测峰现时间
         String ftimebb = (String) mapBbFractureFlow.get("forecastPeakTime");//预报峰现时间
-       // float iembb = (float) mapBbFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
+        float floodPeakStagebb = (float) mapLsFractureFlow.get("floodPeakWaterLevel");//预报洪峰水位------?
+        //float iembb = (float) mapBbFractureFlow.get("ErrorPeakTime");
         float dcbb = (float) mapBbFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtBb = new ForecastXajt();
         forecastXajtBb.setNO(forecastC.getNO());
@@ -1884,7 +1887,7 @@ public class ForecastAdapterService {
         forecastXajtBb.setRPE(new BigDecimal(df1.format(eqmbb)));
         forecastXajtBb.setOBPT(sdf.parse(sttimebb+" 00:00:00"));
         forecastXajtBb.setFOPT(sdf.parse(ftimebb+" 00:00:00"));
-      //  forecastXajtBb.setFOPZ(new BigDecimal(Float.toString(iembb)));
+        forecastXajtBb.setFOPZ(new BigDecimal(df.format(floodPeakStagebb)));
         forecastXajtBb.setDY(new BigDecimal(df1.format(dcbb)));
         listForecastXajt.add(forecastXajtBb);
 
@@ -2115,24 +2118,6 @@ public class ForecastAdapterService {
         }
         return treeArr;
     }
-    //返回雨量分析特征值表—经验模型
-    public List<DayrnflCh> saveJYDayrnflCh(float[] addPp){
-        List<DayrnflCh> listDayrnflCh = new ArrayList<>();
-        List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
-        pP = new float[addPp.length];
-        for(int i=0;i<listJYChildRainStation.size();i++){
-            DayrnflCh dayrnflCh = new DayrnflCh();
-            dayrnflCh.setARCD(listJYChildRainStation.get(i).getChildId());
-            dayrnflCh.setNO(forecastC.getNO());
-            dayrnflCh.setAMRN(new BigDecimal(Float.toString(addPp[i])));
-            //单站累计最大降雨量
-            //对应站码
-            //对应站名
-            pP[i] = addPp[i];//获取经验模型累积雨量pp
-            listDayrnflCh.add(dayrnflCh);
-        }
-        return listDayrnflCh;
-    }
     //返回面平均雨量—经验模型
     public List<DayrnflAvg> saveJYDayrnflAvg(float[][] pp,String timeSeries[]) throws ParseException {
         List<DayrnflAvg> listDayrnflAvg = new ArrayList<>();
@@ -2145,13 +2130,32 @@ public class ForecastAdapterService {
                 dayrnflAvg.setARCD(listJYChildRainStation.get(i).getChildId());
                 dayrnflAvg.setYMDHM(sdf.parse(timeSeries[t]+" 00:00:00"));
                 dayrnflAvg.setNO(forecastC.getNO());
-                dayrnflAvg.setDRN(new BigDecimal(Float.toString(pp[t][i])));
+                dayrnflAvg.setDRN(new BigDecimal(df0.format(pp[t][i])));
                 listDayrnflAvg.add(dayrnflAvg);
                 pPM[t][i] = pp[t][i];
             }
         }
         return listDayrnflAvg;
     }
+    //返回雨量分析特征值表—经验模型
+    public List<DayrnflCh> saveJYDayrnflCh(float[] addPp){
+        List<DayrnflCh> listDayrnflCh = new ArrayList<>();
+        List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
+        pP = new float[addPp.length];
+        for(int i=0;i<listJYChildRainStation.size();i++){
+            DayrnflCh dayrnflCh = new DayrnflCh();
+            dayrnflCh.setARCD(listJYChildRainStation.get(i).getChildId());
+            dayrnflCh.setNO(forecastC.getNO());
+            dayrnflCh.setAMRN(new BigDecimal(df0.format(addPp[i])));
+            //单站累计最大降雨量
+            //对应站码
+            //对应站名
+            pP[i] = addPp[i];//获取经验模型累积雨量pp
+            listDayrnflCh.add(dayrnflCh);
+        }
+        return listDayrnflCh;
+    }
+
     //---------------------------------------------经验模型初始土壤湿度----------------------------------------
     //获取经验模型产流参数IM
     public float[] getJYIm(){
@@ -2190,7 +2194,7 @@ public class ForecastAdapterService {
             SoilH soilH = new SoilH();
             soilH.setARCD(listJYChildRainStation.get(i).getChildId());
             soilH.setNO(forecastC.getNO());
-            soilH.setW(new BigDecimal(Float.toString(paa[i])));
+            soilH.setW(new BigDecimal(df0.format(paa[i])));
             listSoilH.add(soilH);
             W[i] = paa[i];
         }
@@ -2248,7 +2252,7 @@ public class ForecastAdapterService {
         }
         return lyPara;
     }
-    //分块产流结果表
+    //分块产流结果表(产流结果表（F_RP_R）)
     public List<RpR> saveRpR(double[] r,double[] w){
         List<RpR> listRpR = new ArrayList<>();
         List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
@@ -2256,13 +2260,13 @@ public class ForecastAdapterService {
             RpR rpR = new RpR();
             rpR.setARCD(listJYChildRainStation.get(i).getChildId());
             rpR.setNO(forecastC.getNO());
-            rpR.setR(new BigDecimal(Double.toString(r[i])));
-            rpR.setW(new BigDecimal(Double.toString(w[i])));
+            rpR.setR(new BigDecimal(df0.format(r[i])));
+            rpR.setW(new BigDecimal(df.format(w[i])));
             listRpR.add(rpR);
         }
         return listRpR;
     }
-    //产流结果修正表
+    //产流结果修正表(产流结果修正表（F_RP_CR）)
     public List<RpCr> saveRpCr(double[] w, double cw[]){
         List<RpCr> listRpCr = new ArrayList<>();
         List<JYChildRainStation> listJYChildRainStation = (List<JYChildRainStation>) jyMap.get("listJYChildRainStation");
@@ -2275,8 +2279,8 @@ public class ForecastAdapterService {
             RpCr rpCr = new RpCr();
             rpCr.setID(listJYChildRainStation.get(i).getChildId());
             rpCr.setNO(forecastC.getNO());
-            rpCr.setW(new BigDecimal(Double.toString(w[i])));
-            rpCr.setCW(new BigDecimal(Double.toString(cw[i])));
+            rpCr.setW(new BigDecimal(df.format(w[i])));
+            rpCr.setCW(new BigDecimal(df.format(cw[i])));
             listRpCr.add(rpCr);
         }
         return listRpCr;
@@ -2325,7 +2329,7 @@ public class ForecastAdapterService {
             cfR1.setID("001");
             cfR1.setNAME("昭平台");
             cfR1.setYMDHM(sdf.parse(timeSeries[i]));
-            cfR1.setQ(new BigDecimal(Double.toString(cf[i][0])));
+            cfR1.setQ(new BigDecimal(df.format(cf[i][0])));
 
             CfR cfR2 = new CfR();//洪汝河
             cfR2.setNO(forecastC.getNO());
@@ -2333,7 +2337,7 @@ public class ForecastAdapterService {
             cfR2.setID("002");
             cfR2.setNAME("洪汝河");
             cfR2.setYMDHM(sdf.parse(timeSeries[i]));
-            cfR2.setQ(new BigDecimal(Double.toString(cf[i][1])));
+            cfR2.setQ(new BigDecimal(df.format(cf[i][1])));
 
             CfR cfR3 = new CfR();//淮南
             cfR3.setNO(forecastC.getNO());
@@ -2341,7 +2345,7 @@ public class ForecastAdapterService {
             cfR3.setID("003");
             cfR3.setNAME("淮南");
             cfR3.setYMDHM(sdf.parse(timeSeries[i]));
-            cfR3.setQ(new BigDecimal(Double.toString(cf[i][2])));
+            cfR3.setQ(new BigDecimal(df.format(cf[i][2])));
 
             CfR cfR4 = new CfR();//昭平台汇流
             cfR4.setNO(forecastC.getNO());
@@ -2349,7 +2353,7 @@ public class ForecastAdapterService {
             cfR4.setID("101");
             cfR4.setNAME("昭平台汇流");
             cfR4.setYMDHM(sdf.parse(timeSeries[i]));
-            cfR4.setQ(new BigDecimal(Double.toString(qrc[i][0])));
+            cfR4.setQ(new BigDecimal(df.format(qrc[i][0])));
 
             CfR cfR5 = new CfR();//洪汝河汇流
             cfR5.setNO(forecastC.getNO());
@@ -2357,7 +2361,7 @@ public class ForecastAdapterService {
             cfR5.setID("202");
             cfR5.setNAME("洪汝河汇流");
             cfR5.setYMDHM(sdf.parse(timeSeries[i]));
-            cfR5.setQ(new BigDecimal(Double.toString(qrc[i][1])));
+            cfR5.setQ(new BigDecimal(df.format(qrc[i][1])));
 
             CfR cfR6 = new CfR();//淮南汇流
             cfR6.setNO(forecastC.getNO());
@@ -2365,7 +2369,7 @@ public class ForecastAdapterService {
             cfR6.setID("303");
             cfR6.setNAME("淮南汇流");
             cfR6.setYMDHM(sdf.parse(timeSeries[i]));
-            cfR6.setQ(new BigDecimal(Double.toString(qrc[i][2])));
+            cfR6.setQ(new BigDecimal(df.format(qrc[i][2])));
             listCfR.add(cfR1);
             listCfR.add(cfR2);
             listCfR.add(cfR3);
@@ -2389,21 +2393,21 @@ public class ForecastAdapterService {
         cfBb1.setNO(forecastC.getNO());
         cfBb1.setDBCD("10100000");
         cfBb1.setIL("阜阳闸的水库");
-        cfBb1.setW(new BigDecimal(Double.toString(bBHL[0][0])));
+        cfBb1.setW(new BigDecimal(df.format(bBHL[0][0])));
         cfBb1.setFL(((int) bBHL[0][1]));
 
         CfBb cfBb2 = new CfBb();
         cfBb2.setNO(forecastC.getNO());
         cfBb2.setDBCD("10100000");
         cfBb2.setIL("流到宿鸭湖的水库");
-        cfBb2.setW(new BigDecimal(Double.toString(bBHL[1][0])));
+        cfBb2.setW(new BigDecimal(df.format(bBHL[1][0])));
         cfBb2.setFL(((int) bBHL[0][1]));
 
         CfBb cfBb3 = new CfBb();
         cfBb3.setNO(forecastC.getNO());
         cfBb3.setDBCD("10100000");
         cfBb3.setIL("干流及淮南的水库");
-        cfBb3.setW(new BigDecimal(Double.toString(bBHL[1][0])));
+        cfBb3.setW(new BigDecimal(df.format(bBHL[1][0])));
         cfBb3.setFL(((int) bBHL[0][1]));
         listCfBb.add(cfBb1);
         listCfBb.add(cfBb2);
@@ -2462,11 +2466,8 @@ public class ForecastAdapterService {
     public double[][] getFL(){
         return FL;
     }
-
-
     //考虑淮干与淮南水库汇流时间
     public String[][] getTM() throws ParseException {
-
         return TM;
     }
     //所有配置表（蚌埠（0,10）、淮北（2,8），淮南（1,12））
@@ -2509,10 +2510,11 @@ public class ForecastAdapterService {
     }
     //获取经验模型水库来水及汇流
     public double[][] getCFQ() throws ParseException {
+
         return CFQ;
     }
     //经验模型预报结果表（F_FORECAST_JYR）
-    public List<ForecastJyr> saveForecastJyr(double bengBuRain[],double[] huaiBeiRain,double []huaiNanRain,double[] huMianRain,
+    public List<ForecastJyr> saveForecastJyr(double bengBuRain[],double[] huaiBeiRain,double []huaiNanRain,double[] huMianRain,double[] hZhRain,
                                             double bengBuQ[],double huaiBeiQ[],double huaiNanQ[],double huMianQ[],double[] hZHQ,
                                             double bengBuSTQ[],double huaiBeiSTQ[],double huaiNanSTQ[]) throws ParseException {
         List<ForecastJyr> listForecastJyr = new ArrayList<>();
@@ -2522,37 +2524,39 @@ public class ForecastAdapterService {
             forecastJyr1.setNO(forecastC.getNO());
             forecastJyr1.setID("10100000");
             forecastJyr1.setYMDHM(sdf.parse(timeSeries[i]));
-            forecastJyr1.setPQ(new BigDecimal(Double.toString(hZHQ[i])));
+            forecastJyr1.setDRN(new BigDecimal(df0.format(hZhRain[0])));
+            forecastJyr1.setPQ(new BigDecimal(df.format(hZHQ[i])));
 
             ForecastJyr forecastJyr2 = new ForecastJyr();//蚌埠
             forecastJyr2.setNO(forecastC.getNO());
             forecastJyr2.setID("10101000");
             forecastJyr2.setYMDHM(sdf.parse(timeSeries[i]));
-            forecastJyr2.setDRN(new BigDecimal(Double.toString(bengBuRain[i])));
-            forecastJyr2.setPQ(new BigDecimal((Double.toString(bengBuQ[i]))));
-            forecastJyr2.setQ(new BigDecimal(Double.toString(bengBuSTQ[i])));
+            forecastJyr2.setDRN(new BigDecimal(df0.format(bengBuRain[i])));
+            forecastJyr2.setPQ(new BigDecimal((df.format(bengBuQ[i]))));
+            forecastJyr2.setQ(new BigDecimal(df.format(bengBuSTQ[i])));
 
             ForecastJyr forecastJyr3 = new ForecastJyr();//淮北
             forecastJyr3.setNO(forecastC.getNO());
             forecastJyr3.setID("10103000");
             forecastJyr3.setYMDHM(sdf.parse(timeSeries[i]));
-            forecastJyr3.setDRN(new BigDecimal(Double.toString(huaiBeiRain[i])));
-            forecastJyr3.setPQ(new BigDecimal((Double.toString(huaiBeiQ[i]))));
-            forecastJyr3.setQ(new BigDecimal(Double.toString(huaiBeiSTQ[i])));
+            forecastJyr3.setDRN(new BigDecimal(df0.format(huaiBeiRain[i])));
+            forecastJyr3.setPQ(new BigDecimal((df.format(huaiBeiQ[i]))));
+            forecastJyr3.setQ(new BigDecimal(df.format(huaiBeiSTQ[i])));
+
             ForecastJyr forecastJyr4 = new ForecastJyr();//淮南
             forecastJyr4.setNO(forecastC.getNO());
             forecastJyr4.setID("10102000");
             forecastJyr4.setYMDHM(sdf.parse(timeSeries[i]));
-            forecastJyr4.setDRN(new BigDecimal(Double.toString(huaiNanRain[i])));
-            forecastJyr4.setPQ(new BigDecimal((Double.toString(huaiNanQ[i]))));
-            forecastJyr4.setQ(new BigDecimal(Double.toString(huaiNanSTQ[i])));
+            forecastJyr4.setDRN(new BigDecimal(df0.format(huaiNanRain[i])));
+            forecastJyr4.setPQ(new BigDecimal((df.format(huaiNanQ[i]))));
+            forecastJyr4.setQ(new BigDecimal(df.format(huaiNanSTQ[i])));
 
             ForecastJyr forecastJyr5 = new ForecastJyr();//湖面
             forecastJyr5.setNO(forecastC.getNO());
             forecastJyr5.setID("10104000");
             forecastJyr5.setYMDHM(sdf.parse(timeSeries[i]));
-            forecastJyr3.setDRN(new BigDecimal(Double.toString(huMianRain[i])));
-            forecastJyr3.setPQ(new BigDecimal((Double.toString(huMianQ[i]))));
+            forecastJyr5.setDRN(new BigDecimal(df0.format(huMianRain[i])));
+            forecastJyr5.setPQ(new BigDecimal((df.format(huMianQ[i]))));
             listForecastJyr.add(forecastJyr1);
             listForecastJyr.add(forecastJyr2);
             listForecastJyr.add(forecastJyr3);
@@ -2562,7 +2566,7 @@ public class ForecastAdapterService {
         return listForecastJyr;
     }
     //降雨汇流结果表（F_RFNL_HR）
-    public List<RfnlHr> saveRfnlHr(double[][] qqobc) throws ParseException {
+    public List<RfnlHr> saveRfnlHr(double[] qqobc0,double[] qqobc1,double[] qqobc2) throws ParseException {
         List<RfnlHr> listRfnlHr = new ArrayList<>();
         String[] timeSeries = getTimeSeries();
         for(int i=0;i<timeSeries.length;i++){
@@ -2571,21 +2575,21 @@ public class ForecastAdapterService {
             rfnlHr1.setYMDHM(sdf.parse(timeSeries[i]));
             rfnlHr1.setDBCD("10100000");
             rfnlHr1.setDMCD("10101000");
-            rfnlHr1.setQ(new BigDecimal(Double.toString(qqobc[i][0])));
+            rfnlHr1.setQ(new BigDecimal(df.format(qqobc0[i])));
 
             RfnlHr rfnlHr2 = new RfnlHr();//淮南
             rfnlHr2.setNO(forecastC.getNO());
             rfnlHr2.setYMDHM(sdf.parse(timeSeries[i]));
             rfnlHr2.setDBCD("10100000");
             rfnlHr2.setDMCD("10102000");
-            rfnlHr2.setQ(new BigDecimal(Double.toString(qqobc[i][1])));
+            rfnlHr2.setQ(new BigDecimal(df.format(qqobc2[i])));
 
             RfnlHr rfnlHr3 = new RfnlHr();//淮北
             rfnlHr3.setNO(forecastC.getNO());
             rfnlHr3.setYMDHM(sdf.parse(timeSeries[i]));
             rfnlHr3.setDBCD("10100000");
             rfnlHr3.setDMCD("10103000");
-            rfnlHr3.setQ(new BigDecimal(Double.toString(qqobc[i][2])));
+            rfnlHr3.setQ(new BigDecimal(df.format(qqobc1[i])));
             listRfnlHr.add(rfnlHr1);
             listRfnlHr.add(rfnlHr2);
             listRfnlHr.add(rfnlHr3);
@@ -2595,143 +2599,103 @@ public class ForecastAdapterService {
     //经验模型预报特征值表（F_FORECAST_JYT）
     public List<ForecastJyt> saveForecastJyt(double[][] chara,String qobstime[],String qcaltime[]) {//chara 行代表编号，列代表存入参数
         List<ForecastJyt> listForecastJyt = new ArrayList<>();
-        ForecastJyt forecastJyt = new ForecastJyt();
-        forecastJyt.setNO(forecastC.getNO());//鲁台子
-        forecastJyt.setID("00101000");
-        forecastJyt.setP(new BigDecimal(df0.format(chara[0][0])));
-        forecastJyt.setW(new BigDecimal(df.format(chara[0][1])));
-        forecastJyt.setOBW(new BigDecimal(df.format(chara[0][2])));
-        forecastJyt.setPOW(new BigDecimal(df.format(chara[0][3])));
-        forecastJyt.setWPE(new BigDecimal(df1.format(chara[0][4])));
-        forecastJyt.setOBPD(new BigDecimal(df.format(chara[0][5])));
-        forecastJyt.setFOPD(new BigDecimal(df.format(chara[0][6])));
-        forecastJyt.setPDE(new BigDecimal(df1.format(chara[0][7])));
+        ForecastJyt forecastJytbb = new ForecastJyt();
+        forecastJytbb.setNO(forecastC.getNO());//蚌埠
+        forecastJytbb.setID("10102000");
+        forecastJytbb.setP(new BigDecimal(df0.format(chara[0][0])));
+        forecastJytbb.setW(new BigDecimal(df.format(chara[0][1])));
+        forecastJytbb.setOBW(new BigDecimal(df.format(chara[0][2])));
+        forecastJytbb.setPOW(new BigDecimal(df.format(chara[0][3])));
+        forecastJytbb.setWPE(new BigDecimal(df1.format(chara[0][4])));
+        forecastJytbb.setOBPD(new BigDecimal(df.format(chara[0][5])));
+        forecastJytbb.setFOPD(new BigDecimal(df.format(chara[0][6])));
+        forecastJytbb.setPDE(new BigDecimal(df1.format(chara[0][7])));
         try {
-            forecastJyt.setOBPT(sdf.parse(qobstime[0]+" 00:00:00"));
-            forecastJyt.setFOPT(sdf.parse(qcaltime[0]+" 00:00:00"));
+            forecastJytbb.setOBPT(sdf.parse(qobstime[0]+" 00:00:00"));
+            forecastJytbb.setFOPT(sdf.parse(qcaltime[0]+" 00:00:00"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        forecastJyt.setDY(new BigDecimal(df1.format(chara[0][10])));
-
-        ForecastJyt forecastJytbb = new ForecastJyt();//蚌埠
-        forecastJytbb.setNO(forecastC.getNO());
-        forecastJytbb.setID("00102000");
-        forecastJytbb.setP(new BigDecimal(df0.format(chara[1][0])));
-        forecastJytbb.setW(new BigDecimal(df.format(chara[1][1])));
-        forecastJytbb.setOBW(new BigDecimal(df.format(chara[1][2])));
-        forecastJytbb.setPOW(new BigDecimal(df.format(chara[1][3])));
-        forecastJytbb.setWPE(new BigDecimal(df1.format(chara[1][4])));
-        forecastJytbb.setOBPD(new BigDecimal(df.format(chara[1][5])));
-        forecastJytbb.setFOPD(new BigDecimal(df.format(chara[1][6])));
-        forecastJytbb.setPDE(new BigDecimal(df1.format(chara[1][7])));
-        try {
-            forecastJytbb.setOBPT(sdf.parse(qobstime[1]+" 00:00:00"));
-            forecastJytbb.setFOPT(sdf.parse(qcaltime[1]+" 00:00:00"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        forecastJytbb.setDY(new BigDecimal(df1.format(chara[1][10])));
+        forecastJytbb.setDY(new BigDecimal(df1.format(chara[0][10])));
 
         ForecastJyt forecastJytby = new ForecastJyt();//淮北
         forecastJytby.setNO(forecastC.getNO());
-        forecastJytby.setID("00104000");
-        forecastJytby.setP(new BigDecimal(df0.format(chara[2][0])));
-        forecastJytby.setW(new BigDecimal(df.format(chara[2][1])));
-        forecastJytby.setOBW(new BigDecimal(df.format(chara[2][2])));
-        forecastJytby.setPOW(new BigDecimal(df.format(chara[2][3])));
-        forecastJytby.setWPE(new BigDecimal(df1.format(chara[2][4])));
-        forecastJytby.setOBPD(new BigDecimal(df.format(chara[2][5])));
-        forecastJytby.setFOPD(new BigDecimal(df.format(chara[2][6])));
-        forecastJytby.setPDE(new BigDecimal(df1.format(chara[2][7])));
+        forecastJytby.setID("10103000");
+        forecastJytby.setP(new BigDecimal(df0.format(chara[1][0])));
+        forecastJytby.setW(new BigDecimal(df.format(chara[1][1])));
+        forecastJytby.setOBW(new BigDecimal(df.format(chara[1][2])));
+        forecastJytby.setPOW(new BigDecimal(df.format(chara[1][3])));
+        forecastJytby.setWPE(new BigDecimal(df1.format(chara[1][4])));
+        forecastJytby.setOBPD(new BigDecimal(df.format(chara[1][5])));
+        forecastJytby.setFOPD(new BigDecimal(df.format(chara[1][6])));
+        forecastJytby.setPDE(new BigDecimal(df1.format(chara[1][7])));
         try {
-            forecastJytby.setOBPT(sdf.parse(qobstime[2]+" 00:00:00"));
-            forecastJytby.setFOPT(sdf.parse(qcaltime[2]+" 00:00:00"));
+            forecastJytby.setOBPT(sdf.parse(qobstime[1]+" 00:00:00"));
+            forecastJytby.setFOPT(sdf.parse(qcaltime[1]+" 00:00:00"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        forecastJytby.setDY(new BigDecimal(df1.format(chara[0][10])));
+        forecastJytby.setDY(new BigDecimal(df1.format(chara[1][10])));
 
-        ForecastJyt forecastJytmg = new ForecastJyt();
-        forecastJytmg.setNO(forecastC.getNO());//淮南
-        forecastJytmg.setID("00103000");
-        forecastJytmg.setP(new BigDecimal(df0.format(chara[3][0])));
-        forecastJytmg.setW(new BigDecimal(df.format(chara[3][1])));
-        forecastJytmg.setOBW(new BigDecimal(df.format(chara[3][2])));
-        forecastJytmg.setPOW(new BigDecimal(df.format(chara[3][3])));
-        forecastJytmg.setWPE(new BigDecimal(df1.format(chara[3][4])));
-        forecastJytmg.setOBPD(new BigDecimal(df.format(chara[3][5])));
-        forecastJytmg.setFOPD(new BigDecimal(df.format(chara[3][6])));
-        forecastJytmg.setPDE(new BigDecimal(df1.format(chara[3][7])));
+        ForecastJyt forecastJytmg = new ForecastJyt();//淮南
+        forecastJytmg.setNO(forecastC.getNO());
+        forecastJytmg.setID("10102000");
+        forecastJytmg.setP(new BigDecimal(df0.format(chara[2][0])));
+        forecastJytmg.setW(new BigDecimal(df.format(chara[2][1])));
+        forecastJytmg.setOBW(new BigDecimal(df.format(chara[2][2])));
+        forecastJytmg.setPOW(new BigDecimal(df.format(chara[2][3])));
+        forecastJytmg.setWPE(new BigDecimal(df1.format(chara[2][4])));
+        forecastJytmg.setOBPD(new BigDecimal(df.format(chara[2][5])));
+        forecastJytmg.setFOPD(new BigDecimal(df.format(chara[2][6])));
+        forecastJytmg.setPDE(new BigDecimal(df1.format(chara[2][7])));
         try {
-            forecastJytmg.setOBPT(sdf.parse(qobstime[3]+" 00:00:00"));
-            forecastJytmg.setFOPT(sdf.parse(qcaltime[3]+" 00:00:00"));
+            forecastJytmg.setOBPT(sdf.parse(qobstime[2]+" 00:00:00"));
+            forecastJytmg.setFOPT(sdf.parse(qcaltime[2]+" 00:00:00"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        forecastJytmg.setDY(new BigDecimal(df1.format(chara[3][10])));
-
-        ForecastJyt forecastJythb = new ForecastJyt();
-        forecastJythb.setNO(forecastC.getNO());//胡兵
-        forecastJythb.setID("00105000");
-        forecastJythb.setP(new BigDecimal(df0.format(chara[4][0])));
-        forecastJythb.setW(new BigDecimal(df.format(chara[4][1])));
-        forecastJythb.setOBW(new BigDecimal(df.format(chara[4][2])));
-        forecastJythb.setPOW(new BigDecimal(df.format(chara[4][3])));
-        forecastJythb.setWPE(new BigDecimal(df1.format(chara[4][4])));
-        forecastJythb.setOBPD(new BigDecimal(df.format(chara[4][5])));
-        forecastJythb.setFOPD(new BigDecimal(df.format(chara[4][6])));
-        forecastJythb.setPDE(new BigDecimal(df1.format(chara[4][7])));
-        try {
-            forecastJythb.setOBPT(sdf.parse(qobstime[4]+" 00:00:00"));
-            forecastJythb.setFOPT(sdf.parse(qcaltime[4]+" 00:00:00"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        forecastJythb.setDY(new BigDecimal(df1.format(chara[4][10])));
+        forecastJytmg.setDY(new BigDecimal(df1.format(chara[0][10])));
 
         ForecastJyt forecastJythm = new ForecastJyt();
         forecastJythm.setNO(forecastC.getNO());//湖面
-        forecastJythm.setID("00106000");
-        forecastJythm.setP(new BigDecimal(df0.format(chara[5][0])));
-        forecastJythm.setW(new BigDecimal(df.format(chara[5][1])));
-        forecastJythm.setOBW(new BigDecimal(df.format(chara[5][2])));
-        forecastJythm.setPOW(new BigDecimal(df.format(chara[5][3])));
-        forecastJythm.setWPE(new BigDecimal(df1.format(chara[5][4])));
-        forecastJythm.setOBPD(new BigDecimal(df.format(chara[5][5])));
-        forecastJythm.setFOPD(new BigDecimal(df.format(chara[5][6])));
-        forecastJythm.setPDE(new BigDecimal(df1.format(chara[5][7])));
+        forecastJythm.setID("10104000");
+        forecastJythm.setP(new BigDecimal(df0.format(chara[3][0])));
+        forecastJythm.setW(new BigDecimal(df.format(chara[3][1])));
+        forecastJythm.setOBW(new BigDecimal(df.format(chara[3][2])));
+        forecastJythm.setPOW(new BigDecimal(df.format(chara[3][3])));
+        forecastJythm.setWPE(new BigDecimal(df1.format(chara[3][4])));
+        forecastJythm.setOBPD(new BigDecimal(df.format(chara[3][5])));
+        forecastJythm.setFOPD(new BigDecimal(df.format(chara[3][6])));
+        forecastJythm.setPDE(new BigDecimal(df1.format(chara[3][7])));
         try {
-            forecastJythm.setOBPT(sdf.parse(qobstime[5]+" 00:00:00"));
-            forecastJythm.setFOPT(sdf.parse(qcaltime[5]+" 00:00:00"));
+            forecastJythm.setOBPT(sdf.parse("1997-01-01 00:00:00"));
+            forecastJythm.setFOPT(sdf.parse(qcaltime[3]+" 00:00:00"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        forecastJythm.setDY(new BigDecimal(df1.format(chara[5][10])));
+        forecastJythm.setDY(new BigDecimal(df1.format(chara[3][10])));
 
         ForecastJyt forecastJythzh = new ForecastJyt();
         forecastJythzh.setNO(forecastC.getNO());//洪泽湖
-        forecastJythzh.setID("00100000");
-        forecastJythzh.setP(new BigDecimal(df0.format(chara[6][0])));
-        forecastJythzh.setW(new BigDecimal(df.format(chara[6][1])));
-        forecastJythzh.setOBW(new BigDecimal(df.format(chara[6][2])));
-        forecastJythzh.setPOW(new BigDecimal(df.format(chara[6][3])));
-        forecastJythzh.setWPE(new BigDecimal(df1.format(chara[6][4])));
-        forecastJythzh.setOBPD(new BigDecimal(df.format(chara[6][5])));
-        forecastJythzh.setFOPD(new BigDecimal(df.format(chara[6][6])));
-        forecastJythzh.setPDE(new BigDecimal(df1.format(chara[6][7])));
+        forecastJythzh.setID("10100000");
+        forecastJythzh.setP(new BigDecimal(df0.format(chara[4][0])));
+        forecastJythzh.setW(new BigDecimal(df.format(chara[4][1])));
+        forecastJythzh.setOBW(new BigDecimal(df.format(chara[4][2])));
+        forecastJythzh.setPOW(new BigDecimal(df.format(chara[4][3])));
+        forecastJythzh.setWPE(new BigDecimal(df1.format(chara[4][4])));
+        forecastJythzh.setOBPD(new BigDecimal(df.format(chara[4][5])));
+        forecastJythzh.setFOPD(new BigDecimal(df.format(chara[4][6])));
+        forecastJythzh.setPDE(new BigDecimal(df1.format(chara[4][7])));
         try {
-            forecastJythzh.setOBPT(sdf.parse(qobstime[6]+" 00:00:00"));
-            forecastJythzh.setFOPT(sdf.parse(qcaltime[6]+" 00:00:00"));
+            forecastJythzh.setOBPT(sdf.parse("1997-01-01 00:00:00"));
+           forecastJythzh.setFOPT(sdf.parse(qcaltime[4]+" 00:00:00"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        forecastJythzh.setDY(new BigDecimal(df1.format(chara[6][10])));
-        listForecastJyt.add(forecastJyt);
+        forecastJythzh.setDY(new BigDecimal(df1.format(chara[4][10])));
         listForecastJyt.add(forecastJytbb);
         listForecastJyt.add(forecastJytmg);
         listForecastJyt.add(forecastJytby);
-        listForecastJyt.add(forecastJythb);
         listForecastJyt.add(forecastJythm);
         listForecastJyt.add(forecastJythzh);
         return listForecastJyt;

@@ -34,7 +34,9 @@ public class Huiliu {
 	double[][] qbyg;
 	double[][] qmg;
 	double[][] qmgg;
-	double[][] qqobc;
+	double[] qqobc0;
+	double[] qqobc1;
+	double[] qqobc2;
 	int nnbb;
 	int nnby;
 	int nnmg;
@@ -193,14 +195,22 @@ public class Huiliu {
 	
 	/*蚌埠、淮北、淮南单位线计算*/
 	public void UA(double[][] w, double[][] qbb, double[][] qby, double[][] qmg) {
-		
+
 		/*判断条件*/
 		double[] bb = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 		double[] by = {3, 5, 10, 15, 20, 25, 30, 35};
 		double[] mg = {10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90};
 		//输出VB中表jybresuno格式：时间、蚌埠、淮北、淮南,数组长度需做修改*/
-		qqobc = new double[Longtime][4];//Longtime12
-		qbbg = new double[Longtime][11];System.out.println(qbb.length);//62
+
+
+		if (Longtime <= 62) {
+			nnbb = 62;
+		} else {
+			nnbb = Longtime;
+		}
+		qqobc0 = new double[nnbb];
+
+		qbbg = new double[nnbb][11];
 		for (int i = 0; i < qbb.length; i++) {
 			for (int j = 0; j < qbb[i].length; j++) {
 				qbbg[i][j] = qbb[i][j];
@@ -211,98 +221,99 @@ public class Huiliu {
 		/*----单位线地面径流计算流量计算-------*/
 		/*蚌埠预报地面径流量计算对应qbbobc*
 		/*如果数据时段长超过62未考虑*/
-		if (Longtime <= 62) {
-			nnbb = 62;
-		} else {
-			nnbb = Longtime;
-		}
+
 		if (w[0][1] >= 0 && w[0][1] <= bb[0]) {
 			for (int i = 0; i < nnbb; i++) {
-				qqobc[i][0] = w[0][1] / bb[0] * qbbg[i][0];
+				qqobc0[i]= w[0][1] / bb[0] * qbbg[i][0];
 			}
 		} else if (w[0][1] >= bb[0] && w[0][1] <= bb[9]) {
 			for (int j = 1; j <= 10; j++) {
 				if (w[0][1] <= bb[j] && w[0][1] > bb[j - 1]) {
 					for (int i = 0; i < nnbb; i++) {
-						qqobc[i][0] = ((w[0][1] - bb[j]) / (bb[j - 1] - bb[j])) * qbbg[i][j - 1] + ((w[0][1] - bb[j - 1]) / (bb[j] - bb[j - 1])) * qbbg[i][j];
+						qqobc0[i] = ((w[0][1] - bb[j]) / (bb[j - 1] - bb[j])) * qbbg[i][j - 1] + ((w[0][1] - bb[j - 1]) / (bb[j] - bb[j - 1])) * qbbg[i][j];
 					}
 					break;
 				}
 			}
 		} else if (w[0][1] > bb[9]) {
 			for (int i = 0; i < nnbb; i++) {
-				qqobc[i][0] = w[0][1] / bb[9] * qbbg[i][9];
+				qqobc0[i]= w[0][1] / bb[9] * qbbg[i][9];
 			}
 		}
-		
-		
+
+
 		/*淮北预报地面径流量计算对应qbyc*/
 		/*如果数据时段长超过42未考虑*/
-		qbyg = new double[Longtime][9];
-		for (int i = 0; i < qby.length; i++) {
-			for (int j = 0; j < qby[i].length; j++) {
-				qbyg[i][j] = qby[i][j];
-			}
-		}
 		if (Longtime <= 42) {
 			nnby = 42;
 		} else {
 			nnby = Longtime;
 		}
-		
+		qqobc1 = new double[nnby];
+		qbyg = new double[nnby][9];
+		for (int i = 0; i < qby.length; i++) {
+			for (int j = 0; j < qby[i].length; j++) {
+				qbyg[i][j] = qby[i][j];
+			}
+		}
+
 		if (w[1][1] >= 0 && w[1][1] <= by[0]) {
 			for (int i = 0; i < nnby; i++) {
-				qqobc[i][2] = w[1][2] / by[0] * qbyg[i][0];
+				qqobc1[i] = w[1][1] / by[0] * qbyg[i][0];
 			}
 		} else if (w[1][1] >= by[0] && w[1][1] <= by[7]) {
 			for (int j = 1; j <= 8; j++) {
 				if (w[1][1] <= by[j] && w[1][1] > by[j - 1]) {
 					for (int i = 0; i < nnby; i++) {
-						qqobc[i][1] = ((w[1][1] - by[j]) / (by[j - 1] - by[j])) * qbyg[i][j - 1] + ((w[1][1] - by[j - 1]) / (by[j] - by[j - 1])) * qbyg[i][j];
+						qqobc1[i] = ((w[1][1] - by[j]) / (by[j - 1] - by[j])) * qbyg[i][j - 1] + ((w[1][1] - by[j - 1]) / (by[j] - by[j - 1])) * qbyg[i][j];
 					}
 					break;
 				}
 			}
 		} else if (w[1][1] > by[7]) {
 			for (int i = 0; i < nnby; i++) {
-				qqobc[i][1] = w[1][1] / by[7] * qbyg[i][7];
+				qqobc1[i] = w[1][1] / by[7] * qbyg[i][7];
 			}
 		}
-		
+
 		/*淮南预报地面径流量计算mgc*/
 		/*如果数据时段长超过18未考虑*/
-		qmgg = new double[Longtime][13];
-		for (int i = 0; i < qmg.length; i++) {
-			for (int j = 0; j < qmg[i].length; j++) {
-				qmgg[i][j] = qmg[i][j];
-			}
-		}
 		if (Longtime <= 18) {
 			nnmg = 18;
 		} else {
 			nnmg = Longtime;
 		}
+		qqobc2 = new double[nnmg];
+
+		qmgg = new double[nnmg][13];
+		for (int i = 0; i < qmg.length; i++) {
+			for (int j = 0; j < qmg[i].length; j++) {
+				qmgg[i][j] = qmg[i][j];
+			}
+		}
+
 		if (w[2][1] >= 0 && w[2][1] <= mg[0]) {
 			for (int i = 0; i < nnmg; i++) {
-				qqobc[i][2] = w[2][1] / mg[0] * qmgg[i][0];
+				qqobc2[i]= w[2][1] / mg[0] * qmgg[i][0];
 			}
 		} else if (w[2][1] >= mg[0] && w[2][1] <= mg[11]) {
 			for (int j = 1; j <= 12; j++) {
 				if (w[2][1] <= mg[j] && w[2][1] > mg[j - 1]) {
 					for (int i = 0; i < nnmg; i++) {
-						qqobc[i][2] = ((w[2][1] - mg[j]) / (mg[j - 1] - mg[j])) * qmgg[i][j - 1] + ((w[1][1] - mg[j - 1]) / (mg[j] - mg[j - 1])) * qmgg[i][j];
+						qqobc2[i] = ((w[2][1] - mg[j]) / (mg[j - 1] - mg[j])) * qmgg[i][j - 1] + ((w[1][1] - mg[j - 1]) / (mg[j] - mg[j - 1])) * qmgg[i][j];
 					}
 					break;
 				}
 			}
 		} else if (w[2][1] > mg[11]) {
 			for (int i = 0; i < nnmg; i++) {
-				qqobc[i][2] = w[2][1] / mg[11] * qmgg[i][11];
+				qqobc2[i] = w[2][1] / mg[11] * qmgg[i][11];
 			}
 		}
-		
+
 	}
-	
+
+
 	/*蚌埠水库汇流计算*/
 	public void bbShuiku(double[][] q1, double[][] idc,String[][] itc) {
 //		输入三张表格水库汇流结果，是否汇到蚌埠，考虑流量是否大于500
@@ -342,8 +353,8 @@ public class Huiliu {
 
 // 考虑流量是否大于500
 		for (int i = 0; i < Longtime; i++) {
-			qcsum[i] = idc[0][1] * q1g[i][0] + idc[1][1] * q1g[i][1] + idc[1][2] * q1g[i][2];
-			qrcsum[i] = idc[0][1] * q1g[i][3] + idc[1][1] * q1g[i][4] + idc[1][2] * q[i];
+			qcsum[i] = idc[0][1] * q1g[i][0] + idc[1][1] * q1g[i][1] + idc[2][1] * q1g[i][2];
+			qrcsum[i] = idc[0][1] * q1g[i][3] + idc[1][1] * q1g[i][4] + idc[2][1] * q[i];
 		}
 	}
 	
@@ -361,13 +372,13 @@ public class Huiliu {
 		
 		
 		//淮北预报初始流量作为退水初始流量
-		qtuiby[0] = qqobc[0][1];
+		qtuiby[0] = qqobc1[0];
 		for (int i = 1; i < Longtime; i++) {
 			qtuiby[i] = qtuiby[i - 1] * Math.pow(Math.E, -1f / kbtui);
 		}
 		
 		//淮南预报初始流量作为退水初始流量
-		qtuimg[0] = qqobc[0][2];
+		qtuimg[0] = qqobc2[0];
 		for (int i = 1; i < Longtime; i++) {
 			qtuimg[i] = qtuimg[i - 1] * Math.pow(Math.E, -1f / kbtui);
 		}
@@ -384,16 +395,16 @@ public class Huiliu {
 		qhzh = new double[Longtime];//qhzh洪泽湖入湖最终的预报流量
 		/*蚌埠最终预报流量*/
 		for (int i = 0; i < Longtime; i++) {
-			qbbotc[i] = qqobc[i][0] + qtuibb[i] + qrcsum[i];
+			qbbotc[i] = qqobc0[i] + qtuibb[i] + qrcsum[i];
 		}
 		/*淮北最终预报流量*/
 		for (int i = 0; i < Longtime; i++) {
-			qbyc[i] = qqobc[i][1] + qtuiby[i];
+			qbyc[i] = qqobc1[i] + qtuiby[i];
 		}
 		
 		/*淮南最终预报流量*/
 		for (int i = 0; i < Longtime; i++) {
-			qmgc[i] = qqobc[i][2] + qtuimg[i];
+			qmgc[i] = qqobc2[i] + qtuimg[i];
 		}
 		/*湖面最终预报流量*/
 		for (int i = 0; i < Longtime; i++) {
@@ -411,7 +422,7 @@ public class Huiliu {
 		qobsby = new double[Longtime][7];//qbyc淮北实测的预报流量
 		qobsmg = new double[Longtime];//qmgc淮南实测的预报流量
 //		蚌埠实测流量
-		for (int i = 0; i < Longtime; i++) {
+		for (int i = 0; i < dmobs.length; i++) {
 			if (dmobs[i][0] < 0) {
 				qobsbb[i] = 0;
 			} else {
@@ -420,7 +431,7 @@ public class Huiliu {
 			
 		}
 //		明光实测流量
-		for (int i = 0; i < Longtime; i++) {
+		for (int i = 0; i < dmobs.length; i++) {
 			if (dmobs[i][1] < 0) {
 				qobsmg[i] = 0;
 			} else {
@@ -429,7 +440,7 @@ public class Huiliu {
 		}
 //		金锁镇、峰山、泗洪老、泗洪新、团结闸
 		for (int j = 2; j < 7; j++) {
-			for (int i = 0; i < Longtime; i++) {
+			for (int i = 0; i < dmobs.length; i++) {
 				if (dmobs[i][j] < 0) {
 					qobsby[i][j] = 0;
 				} else {
@@ -438,7 +449,7 @@ public class Huiliu {
 			}
 		}
 		
-		for (int i = 0; i < Longtime; i++) {
+		for (int i = 0; i < dmobs.length; i++) {
 			sumdmobs[i] = qobsby[i][2] + qobsby[i][3] + qobsby[i][4] + qobsby[i][5] + qobsby[i][6];
 		}
 		
@@ -517,7 +528,7 @@ public class Huiliu {
 			chara[j][4] = (chara[j][3] - chara[j][2]) / (chara[j][2] + min) * 100;
 		}
 //实测洪峰
-		qobstime = new String[8];
+		qobstime = new String[5];
 		for (int j = 0; j < 5; j++) {
 			chara[j][5] = qobs[0][j];
 			for (int i = 0; i < Longtime; i++)
@@ -526,11 +537,13 @@ public class Huiliu {
 //					chara[j][6] = i;
 					qobstime[j] = timeseries[i];
 				}
-				
+				else{
+					qobstime[j] = timeseries[0];
+				}
 			
 		}
 //	预报洪峰
-		qcaltime = new String[8];
+		qcaltime = new String[5];
 		for (int j = 0; j < 5; j++) {
 			chara[j][6] = qcal[0][j];
 			for (int i = 0; i < Longtime; i++) {
@@ -626,9 +639,13 @@ public class Huiliu {
 		Huiliu.put("ppmg", ppmg);//淮南雨量
 		Huiliu.put("pphm", pphm);//湖面雨量
 		Huiliu.put("pphz", pphz);//洪泽湖平均雨量
-		
-		
+
+		Huiliu.put("qqobc0", qqobc0);//蚌埠
+		Huiliu.put("qqobc1", qqobc1);//淮北
+		Huiliu.put("qqobc2", qqobc2);//淮南
+
 		Huiliu.put("qbbotc", qbbotc);//蚌埠预报流量
+
 		Huiliu.put("qbyc", qbyc);//淮北预报流量
 		Huiliu.put("qmgc", qmgc);//淮南预报流量
 		Huiliu.put("qhmc",qhmc );//湖面预报流量

@@ -639,7 +639,6 @@ public class LuTaiZiCal {
     }
 
 
-
     public Map<String,Object>charactLuTaiZi(){
         int n=longtime;float min1=0.000001f;
         float qcm,icm,eqm,iem,pp;
@@ -676,6 +675,12 @@ public class LuTaiZiCal {
         f0=f0/(n+min1);
         fn=fn/(n+min1);
         dc=1f-fn/(f0+min1);
+        if (dc<0){
+            dc=0;
+        }
+        if (Math.abs(ce)>10){
+            ce=0;
+        }
         qom=qObs[0];
         for (int j=0;j<m;j++){
             if (qObs[j]>qom){
@@ -692,6 +697,14 @@ public class LuTaiZiCal {
         }
         eqm=(qcm-qom)/(qom+min1)*100;
         iem=icm-iom;
+        float floodPeakStage;
+        if (qcm<=4000){
+            floodPeakStage=0.0017f*qcm+16.579f;
+        }else if (qcm<=5000){
+            floodPeakStage=0.0009f*qcm+19.691f;
+        }else{
+            floodPeakStage=0.0006f*qcm+21.211f;
+        }
         Map<String,Object>charactLtz=new HashMap<>();
         charactLtz.put("rainfall",pp);//总降雨量
         charactLtz.put("totalFlow",rrrr);//产流总水量
@@ -701,6 +714,7 @@ public class LuTaiZiCal {
         charactLtz.put("ErrorFlood",ce);//洪量相对误差
         charactLtz.put("measuredPeak",qom);//实测洪峰
         charactLtz.put("forecastPeak",qcm);//预报洪峰
+        charactLtz.put("floodPeakWaterLevel",floodPeakStage);//洪峰水位
         charactLtz.put("ErrorPeak",eqm);//洪峰相对误差
         charactLtz.put("measuredPeakTime",timeSeries[(int)iom]);//实测峰现时间
         charactLtz.put("forecastPeakTime",timeSeries[(int)icm]);//预报峰现时间
@@ -715,6 +729,9 @@ public class LuTaiZiCal {
         charactLtz.put("forecastQ",qcal);//预报流量
         return charactLtz;
     }
+
+
+
     private static float[][] unite(float[][] os1, float[][] os2) {
         List<float[]> list = new ArrayList<float[]>(Arrays.<float[]>asList(os1));
         list.addAll(Arrays.<float[]>asList(os2));
