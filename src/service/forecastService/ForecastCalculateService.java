@@ -119,14 +119,14 @@ public class ForecastCalculateService  {
         Shuiku shuiku=new Shuiku(fAS.getJYOtq(),fAS.getMSJG(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime());
         Map mapShuiKu=shuiku.outputShuiKu();
         fAS.saveCfr((double[][])mapShuiKu.get("qc"),(double[][])mapShuiKu.get("qrc"));
-       // fAS.saveCfBb((double[][])mapShuiKu.get("id"));
-        //fAS.saveCfT((String[][])mapShuiKu.get("it"));
+        fAS.saveCfBb((double[][])mapShuiKu.get("id"));
+        fAS.saveCfT((String[][])mapShuiKu.get("it"));
         //-------------------------汇流计算-----------------------------
-//        Huiliu huiliu=new Huiliu(fAS.getJYMAvg(),fAS.getRP(),fAS.getCfg(0,10),fAS.getCfg(2,8),fAS.getCfg(1,12),fAS.getBbandSqQ(),fAS.getCFQ(),fAS.getFL(),fAS.getJYQobs(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime(),fAS.getInitialTime(),fAS.getTM());
-        //Map mapHuiliu=huiliu.outputhuiliu();
-        //fAS.saveForecastJyr((double[]) mapHuiliu.get("ppbb"),(double[]) mapHuiliu.get("ppby"),(double[]) mapHuiliu.get("ppmg"),(double[]) mapHuiliu.get("pphm"),(double[]) mapHuiliu.get("qbbotc"),(double[]) mapHuiliu.get("qbyc"),(double[]) mapHuiliu.get("qmgc"),(double[]) mapHuiliu.get("qhmc"),(double[]) mapHuiliu.get("qhzh"),(double[]) mapHuiliu.get("qobsbb"),(double[]) mapHuiliu.get("sumdmobs"),(double[]) mapHuiliu.get("qobsmg"));
-//        fAS.saveRfnlHr((double[][])mapHuiliu.get(""));
-//        fAS.saveForecastJyt((double[][])mapHuiliu.get("chara"));
+        Huiliu huiliu=new Huiliu(fAS.getJYMAvg(),fAS.getRP(),fAS.getCfg(0,10),fAS.getCfg(2,8),fAS.getCfg(1,12),fAS.getBbandSqQ(),fAS.getCFQ(),fAS.getFL(),fAS.getJYQobs(),fAS.getStartTime(),fAS.getRainTime(),fAS.getEndTime(),fAS.getInitialTime(),fAS.getTM());
+        Map mapHuiliu=huiliu.outputhuiliu();
+        fAS.saveForecastJyr((double[]) mapHuiliu.get("ppbb"),(double[]) mapHuiliu.get("ppby"),(double[]) mapHuiliu.get("ppmg"),(double[]) mapHuiliu.get("pphm"),(double[])mapHuiliu.get("pphz"),(double[]) mapHuiliu.get("qbbotc"),(double[]) mapHuiliu.get("qbyc"),(double[]) mapHuiliu.get("qmgc"),(double[]) mapHuiliu.get("qhmc"),(double[]) mapHuiliu.get("qhzh"),(double[]) mapHuiliu.get("qobsbb"),(double[]) mapHuiliu.get("sumdmobs"),(double[]) mapHuiliu.get("qobsmg"));
+        fAS.saveRfnlHr((double[])mapHuiliu.get("qqobc0"),(double[])mapHuiliu.get("qqobc1"),(double[])mapHuiliu.get("qqobc2"));
+        fAS.saveForecastJyt((double[][])mapHuiliu.get("chara"),(String[])mapHuiliu.get("qobstime"),(String[])mapHuiliu.get("qcaltime"));
 
     }
 

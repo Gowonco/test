@@ -17,7 +17,7 @@ public class ReservoirConfluence {
     private double[] kk,xx,upQ,lowQ,w,gateW;
     private int [] nn;
     private int itb,ite;
-    private String beginTime;
+    private String beginTime="2018-03-17";//todo hacker
     //构造方法
 
     /**

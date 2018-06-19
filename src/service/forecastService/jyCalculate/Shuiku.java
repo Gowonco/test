@@ -193,7 +193,7 @@ public class Shuiku {
 //建议考虑汇流时间
 
 		it1 = new double[3][3];
-		it = new String[2][2];
+		it = new String[2][2];    it[0][0]="2018-03-12";it[1][0]="2018-03-12";//todo hacker
 		it[0][1] = timeseries[Longtime-1];
 		it[1][1] = timeseries[Longtime -1];
 		for (int i = 0; i < Longtime; i++) {

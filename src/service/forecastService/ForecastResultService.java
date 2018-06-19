@@ -225,8 +225,92 @@ public class ForecastResultService  {
     //--------------------------------------------------------存结果数据-----------------------------------------------------------------
     //--------------------------------------------------------经验模型-----------------------------------------------------------------
 
+    /**
+     *保存面平均雨量—经验模型
+     * @param listDayrnflAvg
+     */
     public void saveJYDayrnflAvg(List<DayrnflAvg> listDayrnflAvg){
         forecastResultDao.saveJYDayrnflAvg(listDayrnflAvg,forecastC.getJNO());
+    }
+
+    /**
+     * 保存雨量分析特征值表—经验模型
+     * @param listDayrnflCh
+     */
+    public void saveJYDayrnflCh(List<DayrnflCh> listDayrnflCh){
+        forecastResultDao.saveJYDayrnflCh(listDayrnflCh,forecastC.getJNO());
+    }
+
+    /**
+     * 保存经验模型初始土壤湿度表
+     * @param listSoilH
+     */
+    public void saveJYSoilH(List<SoilH> listSoilH){
+        forecastResultDao.saveJYSoilH(listSoilH,forecastC.getJNO());
+    }
+
+    /**
+     * 保存分块产流结果表(产流结果表
+     * @param listRpR
+     */
+    public void saveRpR(List<RpR> listRpR){
+        forecastResultDao.saveRpR(listRpR,forecastC.getJNO());
+    }
+
+    /**
+     * 保存产流结果修正表(产流结果修正表
+     * @param listRpCr
+     */
+    public void saveRpCr(List<RpCr> listRpCr){
+        forecastResultDao.saveRpCr(listRpCr,forecastC.getJNO());
+    }
+
+    /**
+     * 保存新安江模型水库汇流结果表
+     * @param listCfR
+     */
+    public void saveJYCfr(List<CfR> listCfR){
+        forecastResultDao.saveJYCfr(listCfR,forecastC.getJNO());
+    }
+
+    /**
+     * 保存蚌埠汇流选择表
+     * @param listCfBb
+     */
+    public void saveJYCfBb(List<CfBb> listCfBb){
+        forecastResultDao.saveJYCfBb(listCfBb,forecastC.getJNO());
+    }
+
+    /**
+     * 保存汇流时间选择表
+     * @param listCft
+     */
+    public void saveJYCfT(List<CfT> listCft){
+        forecastResultDao.saveJYCfT(listCft,forecastC.getJNO());
+    }
+
+    /**
+     * 保存经验模型预报结果表
+     * @param listForecastJyr
+     */
+    public void saveForecastJyr(List<ForecastJyr> listForecastJyr){
+        forecastResultDao.saveForecastJyr(listForecastJyr,forecastC.getJNO());
+    }
+
+    /**
+     * 保存降雨汇流结果表
+     * @param listRfnlHr
+     */
+    public void saveRfnlHr(List<RfnlHr> listRfnlHr){
+        forecastResultDao.saveRfnlHr(listRfnlHr,forecastC.getJNO());
+    }
+
+    /**
+     * 保存经验模型预报特征值表
+     * @param listForecastJyt
+     */
+    public void saveForecastJyt(List<ForecastJyt> listForecastJyt){
+        forecastResultDao.saveForecastJyt(listForecastJyt,forecastC.getJNO());
     }
 
 }

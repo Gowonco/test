@@ -353,7 +353,6 @@ public class ForecastResultDao extends Controller {
      */
     public void saveXAJDayrnflCh(List<DayrnflCh> listDayrnflCh,String taskId){
         Long count= Db.queryLong("select count(*) from f_dayrnfl_ch where no=?",taskId);
-        System.out.println(count);
         if(count==0){
             for(DayrnflCh dayrnflCh:listDayrnflCh){
                 dayrnflCh.save();
@@ -375,8 +374,9 @@ public class ForecastResultDao extends Controller {
         Long count= Db.queryLong("select count(*) from f_dayrnfl_avg where no=?",taskId);
         if(count==0){
             for(DayrnflAvg dayrnflAvg:listDayrnflAvg){
-                Db.update("insert into f_dayrnfl_avg values(?,?,?,UNIX_TIMESTAMP(?),?)",dayrnflAvg.getARCD(),dayrnflAvg.getYMDHM(),dayrnflAvg.getNO(),dayrnflAvg.getYMDHM(),dayrnflAvg.getDRN());
+                dayrnflAvg.save();
             }
+            Db.update("update f_dayrnfl_avg set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
         }else{
             for(DayrnflAvg dayrnflAvg:listDayrnflAvg){
                 dayrnflAvg.update();
@@ -541,9 +541,211 @@ public class ForecastResultDao extends Controller {
 
     //--------------------------------------------------------存结果数据-----------------------------------------------------------------
     //--------------------------------------------------------经验模型-----------------------------------------------------------------
-    public void saveJYDayrnflAvg(List<DayrnflAvg> listDayrnflAvg,String taskId){
 
+    /**
+     * 保存面平均雨量—经验模型
+     * @param listDayrnflAvg
+     * @param taskId
+     */
+    public void saveJYDayrnflAvg(List<DayrnflAvg> listDayrnflAvg,String taskId){
+        Long count= Db.queryLong("select count(*) from f_dayrnfl_avg where no=?",taskId);
+        if(count==0){
+            for(DayrnflAvg dayrnflAvg:listDayrnflAvg){
+                dayrnflAvg.save();
+            }
+            Db.update("update f_dayrnfl_avg set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
+        }else{
+            for(DayrnflAvg dayrnflAvg:listDayrnflAvg){
+                dayrnflAvg.update();
+            }
+        }
     }
 
+    /**
+     * 保存雨量分析特征值表—经验模型
+     * @param listDayrnflCh
+     * @param taskId
+     */
+    public void saveJYDayrnflCh(List<DayrnflCh> listDayrnflCh,String taskId){
+        Long count= Db.queryLong("select count(*) from f_dayrnfl_ch where no=?",taskId);
+        if(count==0){
+            for(DayrnflCh dayrnflCh:listDayrnflCh){
+                dayrnflCh.save();
+            }
+        }else{
+            for(DayrnflCh dayrnflCh:listDayrnflCh){
+                dayrnflCh.update();
+            }
+        }
+    }
 
+    /**
+     * 保存经验模型初始土壤湿度表
+     * @param listSoilH
+     * @param taskId
+     */
+    public void saveJYSoilH(List<SoilH> listSoilH,String taskId){
+        Long count= Db.queryLong("select count(*) from f_soil_h where no=?",taskId);
+        if(count==0){
+            for(SoilH soilH:listSoilH){
+                soilH.save();
+            }
+        }else{
+            for(SoilH soilH:listSoilH){
+                soilH.update();
+            }
+        }
+    }
+
+    /**
+     *  保存分块产流结果表(产流结果表
+     * @param listRpR
+     * @param taskId
+     */
+    public void saveRpR(List<RpR> listRpR,String taskId){
+        Long count= Db.queryLong("select count(*) from f_rp_r where no=?",taskId);
+        if(count==0){
+            for(RpR rpR:listRpR){
+                rpR.save();
+            }
+        }else{
+            for(RpR rpR:listRpR){
+                rpR.update();
+            }
+        }
+    }
+
+    /**
+     * 保存产流结果修正表(产流结果修正表
+     * @param listRpCr
+     * @param taskId
+     */
+    public void saveRpCr(List<RpCr> listRpCr,String taskId){
+        Long count= Db.queryLong("select count(*) from f_rp_cr where no=?",taskId);
+        if(count==0){
+            for(RpCr rpCr:listRpCr){
+                rpCr.save();
+            }
+        }else{
+            for(RpCr rpCr:listRpCr){
+                rpCr.update();
+            }
+        }
+    }
+
+    /**
+     * 保存新安江模型水库汇流结果表
+     * @param listCfR
+     * @param taskId
+     */
+    public void saveJYCfr(List<CfR> listCfR,String taskId){
+        Long count= Db.queryLong("select count(*) from f_cf_r where no=?",taskId);
+        if(count==0){
+            for(CfR cfR:listCfR){
+                cfR.setYMC(0);
+                cfR.save();
+            }
+            Db.update("update f_cf_r set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
+        }else{
+            for(CfR cfR:listCfR){
+                cfR.update();
+            }
+        }
+    }
+
+    /**
+     * 保存蚌埠汇流选择表
+     * @param listCfBb
+     * @param taskId
+     */
+    public void saveJYCfBb(List<CfBb> listCfBb,String taskId){
+        Long count= Db.queryLong("select count(*) from f_cf_bb where no=?",taskId);
+        System.out.println(count);
+        if(count==0){
+            for(CfBb cfBb:listCfBb){
+                cfBb.save();
+            }
+        }else{
+            for(CfBb cfBb:listCfBb){
+                cfBb.update();
+            }
+        }
+    }
+
+    /**
+     * 保存汇流时间选择表
+     * @param listCft
+     * @param taskId
+     */
+    public void saveJYCfT(List<CfT> listCft,String taskId){
+        Long count= Db.queryLong("select count(*) from f_cf_t where no=?",taskId);
+        System.out.println(count);
+        if(count==0){
+            for(CfT cfT:listCft){
+                cfT.save();
+            }
+        }else{
+            for(CfT cfT:listCft){
+                cfT.update();
+            }
+        }
+    }
+
+    /**
+     * 保存经验模型预报结果表
+     * @param listForecastJyr
+     * @param taskId
+     */
+    public void saveForecastJyr(List<ForecastJyr> listForecastJyr,String taskId){
+        Long count= Db.queryLong("select count(*) from f_forecast_jyr where no=?",taskId);
+        if(count==0){
+            for(ForecastJyr forecastJyr:listForecastJyr){
+                forecastJyr.setYMC(0);
+                forecastJyr.save();
+            }
+            Db.update("update f_forecast_jyr set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
+        }else{
+            for(ForecastJyr forecastJyr:listForecastJyr){
+                forecastJyr.update();
+            }
+        }
+    }
+
+    /**
+     * 保存降雨汇流结果表
+     * @param listRfnlHr
+     * @param taskId
+     */
+    public void saveRfnlHr(List<RfnlHr> listRfnlHr,String taskId){
+        Long count= Db.queryLong("select count(*) from f_rfnl_hr where no=?",taskId);
+        if(count==0){
+            for(RfnlHr rfnlHr:listRfnlHr){
+                rfnlHr.setYMC(0);
+                rfnlHr.save();
+            }
+            Db.update("update f_rfnl_hr set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);
+        }else{
+            for(RfnlHr rfnlHr:listRfnlHr){
+                rfnlHr.update();
+            }
+        }
+    }
+
+    /**
+     * 保存经验模型预报特征值表
+     * @param listForecastJyt
+     * @param taskId
+     */
+    public void saveForecastJyt(List<ForecastJyt> listForecastJyt,String taskId){
+        Long count= Db.queryLong("select count(*) from f_forecast_jyt where no=?",taskId);
+        if(count==0){
+            for(ForecastJyt forecastJyt:listForecastJyt){
+                forecastJyt.save();
+            }
+        }else{
+            for(ForecastJyt forecastJyt:listForecastJyt){
+                forecastJyt.update();
+            }
+        }
+    }
 }

@@ -334,7 +334,7 @@ public class ForecastAdapterService {
             listDayrnflCh.add(dayrnflCh);
         }
         fRS.saveXAJDayrnflCh(listDayrnflCh);
-        testMap.put("listDayrnflCh",listDayrnflCh);
+        //testMap.put("listDayrnflCh",listDayrnflCh);
         return listDayrnflCh;
     }
 
@@ -357,7 +357,7 @@ public class ForecastAdapterService {
             }
         }
         fRS.saveXAJDayrnflAvg(listDayrnflAvg);
-        testMap.put("listDayrnflAvg",listDayrnflAvg);
+       // testMap.put("listDayrnflAvg",listDayrnflAvg);
         return listDayrnflAvg;
     }
 
@@ -680,7 +680,7 @@ public class ForecastAdapterService {
 
         }
         fRS.saveSoil(listSoilW);
-        testMap.put("listSoilW",listSoilW);
+        //testMap.put("listSoilW",listSoilW);
         return listSoilW;
     }
     //
@@ -778,7 +778,7 @@ public class ForecastAdapterService {
             listCfT.add(cft);
         }
         fRS.saveCfT(listCfT);
-        testMap.put("listCfT",listCfT);
+        //testMap.put("listCfT",listCfT);
         return listCfT;
     }
     //返回蚌埠汇流选择表（F_CF_BB）
@@ -798,7 +798,7 @@ public class ForecastAdapterService {
             listCfBb.add(cfBb);
         }
         fRS.saveCfBb(listCfBb);
-        testMap.put("listCfBb",listCfBb);
+        //testMap.put("listCfBb",listCfBb);
         return listCfBb;
     }
     //返回新安江模型水库汇流结果表（F_CF_R）
@@ -896,7 +896,7 @@ public class ForecastAdapterService {
             listCfr.add(cfR8);
         }
         fRS.saveCfr(listCfr);
-        testMap.put("listCfr",listCfr);
+        //testMap.put("listCfr",listCfr);
         return listCfr;
     }
     //
@@ -1839,7 +1839,7 @@ public class ForecastAdapterService {
             listForecastXajr.add(forecastXajr);
         }
         fRS.saveForecastXajr(listForecastXajr);
-        testMap.put("listForecastXajr",listForecastXajr);
+        //testMap.put("listForecastXajr",listForecastXajr);
         return listForecastXajr;
     }
     //新安江模型断面预报特征值表（F_FORECAST_XAJT）
@@ -2015,7 +2015,7 @@ public class ForecastAdapterService {
         forecastXajtHm.setDY(new BigDecimal(df1.format(dchm)));
         listForecastXajt.add(forecastXajtHm);
         fRS.saveForecastXajt(listForecastXajt);
-        testMap.put("listForecastXajt",listForecastXajt);
+        //testMap.put("listForecastXajt",listForecastXajt);
         return listForecastXajt;
     }
     //
@@ -2104,7 +2104,7 @@ public class ForecastAdapterService {
             listInflowXajr.add(inflowXajr);
         }
         fRS.saveInflowXajr(listInflowXajr);
-        testMap.put("listInflowXajr",listInflowXajr);
+       // testMap.put("listInflowXajr",listInflowXajr);
         return listInflowXajr;
     }
     //返回新安江模型入湖总量特征值表
@@ -2133,7 +2133,7 @@ public class ForecastAdapterService {
         inflowXajt.setFOPT(sdf.parse(im[0]+" 00:00:00"));
         listInflowXajt.add(inflowXajt);
         fRS.saveInflowXajt(listInflowXajt);
-        testMap.put("listInflowXajt",listInflowXajt);
+        //testMap.put("listInflowXajt",listInflowXajt);
         return listInflowXajt;
     }
     public void saveRuLake(Map mapruLake) throws ParseException {
@@ -2172,6 +2172,8 @@ public class ForecastAdapterService {
                 pPM[t][i] = pp[t][i];
             }
         }
+        fRS.saveJYDayrnflAvg(listDayrnflAvg);
+        testMap.put("jylistDayrnflAvg",listDayrnflAvg);
         return listDayrnflAvg;
     }
     //返回雨量分析特征值表—经验模型
@@ -2190,6 +2192,8 @@ public class ForecastAdapterService {
             pP[i] = addPp[i];//获取经验模型累积雨量pp
             listDayrnflCh.add(dayrnflCh);
         }
+        fRS.saveJYDayrnflCh(listDayrnflCh);
+        testMap.put("jylistDayrnflCh",listDayrnflCh);
         return listDayrnflCh;
     }
 
@@ -2235,6 +2239,8 @@ public class ForecastAdapterService {
             listSoilH.add(soilH);
             W[i] = paa[i];
         }
+        fRS.saveJYSoilH(listSoilH);
+        testMap.put("jylistSoilH",listSoilH);
         return listSoilH;
     }
     //---------------------------------------------经验模型产流计算----------------------------------------
@@ -2301,6 +2307,8 @@ public class ForecastAdapterService {
             rpR.setW(new BigDecimal(df.format(w[i])));
             listRpR.add(rpR);
         }
+        fRS.saveRpR(listRpR);
+        testMap.put("jylistRpR",listRpR);
         return listRpR;
     }
     //产流结果修正表(产流结果修正表（F_RP_CR）)
@@ -2320,6 +2328,8 @@ public class ForecastAdapterService {
             rpCr.setCW(new BigDecimal(df.format(cw[i])));
             listRpCr.add(rpCr);
         }
+        fRS.saveRpCr(listRpCr);
+        testMap.put("jylistRpCr",listRpCr);
         return listRpCr;
     }
     //---------------------------------------------经验模型水库汇流选择----------------------------------------
@@ -2414,6 +2424,8 @@ public class ForecastAdapterService {
             listCfR.add(cfR5);
             listCfR.add(cfR6);
         }
+        fRS.saveJYCfr(listCfR);
+        testMap.put("jylistCfR",listCfR);
         return listCfR;
     }
     //蚌埠汇流选择表（F_CF_BB）
@@ -2449,7 +2461,8 @@ public class ForecastAdapterService {
         listCfBb.add(cfBb1);
         listCfBb.add(cfBb2);
         listCfBb.add(cfBb3);
-
+        fRS.saveJYCfBb(listCfBb);
+        testMap.put("jylistCfBb",listCfBb);
         return listCfBb;
     }
     //汇流时间选择表（F_CF_T）
@@ -2476,6 +2489,8 @@ public class ForecastAdapterService {
         cfT2.setENDTM(sdf.parse(time[1][1]+" 00:00:00"));
         listCft.add(cfT1);
         listCft.add(cfT2);
+        fRS.saveJYCfT(listCft);
+        testMap.put("jylistCft",listCft);
         return listCft;
     }
     //---------------------------------------------经验模型 汇流计算----------------------------------------
@@ -2600,6 +2615,8 @@ public class ForecastAdapterService {
             listForecastJyr.add(forecastJyr4);
             listForecastJyr.add(forecastJyr5);
         }
+        fRS.saveForecastJyr(listForecastJyr);
+        testMap.put("jylistForecastJyr",listForecastJyr);
         return listForecastJyr;
     }
     //降雨汇流结果表（F_RFNL_HR）
@@ -2631,6 +2648,8 @@ public class ForecastAdapterService {
             listRfnlHr.add(rfnlHr2);
             listRfnlHr.add(rfnlHr3);
         }
+        fRS.saveRfnlHr(listRfnlHr);
+        testMap.put("jylistRfnlHr",listRfnlHr);
         return listRfnlHr;
     }
     //经验模型预报特征值表（F_FORECAST_JYT）
@@ -2780,6 +2799,8 @@ public class ForecastAdapterService {
         listForecastJyt.add(forecastJytby);
         listForecastJyt.add(forecastJythm);
         listForecastJyt.add(forecastJythzh);
+        fRS.saveForecastJyt(listForecastJyt);
+        testMap.put("jylistForecastJyt",listForecastJyt);
         return listForecastJyt;
     }
 
