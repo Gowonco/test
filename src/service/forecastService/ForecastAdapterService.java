@@ -1870,6 +1870,9 @@ public class ForecastAdapterService {
         forecastXajt.setWE(new BigDecimal(df1.format(ce)));
         forecastXajt.setOBPD(new BigDecimal(df.format(qom)));
         forecastXajt.setFOPD(new BigDecimal(df.format(qcm)));
+        if(eqm>10000){
+           eqm = 10000;
+        }
         forecastXajt.setRPE(new BigDecimal(df1.format(eqm)));
         forecastXajt.setOBPT(sdf.parse(sttime+" 00:00:00"));
         forecastXajt.setFOPT(sdf.parse(ftime+" 00:00:00"));
@@ -1903,6 +1906,9 @@ public class ForecastAdapterService {
         forecastXajtBb.setWE(new BigDecimal(df1.format(cebb)));
         forecastXajtBb.setOBPD(new BigDecimal(df.format(qombb)));
         forecastXajtBb.setFOPD(new BigDecimal(df.format(qcmbb)));
+        if(eqmbb>10000){
+            eqmbb = 10000;
+        }
         forecastXajtBb.setRPE(new BigDecimal(df1.format(eqmbb)));
         forecastXajtBb.setOBPT(sdf.parse(sttimebb+" 00:00:00"));
         forecastXajtBb.setFOPT(sdf.parse(ftimebb+" 00:00:00"));
@@ -1934,6 +1940,9 @@ public class ForecastAdapterService {
         forecastXajtMg.setWE(new BigDecimal(df1.format(cemg)));
         forecastXajtMg.setOBPD(new BigDecimal(df.format(qommg)));
         forecastXajtMg.setFOPD(new BigDecimal(df.format(qcmmg)));
+        if(eqmmg>10000){
+            eqmmg = 10000;
+        }
         forecastXajtMg.setRPE(new BigDecimal(df1.format(eqmmg)));
         forecastXajtMg.setOBPT(sdf.parse(sttimemg+" 00:00:00"));
         forecastXajtMg.setFOPT(sdf.parse(ftimemg+" 00:00:00"));
@@ -1965,6 +1974,9 @@ public class ForecastAdapterService {
         forecastXajtBy.setWE(new BigDecimal(df1.format(ceby)));
         forecastXajtBy.setOBPD(new BigDecimal(df.format(qomby)));
         forecastXajtBy.setFOPD(new BigDecimal(df.format(qcmby)));
+        if(eqmby>10000){
+            eqmby = 10000;
+        }
         forecastXajtBy.setRPE(new BigDecimal(df1.format(eqmby)));
         forecastXajtBy.setOBPT(sdf.parse(sttimeby+" 00:00:00"));
         forecastXajtBy.setFOPT(sdf.parse(ftimeby+" 00:00:00"));
