@@ -1870,7 +1870,7 @@ public class ForecastAdapterService {
         float eqmbb = (float) mapBbFractureFlow.get("ErrorPeak");//洪峰相对误差
         String sttimebb = (String) mapBbFractureFlow.get("measuredPeakTime");//实测峰现时间
         String ftimebb = (String) mapBbFractureFlow.get("forecastPeakTime");//预报峰现时间
-        float floodPeakStagebb = (float) mapLsFractureFlow.get("floodPeakWaterLevel");//预报洪峰水位------?
+        float floodPeakStagebb = (float) mapLsFractureFlow.get("floodPeakWaterLevel");//预报洪峰水位
         //float iembb = (float) mapBbFractureFlow.get("ErrorPeakTime");
         float dcbb = (float) mapBbFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtBb = new ForecastXajt();
@@ -1903,7 +1903,6 @@ public class ForecastAdapterService {
         float eqmmg  = (float) mapMgFractureFlow.get("ErrorPeak");//洪峰相对误差
         String sttimemg  = (String) mapMgFractureFlow.get("measuredPeakTime");//实测峰现时间
         String ftimemg  = (String) mapMgFractureFlow.get("forecastPeakTime");//预报峰现时间
-        //float iemmg  = (float) mapMgFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
         float dcmg  = (float) mapMgFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtMg = new ForecastXajt();
         forecastXajtMg.setNO(forecastC.getNO());
@@ -1935,7 +1934,6 @@ public class ForecastAdapterService {
         float eqmby = (float) mapByFractureFlow.get("ErrorPeak");//洪峰相对误差
         String sttimeby = (String) mapByFractureFlow.get("measuredPeakTime");//实测峰现时间
         String ftimeby = (String) mapByFractureFlow.get("forecastPeakTime");//预报峰现时间
-       // float iemby = (float) mapByFractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
         float dcby = (float) mapByFractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtBy = new ForecastXajt();
         forecastXajtBy.setNO(forecastC.getNO());
@@ -1967,7 +1965,6 @@ public class ForecastAdapterService {
         float eqmhm = (float) mapHbractureFlow.get("ErrorPeak");//洪峰相对误差
         String sttimehm = (String) mapHbractureFlow.get("measuredPeakTime");//实测峰现时间
         String ftimehm = (String) mapHbractureFlow.get("forecastPeakTime");//预报峰现时间
-       // float iemhm = (float) mapHbractureFlow.get("ErrorPeakTime");//预报洪峰水位------?
         float dchm = (float) mapHbractureFlow.get("dc");//确定性系数
         ForecastXajt forecastXajtHm = new ForecastXajt();
         forecastXajtHm.setNO(forecastC.getNO());
@@ -1977,10 +1974,10 @@ public class ForecastAdapterService {
         forecastXajtHm.setPW(new BigDecimal(df.format(rcalyhm)));
         forecastXajtHm.setOBW(new BigDecimal(df.format(robsyhm)));
         forecastXajtHm.setDW(new BigDecimal(df.format(rcalihm)));
-        forecastXajtHm.setWE(new BigDecimal(df1.format(cehm)));
+        forecastXajtHm.setWE(new BigDecimal(df1.format(0)));
         forecastXajtHm.setOBPD(new BigDecimal(df.format(qomhm)));
         forecastXajtHm.setFOPD(new BigDecimal(df.format(qcmhm)));
-        forecastXajtHm.setRPE(new BigDecimal(df1.format(eqmhm)));
+        forecastXajtHm.setRPE(new BigDecimal(df1.format(0)));
         forecastXajtHm.setOBPT(sdf.parse(sttimehm+" 00:00:00"));
         forecastXajtHm.setFOPT(sdf.parse(ftimehm+" 00:00:00"));
        // forecastXajtHm.setFOPZ(new BigDecimal(Float.toString(iemhm)));
