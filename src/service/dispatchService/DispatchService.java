@@ -58,9 +58,9 @@ public class DispatchService extends Controller {
         DispatchCalculateService fc=new DispatchCalculateService(forecastC,dispatchMap);
         //todo: JSONObject转array
 
-        JSONArray jsonArrayFixData=(JSONArray) JSONArray.parse(correctData);
+        //JSONArray jsonArrayFixData=(JSONArray) JSONArray.parse(correctData);
 
-        JSONObject jsonObjectFixData=(JSONObject) jsonArrayFixData.get(0);
+        JSONObject jsonObjectFixData=JSONObject.parseObject(correctData);
         double [] correctData1 = new double[10];
         //correctData1[0] = (double) jsonObjectFixData.get("gate1");
         correctData1[0] = Double.parseDouble(String.valueOf(jsonObjectFixData.get("gate1")));

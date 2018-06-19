@@ -135,7 +135,9 @@ public class DispatchController extends Controller {
 
     public void doManualAdviceQFix(){
         String taskId=getPara("taskId");
-        String datetime = getPara("datetime");
+        // todo:需要恢复成url获取的
+        String datetime = "2000-08-10";
+//        String datetime = getPara("datetime");
         String fixData = getPara("fixData");
         dispatchService.setTaskSetting(taskId);
         dispatchService.doFixMS(datetime,fixData);

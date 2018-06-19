@@ -91,8 +91,8 @@ public class DispatchCalculateService {
         taskMS.gateGInterpolation=taskDC.gateGInterpolation;
 
         //100、200、50、50为三个闸和水电站修改后的流量值
-        taskMS.gate3Q[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[0];
-        taskMS.gate2Q[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[1];
+        taskMS.gate3Q[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[1];
+        taskMS.gate2Q[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[0];
         taskMS.gateGQ[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[2];
         taskMS.hydropowerQ[taskMS.getDayIndex(taskMS.obsStartDay,correctDay)+1]=correctQ[3];
         // 三个闸修改后的流量值赋值给MSQ数组
