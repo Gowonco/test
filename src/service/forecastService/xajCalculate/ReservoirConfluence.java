@@ -175,6 +175,7 @@ public class ReservoirConfluence {
             w[2]=w[2]+sumQ[2][i]*24 * 3600 / 100000000;
             }
     //确定建议汇流结束时间
+        beginTime = forecastEndDay;
         for(int i=0;i<forecastEndTime;i++){
         //如果淮南的汇流没有大于500?
             if(sumQ[2][i]>500){
