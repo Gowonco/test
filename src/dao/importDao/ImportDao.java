@@ -31,14 +31,14 @@ public class ImportDao extends Controller {
      * @param isConsiderFutureRainfall
      * @param isConsiderAddRainfall
      */
-    public void dataImportTaskSetting(String taskId,String warmTime,String stStartTime,String fStartTime,String fEndTime,Double evaporationValue,int isAutoForecast,int isConsiderFutureRainfall,int isConsiderAddRainfall,String ds,String ip,String id){
+    public void dataImportTaskSetting(String taskId,String warmTime,String stStartTime,String fStartTime,String fEndTime,Double evaporationValue,int fl,int isAutoForecast,int isConsiderFutureRainfall,int isConsiderAddRainfall,String ds,String ip,String id){
         warmTime=warmTime+" 00:00:00";
         stStartTime=stStartTime+" 00:00:00";
         fStartTime=fStartTime+" 00:00:00";
         fEndTime=fEndTime+" 00:00:00";
         String jno=taskId.substring(0,3)+"1"+taskId.substring(4,taskId.length());
         System.out.println(jno);
-        Db.update("insert into f_forecast_c(no,basedtm,starttm,endtm,wutm,ymc1,ymc2,ymc3,ymc4,e,autf,fr,ar,ds,ip,id,jno) values(?,?,?,?,?,UNIX_TIMESTAMP(?),UNIX_TIMESTAMP(?),UNIX_TIMESTAMP(?),UNIX_TIMESTAMP(?),?,?,?,?,?,?,?,?)",taskId,stStartTime,fStartTime,fEndTime,warmTime,stStartTime,fStartTime,fEndTime,warmTime,evaporationValue,isAutoForecast,isConsiderFutureRainfall,isConsiderAddRainfall,ds,ip,id,jno);
+        Db.update("insert into f_forecast_c(no,basedtm,starttm,endtm,wutm,ymc1,ymc2,ymc3,ymc4,e,fl,autf,fr,ar,ds,ip,id,jno) values(?,?,?,?,?,UNIX_TIMESTAMP(?),UNIX_TIMESTAMP(?),UNIX_TIMESTAMP(?),UNIX_TIMESTAMP(?),?,?,?,?,?,?,?,?,?)",taskId,stStartTime,fStartTime,fEndTime,warmTime,stStartTime,fStartTime,fEndTime,warmTime,evaporationValue,fl,isAutoForecast,isConsiderFutureRainfall,isConsiderAddRainfall,ds,ip,id,jno);
 
     }
 

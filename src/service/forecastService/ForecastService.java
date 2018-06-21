@@ -11,17 +11,21 @@ import model.viewmodel.ViewReservoir;
 import model.viewmodel.jymodel.*;
 import model.viewmodel.xajmodel.*;
 
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class ForecastService  {
 
     public ForecastDao forecastDao=new ForecastDao();
     public ForecastC forecastC=new ForecastC();
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Random random=new Random();
+    HttpSession session;
 
     Map xajMap=new HashMap();
     Map jyMap=new HashMap();
@@ -32,8 +36,9 @@ public class ForecastService  {
      * 获取本次任务配置
      * @param taskId
      */
-     public void setTaskSetting(String taskId){
+     public void setTaskSetting(String taskId,HttpSession session){
          forecastC=forecastDao.getTaskSetting(taskId);
+         this.session=session;
      }
 
     /**
@@ -41,8 +46,8 @@ public class ForecastService  {
      * @param taskId
      * @throws ParseException
      */
-    public ForecastAdapterService doForecast(String taskId) throws Exception {
-         this.setTaskSetting(taskId);
+    public ForecastAdapterService doForecast(String taskId,HttpSession session) throws Exception {
+         this.setTaskSetting(taskId,session);
          //新安江模型大Map
          xajMap.put("listViewRain",getRainData());//68个雨量站插值处理过的日雨量
          xajMap.put("listChildRainStation",getChildRainStation());//获取新安江 子流域-雨量站 对应关系 以及雨量站个数
@@ -59,6 +64,7 @@ public class ForecastService  {
          xajMap.put("listHydrologicFlow",getHydrologicFlow());//新安江--7个河道水文站流量
          xajMap.put("listXAJMMusk",getMMusk());//新安江模型--各断面马斯京根参数
          xajMap.put("listXAJForecastXajr",getForecastXajr());//新安江--各断面的实测流量、预报流量
+         session.setAttribute("schedule",random.nextInt(5)+8);//设置任务进度
         //经验模型大Map
          jyMap.put("listViewRain",getRainData());//68个雨量站插值处理过的日雨量
          jyMap.put("listJYChildRainStation",getExperienceChildRainStation());//获取经验 子流域-雨量站 对应关系 以及雨量站个数
@@ -69,7 +75,8 @@ public class ForecastService  {
          jyMap.put("listJYConfig",getExperienceConfig());//经验模型-- 蚌埠 明光 淮北 配置表
          jyMap.put("listJYHydrologyFlow",getHydrologyFlow());//7个水文站的实测流量
          jyMap.put("listParaMu",getParaMu());//马斯京根汇流参数
-         fc=new ForecastCalculateService(forecastC,xajMap,jyMap);
+         session.setAttribute("schedule",random.nextInt(5)+18);//设置任务进度
+         fc=new ForecastCalculateService(forecastC,xajMap,jyMap,session);
          fc.doForecast();
          return fc.fAS;
         //ForecastCalculateService f = new ForecastCalculateService(mapp);

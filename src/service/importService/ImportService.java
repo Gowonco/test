@@ -20,8 +20,8 @@ public class ImportService extends Controller {
      * @param isConsiderFutureRainfall
      * @param isConsiderAddRainfall
      */
-    public void dataImportTaskSetting(String taskId,String warmTime,String stStartTime,String fStartTime,String fEndTime,Double evaporationValue,int isAutoForecast,int isConsiderFutureRainfall,int isConsiderAddRainfall,String ds,String ip,String id){
-        importDao.dataImportTaskSetting(taskId,warmTime,stStartTime,fStartTime,fEndTime,evaporationValue,isAutoForecast,isConsiderFutureRainfall,isConsiderAddRainfall,ds,ip,id);
+    public void dataImportTaskSetting(String taskId,String warmTime,String stStartTime,String fStartTime,String fEndTime,Double evaporationValue,int fl,int isAutoForecast,int isConsiderFutureRainfall,int isConsiderAddRainfall,String ds,String ip,String id){
+        importDao.dataImportTaskSetting(taskId,warmTime,stStartTime,fStartTime,fEndTime,evaporationValue,fl,isAutoForecast,isConsiderFutureRainfall,isConsiderAddRainfall,ds,ip,id);
     }
 
     /**

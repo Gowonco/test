@@ -63,9 +63,9 @@ public class IndexController extends Controller{
         setAttr("listRainInfo",indexService.getRainInfo());//获取68个雨量站的id,name
         setAttr("listFlow",indexService.getFlowInfo());//获取5个闸坝的id,name
         setAttr("listReservoid",indexService.getReservoirInfo());//获取9个水库的id,name
-        setAttr("listViewRain",indexService.getRain("2018-02-15","2018-03-17"));//水雨情--逐日降雨数据
-        setAttr("listViewFlow",indexService.getFlow("2018-02-15","2018-03-17"));//水雨情--水闸流量查询
-        setAttr("listViewReservoir",indexService.getReservoir("2018-02-15","2018-03-17"));//水雨情--水库放水流量查询
+        setAttr("listViewRain",indexService.getRain(getPara("startTime"),getPara("endTime")));//水雨情--逐日降雨数据
+        setAttr("listViewFlow",indexService.getFlow(getPara("startTime"),getPara("endTime")));//水雨情--水闸流量查询
+        setAttr("listViewReservoir",indexService.getReservoir(getPara("startTime"),getPara("endTime")));//水雨情--水库放水流量查询
         renderJson();
     }
     public void getHydrologicDataRain() throws ParseException {

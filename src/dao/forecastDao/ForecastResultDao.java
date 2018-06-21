@@ -374,6 +374,7 @@ public class ForecastResultDao extends Controller {
         Long count= Db.queryLong("select count(*) from f_dayrnfl_avg where no=?",taskId);
         if(count==0){
             for(DayrnflAvg dayrnflAvg:listDayrnflAvg){
+                dayrnflAvg.setYMC(0);
                 dayrnflAvg.save();
             }
             Db.update("update f_dayrnfl_avg set YMC = UNIX_TIMESTAMP(YMDHM) where no=?",taskId);

@@ -5,6 +5,7 @@ import service.forecastService.ForecastAdapterService;
 import service.forecastService.ForecastResultService;
 import service.forecastService.ForecastService;
 
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 
 
@@ -15,6 +16,8 @@ public class ForecastController extends Controller {
 
     public void doForecast() throws Exception {
         String taskId=getPara("taskId");
+        setSessionAttr("schedule",0);
+        HttpSession session=getSession();
         //forecastService.doForecast(taskId);
 //        System.out.println(forecastService.forecastC);
         //setAttr("listViewRain",forecastService.getRainData());
@@ -39,8 +42,16 @@ public class ForecastController extends Controller {
 //        setAttr("listJYConfig",forecastService.getExperienceConfig());
 //        setAttr("listJYHydrologyFlow",forecastService.getHydrologyFlow());
       //  setAttr("listParaMu",forecastService.getParaMu());
-        ForecastAdapterService test=forecastService.doForecast(taskId);
+        ForecastAdapterService test=forecastService.doForecast(taskId,session);
         setAttr("fas",test.testMap);
+        renderJson();
+    }
+    public void getSchedule(){
+        int schedule=0;
+        if(getSessionAttr("schedule")!=null){
+            schedule=getSessionAttr("schedule");
+        }
+        setAttr("schedule",schedule);
         renderJson();
     }
 

@@ -1693,11 +1693,11 @@ public class ForecastAdapterService {
         float[] qObs =  (float[]) mapLsFractureFlow.get("measuredQ");//实测流量
         float[] qcal =  (float[]) mapLsFractureFlow.get("forecastQ");//预报流量
         lsQ = new float[getStToEnd2()];
-        for(int i=0;i<qObs.length;i++){
+        for(int i=0;i<getStToEnd();i++){
             lsQ[i] = qObs[i];
         }
-        for(int i=qObs.length;i<qcal.length;i++){
-            lsQ[i] = qcal[i-qObs.length];
+        for(int i=getStToEnd();i<qcal.length;i++){
+            lsQ[i] = qcal[qcal.length-i];
         }
     }
     //蚌埠，淮南，淮北，湖滨土壤含水量（可以直接从土壤含水量计算模块传入，可以不用适配器）
