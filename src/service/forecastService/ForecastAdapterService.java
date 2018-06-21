@@ -1689,6 +1689,17 @@ public class ForecastAdapterService {
         }
         return ppfu;
     }
+    public void prelsOtherQinflow(Map mapLsFractureFlow){
+        float[] qObs =  (float[]) mapLsFractureFlow.get("measuredQ");//实测流量
+        float[] qcal =  (float[]) mapLsFractureFlow.get("forecastQ");//预报流量
+        lsQ = new float[getStToEnd2()];
+        for(int i=0;i<qObs.length;i++){
+            lsQ[i] = qObs[i];
+        }
+        for(int i=qObs.length;i<qcal.length;i++){
+            lsQ[i] = qcal[i-qObs.length];
+        }
+    }
     //蚌埠，淮南，淮北，湖滨土壤含水量（可以直接从土壤含水量计算模块传入，可以不用适配器）
     //鲁台子预报结果（从实测开始到预报结束）和上桥闸实测流量（从实测开始到实测结束）
     public float[][] getOtherQinflow(){
@@ -1711,6 +1722,7 @@ public class ForecastAdapterService {
     //汇流选择getroutOption()
     //(10-23)子流域参数，可以写一个大map（module）蚌埠（4，9），淮南（1，13），淮北（6，14），湖滨（2，20），湖面没有
     //新安江模型断面预报结果表（F_FORECAST_XAJR）
+
     public List<ForecastXajr> getForecastXajr( Map mapLsFractureFlow,Map mapBbFractureFlow, Map mapMgFractureFlow,Map mapByFractureFlow,Map mapHbractureFlow,Map mapHmFractureFlow) throws ParseException {
         List<ForecastXajr> listForecastXajr = new ArrayList<>();
         String[] timeSeries = getTimeSeries();
@@ -1755,13 +1767,6 @@ public class ForecastAdapterService {
         float[] qObshb =  (float[]) mapHbractureFlow.get("measuredQ");//实测流量
         float[] qcalhb =  (float[]) mapHbractureFlow.get("forecastQ");//预报流量
         dMQ = new float[timeSeries.length][5];
-        lsQ = new float[getStToEnd2()];
-        for(int i=0;i<qObs.length;i++){
-            lsQ[i] = qObs[i];
-        }
-        for(int i=qObs.length;i<qcal.length;i++){
-            lsQ[i] = qcal[i-qObs.length];
-        }
         for(int i=0;i<ppj.length;i++){
             dMQ[i][0] = qcal[i];
             dMQ[i][1] = qcalbb[i];
