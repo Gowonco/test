@@ -51,6 +51,7 @@ public class ForecastAdapterService {
     public  double[][] CFQ;//记录水库来水及汇流
     public   String[][] TM;//记录考虑淮干与淮南水库汇流时间
     public Map stateMap;//记录新安江土壤含水量计算后的结果
+    public float[] lsQ;//记录新安江鲁台子预报结果
     public float[][] dMQ;//记录新安江各断面预报流量
 
     public double[][] qReservoir;//记录水库汇流结果
@@ -1691,11 +1692,11 @@ public class ForecastAdapterService {
     //蚌埠，淮南，淮北，湖滨土壤含水量（可以直接从土壤含水量计算模块传入，可以不用适配器）
     //鲁台子预报结果（从实测开始到预报结束）和上桥闸实测流量（从实测开始到实测结束）
     public float[][] getOtherQinflow(){
-        List<XAJForecastXajr> listXAJForecastXajr = (List<XAJForecastXajr>) xajMap.get("listXAJForecastXajr");
+       // List<XAJForecastXajr> listXAJForecastXajr = (List<XAJForecastXajr>) xajMap.get("listXAJForecastXajr");
         List<ViewFlow> listViewFlow = (List<ViewFlow>) xajMap.get("listStrobeFlow");
         float[][] qinflow = new float[getStToEnd2()][2];
         for(int i=0;i<qinflow.length;i++){///鲁台子预报结果（从实测开始到预报结束）
-            qinflow[i][0] = listXAJForecastXajr.get(0).getListForecastXajr().get(i).getPQ().floatValue();
+            qinflow[i][0] = lsQ[i];
         }
         for(int i=0;i<getStToEnd();i++){//上桥闸实测流量（从实测开始到实测结束）-其他赋值为0
             for(int j=0;j<listViewFlow.get(i+getWtmtoBas()).getListWasR().size();j++){
@@ -1754,6 +1755,13 @@ public class ForecastAdapterService {
         float[] qObshb =  (float[]) mapHbractureFlow.get("measuredQ");//实测流量
         float[] qcalhb =  (float[]) mapHbractureFlow.get("forecastQ");//预报流量
         dMQ = new float[timeSeries.length][5];
+        lsQ = new float[getStToEnd2()];
+        for(int i=0;i<qObs.length;i++){
+            lsQ[i] = qObs[i];
+        }
+        for(int i=qObs.length;i<qcal.length;i++){
+            lsQ[i] = qcal[i-qObs.length];
+        }
         for(int i=0;i<ppj.length;i++){
             dMQ[i][0] = qcal[i];
             dMQ[i][1] = qcalbb[i];
