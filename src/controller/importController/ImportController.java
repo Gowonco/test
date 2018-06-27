@@ -19,7 +19,7 @@ public class ImportController extends Controller {
 
     public void dataImport(){
         //本次任务一些配置导入
-        String taskId=getPara("taskId");
+        String taskId=getPara("taskId");    //获取前端输入参数并将其传至接受页面
         String warmTime=getPara("warmTime");
         String stStartTime=getPara("stStartTime");
         String fStartTime=getPara("fStartTime");

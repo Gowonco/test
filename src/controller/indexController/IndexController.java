@@ -27,7 +27,7 @@ public class IndexController extends Controller{
      * 获取流域信息
      */
     public void getAreaDis(){
-        setAttr("listAreaDis",indexService.getAreaDis());//set流域信息
+        setAttr("listAreaDis",indexService.getAreaDis());//set流域信息     显示获取的流域信息 setAttr（String，Object）
         renderJson();
 
     }
